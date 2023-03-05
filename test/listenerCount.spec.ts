@@ -1,4 +1,4 @@
-import {useProxy} from '../src';
+import { useProxy } from '../src';
 
 describe('Listener count', () => {
   test('default', () => {

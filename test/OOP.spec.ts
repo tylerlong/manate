@@ -1,24 +1,24 @@
-import {useProxy} from '../src';
-import {ProxyEvent} from '../src/models';
+import { useProxy } from '../src';
+import { ProxyEvent } from '../src/models';
 
 describe('OOP', () => {
   test('todo list', () => {
     class Store {
-      todoLists: TodoList[] = [];
+      public todoLists: TodoList[] = [];
     }
 
     class TodoList {
-      name: string;
-      todoItems: TodoItem[] = [];
-      constructor(name: string) {
+      public name: string;
+      public todoItems: TodoItem[] = [];
+      public constructor(name: string) {
         this.name = name;
       }
     }
 
     class TodoItem {
-      description: string;
-      complete = false;
-      constructor(description: string) {
+      public description: string;
+      public complete = false;
+      public constructor(description: string) {
         this.description = description;
       }
     }
@@ -35,7 +35,7 @@ describe('OOP', () => {
     proxy.__emitter__.on('event', listener);
     proxy.todoLists[0].todoItems[0].complete = true;
     proxy.__emitter__.off('event', listener);
-    expect(events.map(event => event.toString())).toEqual([
+    expect(events.map((event) => event.toString())).toEqual([
       'get: todoLists',
       'get: todoLists+0',
       'get: todoLists+0+todoItems',

@@ -1,13 +1,12 @@
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 
-import {ProxyEvent, Children} from './models';
+import { ProxyEvent, Children } from './models';
 
 const childrenKey = '&*()_+=-~`!@#$%^';
 
-export type ProxyType<T> = T & {__emitter__: EventEmitter};
+export type ProxyType<T> = T & { __emitter__: EventEmitter };
 
-export const canProxy = (obj: object) =>
-  typeof obj === 'object' && obj !== null;
+export const canProxy = (obj: object) => typeof obj === 'object' && obj !== null;
 
 // release all children
 export const releaseChildren = (obj: object): void => {
@@ -50,6 +49,7 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
       }
       return value;
     },
+    // eslint-disable-next-line max-params
     set: (target: T, path: string, value: any, receiver?: T): boolean => {
       // no assign object to itself, doesn't make sense
       // array.length assign oldValue === value, strange
@@ -75,26 +75,17 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
   return proxy as ProxyType<T>;
 }
 
-export function run<T>(
-  proxy: ProxyType<T>,
-  func: Function
-): [result: any, isTrigger: (event: ProxyEvent) => boolean] {
+export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean] {
   const events: ProxyEvent[] = [];
   const listener = (event: ProxyEvent) => events.push(event);
   proxy.__emitter__.on('event', listener);
   const result = func();
   proxy.__emitter__.off('event', listener);
-  const getPaths = [
-    ...new Set(
-      events
-        .filter(event => event.name === 'get')
-        .map(event => event.pathString)
-    ),
-  ];
+  const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
   const isTrigger = (event: ProxyEvent): boolean => {
     if (event.name === 'set') {
       const setPath = event.pathString;
-      if (getPaths.some(getPath => getPath.startsWith(setPath))) {
+      if (getPaths.some((getPath) => getPath.startsWith(setPath))) {
         // if setPath is shorter than getPath, then it's time to refresh
         return true;
       }
@@ -107,8 +98,8 @@ export function run<T>(
 export function autoRun<T>(
   proxy: ProxyType<T>,
   func: () => void,
-  decorator?: (func: () => void) => () => void
-): {start: () => void; stop: () => void} {
+  decorator?: (func: () => void) => () => void,
+): { start: () => void; stop: () => void } {
   let isTrigger: (event: ProxyEvent) => boolean = () => true;
   const listener = (event: ProxyEvent) => {
     if (isTrigger(event)) {

@@ -1,27 +1,13 @@
-// eslint-disable-next-line node/no-unpublished-import
 import React from 'react';
 
-import {useProxy, run, releaseChildren, ProxyType} from '.';
-import {ProxyEvent} from './models';
+import { useProxy, run, releaseChildren, ProxyType } from '.';
+import { ProxyEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
-  propsProxy?: ProxyType<P>;
-  isTrigger!: (event: ProxyEvent) => boolean;
-  listener = (event: ProxyEvent) => {
-    if (this.isTrigger(event)) {
-      this.forceUpdate();
-    }
-  };
+  public propsProxy?: ProxyType<P>;
+  public isTrigger!: (event: ProxyEvent) => boolean;
 
-  dispose() {
-    if (this.propsProxy) {
-      releaseChildren(this.propsProxy);
-      this.propsProxy.__emitter__.off('event', this.listener);
-      this.propsProxy = undefined;
-    }
-  }
-
-  constructor(props: Readonly<P>) {
+  public constructor(props: Readonly<P>) {
     super(props);
 
     // rewrite render()
@@ -36,19 +22,31 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
     };
 
     // rewrite componentWillUnmount()
-    const componentWillUnmount = this.componentWillUnmount
-      ? this.componentWillUnmount.bind(this)
-      : () => {};
+    const componentWillUnmount = this.componentWillUnmount ? this.componentWillUnmount.bind(this) : () => {};
     this.componentWillUnmount = () => {
       this.dispose();
       componentWillUnmount();
     };
   }
+
+  public listener = (event: ProxyEvent) => {
+    if (this.isTrigger(event)) {
+      this.forceUpdate();
+    }
+  };
+
+  public dispose() {
+    if (this.propsProxy) {
+      releaseChildren(this.propsProxy);
+      this.propsProxy.__emitter__.off('event', this.listener);
+      this.propsProxy = undefined;
+    }
+  }
 }
 
 export const $ = (f: Function) => {
   class MyComponent<P = {}, S = {}> extends Component<P, S> {
-    render() {
+    public render() {
       return f(this.props);
     }
   }

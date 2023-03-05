@@ -1,4 +1,4 @@
-import EventEmitter = require('events');
+import EventEmitter from 'events';
 
 describe('index', () => {
   test('event emitter on and off', () => {

@@ -1,12 +1,12 @@
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import waitFor from 'wait-for-async';
 
-import {useProxy, autoRun} from '../src';
+import { useProxy, autoRun } from '../src';
 
 describe('autoRun', () => {
   test('default', () => {
     class Store {
-      greeting = 'Hello';
+      public greeting = 'Hello';
     }
     const store = useProxy(new Store());
     const greetings: string[] = [];
@@ -22,14 +22,14 @@ describe('autoRun', () => {
 
   test('debounce', async () => {
     class Store {
-      number = 0;
+      public number = 0;
     }
     const store = useProxy(new Store());
     const numbers: number[] = [];
     const autoRunner = autoRun(
       store,
       () => numbers.push(store.number),
-      (func: () => void) => debounce(func, 10, {leading: true, trailing: true})
+      (func: () => void) => debounce(func, 10, { leading: true, trailing: true }),
     );
     autoRunner.start();
     store.number = 1;
@@ -37,7 +37,7 @@ describe('autoRun', () => {
     store.number = 3;
     store.number = 4;
     expect(numbers).toEqual([0]);
-    await waitFor({interval: 20});
+    await waitFor({ interval: 20 });
     expect(numbers).toEqual([0, 4]);
   });
 });

@@ -1,9 +1,9 @@
-import {useProxy, autoRun} from '../src';
+import { useProxy, autoRun } from '../src';
 
 describe('autoRunDirty', () => {
   test('default', () => {
     class Store {
-      greeting = 'Hello';
+      public greeting = 'Hello';
     }
     const store = useProxy(new Store());
     const greetings: string[] = [];

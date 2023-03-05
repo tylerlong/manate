@@ -2,10 +2,9 @@
 
 The name `useProxy` was inspired by React [useState](https://reactjs.org/docs/hooks-intro.html).
 
-Just like `useState`, it is mainly designed to work with React applications. 
+Just like `useState`, it is mainly designed to work with React applications.
 
 `useProxy` is the successor of [SubX](https://github.com/tylerlong/subx), which is similar to MobX.
-
 
 ## What's the value of `useProxy`?
 
@@ -13,8 +12,7 @@ It allows you to maintain your app state in OOP style.
 I am not saying that OOP style is the best practice for React development.  
 But if do want to code your React app in OOP style, you should give this library a try.
 
-It supports TypeScript very well. 
-
+It supports TypeScript very well.
 
 ## Demo application
 
@@ -22,19 +20,17 @@ It supports TypeScript very well.
 
 [Source Code](https://github.com/tylerlong/use-proxy-demo-todomvc)
 
-
 ## Installation
 
 ```
 yarn add @tylerlong/use-proxy
 ```
 
-
 ## Usage
 
 ```ts
-import {useProxy} from '@tylerlong/use-proxy';
-import {Component} from '@tylerlong/use-proxy/build/react';
+import { useProxy } from '@tylerlong/use-proxy';
+import { Component } from '@tylerlong/use-proxy/lib/react';
 
 class Store {
   count = 0;
@@ -44,7 +40,7 @@ class Store {
 }
 const store = useProxy(new Store());
 
-class App extends Component<{store: Store}> {
+class App extends Component<{ store: Store }> {
   render() {
     const store = this.props.store;
     return (
@@ -60,9 +56,9 @@ class App extends Component<{store: Store}> {
 ### Functional React Component
 
 ```ts
-import {$} from '@tylerlong/use-proxy/build/react';
+import { $ } from '@tylerlong/use-proxy/lib/react';
 
-const App = $((props: {store: Store}) => {
+const App = $((props: { store: Store }) => {
   const store = props.store;
   return (
     <div>
@@ -76,8 +72,8 @@ const App = $((props: {store: Store}) => {
 ## Event Emitter
 
 ```ts
-import {useProxy} from '@tylerlong/use-proxy';
-import {ProxyEvent} from '@tylerlong/use-proxy/build/models';
+import { useProxy } from '@tylerlong/use-proxy';
+import { ProxyEvent } from '@tylerlong/use-proxy/lib/models';
 
 class Store {}
 const store = useProxy(new Store());
@@ -91,7 +87,6 @@ store.__emitter__.on('event', (event: ProxyEvent) => {
 });
 ```
 
-
 ## Utility methods
 
 ### `run`
@@ -99,10 +94,7 @@ store.__emitter__.on('event', (event: ProxyEvent) => {
 The signature of `run` is
 
 ```ts
-function run<T>(
-  proxy: ProxyType<T>,
-  func: Function
-): [result: any, isTrigger: (event: ProxyEvent) => boolean]
+function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean];
 ```
 
 - `proxy` is generated from `useProxy` method: `const proxy = useProxy(store)`.
@@ -111,13 +103,12 @@ function run<T>(
 - `isTrigger` is a function which returns `true` if an `event` will "trigger" `func()` to have a different result.
   - when it returns true, most likely it's time to run `func()` again(because you will get a different result from last time).
 
-When you invoke `run(proxy, func)`, `func()` is invoked immediately. 
+When you invoke `run(proxy, func)`, `func()` is invoked immediately.
 You can subscribe to `proxy.__emitter__` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
 
 For a sample usage of `run`, please check [./src/react.ts](./src/react.ts).
 
 Another example is the implementation of the `autoRun` utility method. You may find it in [./src/index.ts](./src/index.ts).
-
 
 ### `autoRun`
 
@@ -127,8 +118,8 @@ The signature of `autoRun` is
 function autoRun<T>(
   proxy: ProxyType<T>,
   func: () => void,
-  decorator?: (func: () => void) => () => void
-): {start: () => void; stop: () => void}
+  decorator?: (func: () => void) => () => void,
+): { start: () => void; stop: () => void };
 ```
 
 - `proxy` is generated from `useProxy` method: `const proxy = useProxy(store)`.
@@ -142,13 +133,11 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
-
 ## Known issue
 
 - It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
 - You cannot proxy some built-in objects, such as `Set` & `Map`.
 - `run` and `autoRun` only support sync methods. for async methods, make sure that the async part is irrelevant because it won't be monitored.
-
 
 ## Todo
 
@@ -157,11 +146,10 @@ For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/aut
 - Support React Hooks https://reactjs.org/docs/hooks-intro.html
   - I think I mean function style react components
 - Native objects 会报错，比如说 `window.speechSynthesis.getVoices()`
-- `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的property不全。后来全了。但是新增的props并不被monitor。
-  - 一个workaround是把property的值设为null。
-    - 不设为undefined，因为json不支持，持久化会有问题。 不过这个问题和本项目无关
+- `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的 property 不全。后来全了。但是新增的 props 并不被 monitor。
+  - 一个 workaround 是把 property 的值设为 null。
+    - 不设为 undefined，因为 json 不支持，持久化会有问题。 不过这个问题和本项目无关
 - 如果有循环引用的结构，会报错 `Uncaught RangeError: Maximum call stack size exceeded`
-
 
 ## Notes
 
@@ -170,4 +158,4 @@ For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/aut
     - check the source code of `autoRun`.
 - rewrite some emitter.on to promise.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
-  - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync. 
+  - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.

@@ -1,10 +1,10 @@
-import {useProxy} from '../src';
+import { useProxy } from '../src';
 
 describe('plain objects', () => {
   test('default', () => {
     class Store {
-      _config = '{}';
-      get config() {
+      public _config = '{}';
+      public get config() {
         return JSON.parse(store._config || '{}');
       }
     }
@@ -18,7 +18,7 @@ describe('plain objects', () => {
 
   test('another way', () => {
     class Store {
-      config = {};
+      public config = {};
     }
     const store = useProxy(new Store());
     store.config = {

@@ -1,19 +1,19 @@
 import TestRenderer from 'react-test-renderer';
 import React from 'react';
 
-import {$} from '../src/react';
-import {useProxy} from '../src';
+import { $ } from '../src/react';
+import { useProxy } from '../src';
 
 class Store {
-  hanzi: Hanzi;
-  hanzis = [new Hanzi('刘'), new Hanzi('春'), new Hanzi('涛')];
+  public hanzi: Hanzi;
+  public hanzis = [new Hanzi('刘'), new Hanzi('春'), new Hanzi('涛')];
+  public index = 0;
 
-  constructor() {
+  public constructor() {
     this.hanzi = this.hanzis[0];
   }
 
-  index = 0;
-  changeHanzi() {
+  public changeHanzi() {
     this.index += 1;
     if (this.index > 2) {
       this.index = 0;
@@ -23,15 +23,15 @@ class Store {
 }
 
 class Hanzi {
-  hanzi: string;
-  constructor(hanzi: string) {
+  public hanzi: string;
+  public constructor(hanzi: string) {
     this.hanzi = hanzi;
   }
 }
 
 const store = useProxy(new Store());
 
-const App = $((props: {store: Store}) => {
+const App = $((props: { store: Store }) => {
   const store = props.store;
   return (
     <>
@@ -43,8 +43,8 @@ const App = $((props: {store: Store}) => {
 
 const renderHistory: string[] = [];
 
-const HanziComponent = $((props: {hanzi: Hanzi}) => {
-  const {hanzi} = props;
+const HanziComponent = $((props: { hanzi: Hanzi }) => {
+  const { hanzi } = props;
   renderHistory.push(hanzi.hanzi);
   return <>{hanzi.hanzi}</>;
 });
@@ -53,8 +53,7 @@ describe('React', () => {
   test('default', async () => {
     const renderer = TestRenderer.create(<App store={store} />);
     const changeButton = renderer.root.find(
-      el =>
-        el.type === 'button' && el.children && el.children[0] === 'Change Hanzi'
+      (el) => el.type === 'button' && el.children && el.children[0] === 'Change Hanzi',
     );
 
     expect(renderHistory).toEqual(['刘']);

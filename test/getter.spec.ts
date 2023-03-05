@@ -1,5 +1,5 @@
-import {useProxy} from '../src';
-import {ProxyEvent} from '../src/models';
+import { useProxy } from '../src';
+import { ProxyEvent } from '../src/models';
 
 describe('getter', () => {
   test('getter', () => {
@@ -15,8 +15,8 @@ describe('getter', () => {
     });
     if (proxy.visibleTodos) {
       expect(events).toEqual([
-        {name: 'get', paths: ['visibility']},
-        {name: 'get', paths: ['visibleTodos']},
+        { name: 'get', paths: ['visibility'] },
+        { name: 'get', paths: ['visibleTodos'] },
       ]);
     }
   });
@@ -33,14 +33,14 @@ describe('getter', () => {
       events.push(event);
     });
     if (proxy.visibleTodos()) {
-      expect(events).toEqual([{name: 'get', paths: ['visibility']}]);
+      expect(events).toEqual([{ name: 'get', paths: ['visibility'] }]);
     }
   });
 
   test('JS Proxy normal method', () => {
     class Store {
-      hidden = false;
-      visible() {
+      public hidden = false;
+      public visible() {
         return !this.hidden;
       }
     }
@@ -57,8 +57,8 @@ describe('getter', () => {
 
   test('JS Proxy getter method', () => {
     class Store {
-      hidden = false;
-      get visible() {
+      public hidden = false;
+      public get visible() {
         return !this.hidden;
       }
     }

@@ -18,12 +18,13 @@ describe('simplify gets', () => {
       'todoLists+1+todoItems',
       'todoLists+1+todoItems+1',
     ];
-    const simplifyGets = (gets: string[]): string[] => {
+    const simplifyGets = (_gets: string[]): string[] => {
+      let gets = _gets;
       gets = [...new Set(gets)].sort((s1, s2) => s2.length - s1.length);
       const result: string[] = [];
       while (gets.length > 0) {
         const str: string = gets.pop()!;
-        if (!gets.some(item => item.startsWith(str))) {
+        if (!gets.some((item) => item.startsWith(str))) {
           result.push(str);
         }
       }
@@ -36,7 +37,7 @@ describe('simplify gets', () => {
         'todoLists+0+todoItems+1',
         'todoLists+1+todoItems+0',
         'todoLists+1+todoItems+1',
-      ].sort()
+      ].sort(),
     );
   });
 });

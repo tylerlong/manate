@@ -1,57 +1,50 @@
-import {EventEmitter} from 'stream';
+import { EventEmitter } from 'stream';
 
 export class ProxyEvent {
-  name: 'get' | 'set';
-  paths: string[];
+  public name: 'get' | 'set';
+  public paths: string[];
 
-  constructor(name: 'get' | 'set', paths: string[]) {
+  public constructor(name: 'get' | 'set', paths: string[]) {
     this.name = name;
     this.paths = paths;
   }
 
-  get pathString() {
+  public get pathString() {
     return this.paths.join('+');
   }
 
-  toString() {
+  public toString() {
     return `${this.name}: ${this.pathString}`;
   }
 }
 
 export class Child {
-  emitter: EventEmitter;
-  listener: (event: ProxyEvent) => void;
+  public emitter: EventEmitter;
+  public listener: (event: ProxyEvent) => void;
 
-  constructor(
-    path: string,
-    emitter: EventEmitter,
-    parentEmitter: EventEmitter
-  ) {
+  public constructor(path: string, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ProxyEvent) => {
-      parentEmitter.emit(
-        'event',
-        new ProxyEvent(event.name, [path, ...event.paths])
-      );
+      parentEmitter.emit('event', new ProxyEvent(event.name, [path, ...event.paths]));
     };
     this.emitter.on('event', this.listener);
   }
 
-  release() {
+  public release() {
     this.emitter.off('event', this.listener);
   }
 }
 
 export class Children {
-  children: {[path: string]: Child} = {};
+  public children: { [path: string]: Child } = {};
 
-  addChild(path: string, emitter: EventEmitter, parentEmitter: EventEmitter) {
+  public addChild(path: string, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.releaseChild(path);
     const child = new Child(path, emitter, parentEmitter);
     this.children[path] = child;
   }
 
-  releaseChild(path: string) {
+  public releaseChild(path: string) {
     const child = this.children[path];
     if (child) {
       child.release();
@@ -59,7 +52,7 @@ export class Children {
     }
   }
 
-  releasesAll() {
+  public releasesAll() {
     for (const path of Object.keys(this.children)) {
       this.releaseChild(path);
     }

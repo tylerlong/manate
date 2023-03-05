@@ -1,17 +1,13 @@
-import {useProxy} from '../src';
-import {ProxyEvent} from '../src/models';
+import { useProxy } from '../src';
+import { ProxyEvent } from '../src/models';
 
 describe('array', () => {
   test('proxy set length', () => {
     const a: number[] = [];
     const keys: string[] = [];
     const proxy = new Proxy<number[]>(a, {
-      set: (
-        target: object,
-        propertyKey: string,
-        value: any,
-        receiver?: any
-      ) => {
+      // eslint-disable-next-line max-params
+      set: (target: object, propertyKey: string, value: any, receiver?: any) => {
         keys.push(propertyKey);
         Reflect.set(target, propertyKey, value, receiver);
         return true;
@@ -23,7 +19,7 @@ describe('array', () => {
 
   test('useProxy set length', () => {
     class Store {
-      todos: string[] = [];
+      public todos: string[] = [];
     }
     const proxy = useProxy(new Store());
     const events: ProxyEvent[] = [];
@@ -33,6 +29,6 @@ describe('array', () => {
       }
     });
     proxy.todos.push('hello');
-    expect(events.map(e => e.pathString)).toEqual(['todos+0', 'todos+length']);
+    expect(events.map((e) => e.pathString)).toEqual(['todos+0', 'todos+length']);
   });
 });
