@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useProxy, run, releaseChildren, ProxyType } from '.';
 import { ProxyEvent } from './models';
@@ -44,11 +44,19 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   }
 }
 
-export const $ = (f: Function) => {
-  class MyComponent<P = {}, S = {}> extends Component<P, S> {
-    public render() {
-      return f(this.props);
-    }
-  }
-  return MyComponent;
+export const auto = (render, props) => {
+  const proxy = useProxy(props);
+  const [result, isTrigger] = run(proxy, render);
+  const [_, refresh] = useState(false);
+  useEffect(() => {
+    const listener = (event) => {
+      if (isTrigger(event)) {
+        proxy.__emitter__.off('event', listener);
+        releaseChildren(proxy);
+        refresh(!_);
+      }
+    };
+    proxy.__emitter__.on('event', listener);
+  });
+  return result;
 };
