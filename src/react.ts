@@ -44,7 +44,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   }
 }
 
-export const auto = (render, props) => {
+export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const proxy = useProxy(props);
   const [result, isTrigger] = run(proxy, render);
   const [_, refresh] = useState(false);

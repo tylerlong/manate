@@ -53,21 +53,26 @@ class App extends Component<{ store: Store }> {
 }
 ```
 
-### Functional React Component
+### Functional React Component & React Hooks
 
 ```ts
-import { $ } from '@tylerlong/use-proxy/lib/react';
+import { auto } from '@tylerlong/use-proxy/lib/react';
 
-const App = $((props: { store: Store }) => {
-  const store = props.store;
-  return (
-    <div>
-      <span>{store.count}</span>
-      <button onClick={() => store.increase()}>+</button>
-    </div>
+const App = (props: { store: Store }) => {
+  const { store } = props;
+  const render = () => (
+    <Space>
+      <Button onClick={() => store.decrease()}>-</Button>
+      {store.count}
+      <Button onClick={() => store.increase()}>+</Button>
+    </Space>
   );
-});
+  return auto(render, props);
+};
 ```
+
+It's fully compatible with `useState` and `useEffect`.
+A fully working demo is [here](https://github.com/tylerlong/use-proxy-demo-counter).
 
 ## Event Emitter
 
