@@ -51,14 +51,12 @@ export const auto = (render: () => JSX.Element | string, props): JSX.Element => 
   useEffect(() => {
     const listener = (event) => {
       if (isTrigger(event)) {
+        proxy.__emitter__.off('event', listener);
+        releaseChildren(proxy);
         refresh(!_);
       }
     };
     proxy.__emitter__.on('event', listener);
-    return () => {
-      proxy.__emitter__.off('event', listener);
-      releaseChildren(proxy);
-    };
   });
   return result;
 };
