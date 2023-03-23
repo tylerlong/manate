@@ -4,7 +4,7 @@ import { ProxyEvent, Children } from './models';
 
 const childrenKey = '&*()_+=-~`!@#$%^';
 
-export type ProxyType<T> = T & { __emitter__: EventEmitter };
+export type ProxyType<T> = T & { $e: EventEmitter };
 
 export const canProxy = (obj: object) => typeof obj === 'object' && obj !== null;
 
@@ -17,7 +17,7 @@ export const releaseChildren = (obj: object): void => {
 
 export function useProxy<T extends object>(target: T): ProxyType<T> {
   // return if the object is already a proxy
-  if ((target as ProxyType<T>).__emitter__) {
+  if ((target as ProxyType<T>).$e) {
     return target as ProxyType<T>;
   }
 
@@ -31,13 +31,13 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
       return value;
     }
     const childProxy = useProxy(value);
-    children.addChild(path, childProxy.__emitter__, emitter);
+    children.addChild(path, childProxy.$e, emitter);
     return childProxy;
   };
 
   const proxy = new Proxy(target, {
     get: (target: T, path: string, receiver?: T) => {
-      if (path === '__emitter__') {
+      if (path === '$e') {
         return emitter;
       }
       if (path === childrenKey) {
@@ -77,18 +77,18 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
 
 export function monitor(props: { [key: string]: ProxyType<any> }, func: Function): [result: any, getPaths: string[]] {
   const events: ProxyEvent[] = [];
-  const proxies = Object.entries(props).filter((entry) => !!entry[1].__emitter__);
+  const proxies = Object.entries(props).filter((entry) => !!entry[1].$e);
   const cache: { [key: string]: (event: ProxyEvent) => void } = {};
   for (const [k, v] of proxies) {
     cache[k] = (event: ProxyEvent) => {
       event.paths.unshift(k);
       events.push(event);
     };
-    v.__emitter__.on('event', cache[k]);
+    v.$e.on('event', cache[k]);
   }
   const result = func();
   for (const [k, v] of proxies) {
-    v.__emitter__.off('event', cache[k]);
+    v.$e.off('event', cache[k]);
   }
   const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
   return [result, getPaths];
@@ -97,9 +97,9 @@ export function monitor(props: { [key: string]: ProxyType<any> }, func: Function
 export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean] {
   const events: ProxyEvent[] = [];
   const listener = (event: ProxyEvent) => events.push(event);
-  proxy.__emitter__.on('event', listener);
+  proxy.$e.on('event', listener);
   const result = func();
-  proxy.__emitter__.off('event', listener);
+  proxy.$e.off('event', listener);
   const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
   const isTrigger = (event: ProxyEvent): boolean => {
     if (event.name === 'set') {
@@ -122,9 +122,9 @@ export function autoRun<T>(
   let isTrigger: (event: ProxyEvent) => boolean = () => true;
   const listener = (event: ProxyEvent) => {
     if (isTrigger(event)) {
-      proxy.__emitter__.off('event', listener);
+      proxy.$e.off('event', listener);
       runOnce();
-      proxy.__emitter__.on('event', listener);
+      proxy.$e.on('event', listener);
     }
   };
   let runOnce = () => {
@@ -136,8 +136,8 @@ export function autoRun<T>(
   return {
     start: () => {
       runOnce();
-      proxy.__emitter__.on('event', listener);
+      proxy.$e.on('event', listener);
     },
-    stop: () => proxy.__emitter__.off('event', listener),
+    stop: () => proxy.$e.off('event', listener),
   };
 }

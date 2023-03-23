@@ -32,9 +32,9 @@ describe('OOP', () => {
     const proxy = useProxy(store);
     const events: ProxyEvent[] = [];
     const listener = (event: ProxyEvent) => events.push(event);
-    proxy.__emitter__.on('event', listener);
+    proxy.$e.on('event', listener);
     proxy.todoLists[0].todoItems[0].complete = true;
-    proxy.__emitter__.off('event', listener);
+    proxy.$e.off('event', listener);
     expect(events.map((event) => event.toString())).toEqual([
       'get: todoLists',
       'get: todoLists+0',

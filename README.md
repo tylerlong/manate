@@ -84,10 +84,10 @@ class Store {}
 const store = useProxy(new Store());
 ```
 
-`store.__emitter__` is an `EventEmitter` which will emit events about read/write to store. You can subscribe to events:
+`store.$e` is an `EventEmitter` which will emit events about read/write to store. You can subscribe to events:
 
 ```ts
-store.__emitter__.on('event', (event: ProxyEvent) => {
+store.$e.on('event', (event: ProxyEvent) => {
   // do something with event
 });
 ```
@@ -109,7 +109,7 @@ function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (
   - when it returns true, most likely it's time to run `func()` again(because you will get a different result from last time).
 
 When you invoke `run(proxy, func)`, `func()` is invoked immediately.
-You can subscribe to `proxy.__emitter__` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
+You can subscribe to `proxy.$e` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
 
 For a sample usage of `run`, please check [./src/react.ts](./src/react.ts).
 
@@ -216,12 +216,13 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - 如果有循环引用的结构，会报错 `Uncaught RangeError: Maximum call stack size exceeded`
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
-- Rename `__emitter__` to `$e`
+- optimize `monitor` -> rename to `supervise`
 
 ## Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
   - you also don't have to `on` and `off` again and again. Sometimes you just `on` and let it on until user explicit it request it to be off.
+- `run` and `autoRun` only support sync methods. for async methods, make sure that the async part is irrelevant because it won't be monitored.
 - rewrite some emitter.on to promise.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.

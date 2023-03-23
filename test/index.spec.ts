@@ -5,7 +5,7 @@ describe('index', () => {
   test('default', () => {
     const proxy = useProxy({ a: 'hello', b: { c: 'world' } });
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       events.push(event);
     });
     proxy.a = 'world';
@@ -19,7 +19,7 @@ describe('index', () => {
 
   test('subscribe to sub prop', () => {
     const proxy = useProxy({ a: 'hello', b: { c: 'world' } });
-    const emitter = (proxy.b as any).__emitter__;
+    const emitter = (proxy.b as any).$e;
     const events: ProxyEvent[] = [];
     emitter.on('event', (event: ProxyEvent) => {
       events.push(event);
@@ -35,7 +35,7 @@ describe('index', () => {
     }
     const proxy = useProxy<A>({});
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       events.push(event);
     });
     proxy.b = { c: 'hello' };
@@ -53,7 +53,7 @@ describe('index', () => {
     }
     const proxy = useProxy<A>({});
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       events.push(event);
     });
     proxy.b = { c: 'hello' };

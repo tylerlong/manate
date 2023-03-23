@@ -23,7 +23,7 @@ describe('array', () => {
     }
     const proxy = useProxy(new Store());
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       if (event.name === 'set') {
         events.push(event);
       }

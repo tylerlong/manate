@@ -10,7 +10,7 @@ describe('getter', () => {
       },
     });
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       events.push(event);
     });
     if (proxy.visibleTodos) {
@@ -29,7 +29,7 @@ describe('getter', () => {
       },
     });
     const events: ProxyEvent[] = [];
-    proxy.__emitter__.on('event', (event: ProxyEvent) => {
+    proxy.$e.on('event', (event: ProxyEvent) => {
       events.push(event);
     });
     if (proxy.visibleTodos()) {

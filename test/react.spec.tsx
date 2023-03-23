@@ -30,16 +30,16 @@ class App extends Component<{ store: Store }> {
 
 describe('React', () => {
   test('default', async () => {
-    expect(store.__emitter__.listenerCount('event')).toBe(0);
+    expect(store.$e.listenerCount('event')).toBe(0);
     const renderer = TestRenderer.create(<App store={store} />);
-    expect(store.__emitter__.listenerCount('event')).toBe(1);
+    expect(store.$e.listenerCount('event')).toBe(1);
     const minusButton = renderer.root.find((el) => el.type === 'button' && el.children && el.children[0] === '+');
     minusButton.props.onClick();
-    expect(store.__emitter__.listenerCount('event')).toBe(1);
+    expect(store.$e.listenerCount('event')).toBe(1);
     minusButton.props.onClick();
-    expect(store.__emitter__.listenerCount('event')).toBe(1);
+    expect(store.$e.listenerCount('event')).toBe(1);
     minusButton.props.onClick();
-    expect(store.__emitter__.listenerCount('event')).toBe(1);
+    expect(store.$e.listenerCount('event')).toBe(1);
     const span = renderer.root.find((el) => el.type === 'span');
     expect(store.count).toEqual(parseInt(span.children[0] as string, 10));
     expect(store.count).toBe(3);

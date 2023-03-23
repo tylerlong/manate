@@ -13,7 +13,7 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     });
-    expect(store.config.__emitter__).toBeUndefined();
+    expect(store.config.$e).toBeUndefined();
   });
 
   test('another way', () => {
@@ -25,9 +25,9 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     };
-    expect(store.__emitter__).toBeDefined();
-    expect((store.config as any).__emitter__).toBeDefined();
+    expect(store.$e).toBeDefined();
+    expect((store.config as any).$e).toBeDefined();
     const plainObject = JSON.parse(JSON.stringify(store.config));
-    expect(plainObject.__emitter__).toBeUndefined();
+    expect(plainObject.$e).toBeUndefined();
   });
 });

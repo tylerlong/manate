@@ -17,7 +17,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
       this.propsProxy = useProxy(this.props);
       const [result, isTrigger] = run(this.propsProxy, render);
       this.isTrigger = isTrigger;
-      this.propsProxy.__emitter__.on('event', this.listener);
+      this.propsProxy.$e.on('event', this.listener);
       return result;
     };
 
@@ -38,7 +38,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   public dispose() {
     if (this.propsProxy) {
       releaseChildren(this.propsProxy);
-      this.propsProxy.__emitter__.off('event', this.listener);
+      this.propsProxy.$e.off('event', this.listener);
       this.propsProxy = undefined;
     }
   }
@@ -48,7 +48,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const [result, getPaths] = monitor(props, render);
   const [, refresh] = useState(false);
   useEffect(() => {
-    const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter((entry) => !!entry[1].__emitter__);
+    const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter((entry) => !!entry[1].$e);
     const cache: { [key: string]: (event: ProxyEvent) => void } = {};
     for (const [k, v] of proxies) {
       cache[k] = (event: ProxyEvent) => {
@@ -59,11 +59,11 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
           }
         }
       };
-      v.__emitter__.on('event', cache[k]);
+      v.$e.on('event', cache[k]);
     }
     return () => {
       for (const [k, v] of proxies) {
-        v.__emitter__.off('event', cache[k]);
+        v.$e.off('event', cache[k]);
       }
     };
   }, []);
