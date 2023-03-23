@@ -45,7 +45,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 }
 
 export const auto = (render: () => JSX.Element, props): JSX.Element => {
-  const [result, getPaths] = monitor(render, props);
+  const [result, getPaths] = monitor(props, render);
   const [, refresh] = useState(false);
   useEffect(() => {
     const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter((entry) => !!entry[1].__emitter__);
