@@ -52,9 +52,11 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
     const cache: { [key: string]: (event: ProxyEvent) => void } = {};
     for (const [k, v] of proxies) {
       cache[k] = (event: ProxyEvent) => {
-        event.paths.unshift(k);
-        if (getPaths.some((getPath) => getPath.startsWith(event.pathString))) {
-          refresh((r) => !r);
+        if (event.name === 'set') {
+          event.paths.unshift(k);
+          if (getPaths.some((getPath) => getPath.startsWith(event.pathString))) {
+            refresh((r) => !r);
+          }
         }
       };
       v.__emitter__.on('event', cache[k]);

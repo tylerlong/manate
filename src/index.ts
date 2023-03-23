@@ -97,7 +97,7 @@ export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTri
 
 export function monitor(func: Function, props: { [key: string]: ProxyType<any> }): [result: any, getPaths: string[]] {
   const events: ProxyEvent[] = [];
-  const proxies = Object.entries(props).filter((entry) => entry[1].__emitter__);
+  const proxies = Object.entries(props).filter((entry) => !!entry[1].__emitter__);
   const cache: { [key: string]: (event: ProxyEvent) => void } = {};
   for (const [k, v] of proxies) {
     cache[k] = (event: ProxyEvent) => {
