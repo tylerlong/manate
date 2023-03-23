@@ -46,17 +46,15 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 
 export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const [result, getPaths] = monitor(render, props);
-  const [_, refresh] = useState(false);
+  const [, refresh] = useState(false);
   useEffect(() => {
-    const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter(
-      (entry) => '__emitter__' in entry[1],
-    );
+    const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter((entry) => !!entry[1].__emitter__);
     const cache: { [key: string]: (event: ProxyEvent) => void } = {};
     for (const [k, v] of proxies) {
       cache[k] = (event: ProxyEvent) => {
         event.paths.unshift(k);
         if (getPaths.some((getPath) => getPath.startsWith(event.pathString))) {
-          refresh(!_);
+          refresh((r) => !r);
         }
       };
       v.__emitter__.on('event', cache[k]);
