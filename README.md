@@ -146,10 +146,7 @@ In theory, you may also use it in a context without React.
 The signature of `monitor` is:
 
 ```ts
-function monitor(
-  props: { [key: string]: ProxyType<any> }, 
-  func: Function
-): [result: any, getPaths: string[]];
+function monitor(props: { [key: string]: ProxyType<any> }, func: Function): [result: any, getPaths: string[]];
 ```
 
 - `props` is the props that a React component receives, it could also be any object.
@@ -158,22 +155,49 @@ function monitor(
 - `getPaths` is the paths that were read (a.k.a get) during the execution of `func()`.
 
 When is it useful? It's kind of low-level compared to `autoRun` and `run`.
-You may monitor the events of `props`, whenever there is a `set` event,you can check `getPaths` to see if they are affected. 
+You may monitor the events of `props`, whenever there is a `set` event,you can check `getPaths` to see if they are affected.
 If yes, then you may take some actions, such as call the `func` again.
 
 For a sample usage of `monitor`, please check the implemetation of `auto` in `./src/react.ts` file.
 
-#### Question #1: why not use `autoRun` to support React hooks? 
+#### Question #1: why not use `autoRun` to support React hooks?
 
-Well, React decides when to invoke the component function, we cannot "autoRun" it. 
-If we autoRun it, we don't have a way to tell React to render the result.
+Well, actually it is possible and implementation is even shorter and simpler:
 
-#### Question #1: why not use `run` to support React hooks? 
+```ts
+const auto = (render, props): JSX.Element | null => {
+  const [r, refresh] = useState(null);
+  useEffect(() => {
+    const proxy = useProxy(props);
+    const { start, stop } = autoRun(proxy, () => {
+      refresh(render());
+    });
+    start();
+    return () => {
+      stop();
+      releaseChildren(proxy);
+    };
+  }, []);
+  return r;
+};
+```
 
-`run` requires a `ProxyType<T>` object as the first parameter. React `props` is not a `ProxyType<T>`.
-We need to turn `props` into `ProxyType<T>` by `useProxy(props)`.
+**大的问题**是这个：https://github.com/tylerlong/use-proxy-react-demo/blob/main/src/index.tsx。
+也就是上游 component 是没办法调用`render`的，因为`render`隐藏在了 `useEffect` 里面。于是上游的 `useState` 就彻底废掉了。
 
-Run requires a 
+就算整个项目都不用useState，也还是有下面这个问题：
+But there is an issue: React `StrictMode` doesn't works for us any more.
+Because StrictMode will try to do double rendering. However, we only invoke `render` in `useEffect`.
+So double rendering will not invoke `render` at all, thus it cannot help us to detect non-pure function issues.
+
+那么能不能在`useEffect`之外执行`autoRun`呢？不行，因为`autoRun` by design 应该是一个 long running 的东西，有副作用。每次`render`都执行`autoRun`不合适。
+其实 `run` 比它更合适。下面具体分析
+
+#### Question #2: why not use `run` to support React hooks?
+
+参考上面对 `autoRun` 的分析，如果我们想要支持上游 component 的 `useState` 以及 `strictMode`, 那么必须要在`useEffect`之外执行`render`。
+但是`run`要求有一个`proxy`对象。构建这样一个`proxy`对象有副作用。并且什么时候 dispose 副作用呢？这个问题回答不好就不能用`run`。
+可不可以不构建`proxy`就执行`render`呢？ 可以，用 `monitor` 方法。也就是当前实现采用的方法。
 
 ## Known issue
 
