@@ -138,7 +138,7 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
-### monitor
+### `monitor`
 
 This one was originally designed to support React hooks.
 In theory, you may also use it in a context without React.
@@ -199,12 +199,6 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 但是`run`要求有一个`proxy`对象。构建这样一个`proxy`对象有副作用。并且什么时候 dispose 副作用呢？这个问题回答不好就不能用`run`。
 可不可以不构建`proxy`就执行`render`呢？ 可以，用 `monitor` 方法。也就是当前实现采用的方法。
 
-## Known issue
-
-- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
-- You cannot proxy some built-in objects, such as `Set` & `Map`.
-- `run` and `autoRun` only support sync methods. for async methods, make sure that the async part is irrelevant because it won't be monitored.
-
 ## Todo
 
 - cache data for getter functions to make it faster, just like what I did in SubX project
@@ -218,7 +212,7 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
 - optimize `monitor` -> rename to `supervise`
 
-## Notes
+## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
   - you also don't have to `on` and `off` again and again. Sometimes you just `on` and let it on until user explicit it request it to be off.
@@ -226,3 +220,8 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - rewrite some emitter.on to promise.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
+
+## Known limitations
+
+- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
+- It doesn't work with some built-in objects, such as `Set` & `Map`.

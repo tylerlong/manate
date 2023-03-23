@@ -2,17 +2,13 @@ import { EventEmitter } from 'events';
 
 import { ProxyEvent, Children } from './models';
 
-const childrenKey = '&*()_+=-~`!@#$%^';
-
-export type ProxyType<T> = T & { $e: EventEmitter };
+export type ProxyType<T> = T & { $e: EventEmitter; $c: Children };
 
 export const canProxy = (obj: object) => typeof obj === 'object' && obj !== null;
 
 // release all children
-export const releaseChildren = (obj: object): void => {
-  if (canProxy(obj)) {
-    (Reflect.get(obj, childrenKey) as Children)?.releasesAll();
-  }
+export const releaseChildren = <T>(obj: ProxyType<T>): void => {
+  obj.$c.releasesAll();
 };
 
 export function useProxy<T extends object>(target: T): ProxyType<T> {
@@ -40,7 +36,7 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
       if (path === '$e') {
         return emitter;
       }
-      if (path === childrenKey) {
+      if (path === '$c') {
         return children;
       }
       const value = Reflect.get(target, path, receiver);
