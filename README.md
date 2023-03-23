@@ -138,6 +138,43 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
+### monitor
+
+This one was originally designed to support React hooks.
+In theory, you may also use it in a context without React.
+
+The signature of `monitor` is:
+
+```ts
+function monitor(
+  props: { [key: string]: ProxyType<any> }, 
+  func: Function
+): [result: any, getPaths: string[]];
+```
+
+- `props` is the props that a React component receives, it could also be any object.
+- `func` is a function to monitor. In context of React, `func` should return `JSX.Element`.
+- `result` is the result of `func()`
+- `getPaths` is the paths that were read (a.k.a get) during the execution of `func()`.
+
+When is it useful? It's kind of low-level compared to `autoRun` and `run`.
+You may monitor the events of `props`, whenever there is a `set` event,you can check `getPaths` to see if they are affected. 
+If yes, then you may take some actions, such as call the `func` again.
+
+For a sample usage of `monitor`, please check the implemetation of `auto` in `./src/react.ts` file.
+
+#### Question #1: why not use `autoRun` to support React hooks? 
+
+Well, React decides when to invoke the component function, we cannot "autoRun" it. 
+If we autoRun it, we don't have a way to tell React to render the result.
+
+#### Question #1: why not use `run` to support React hooks? 
+
+`run` requires a `ProxyType<T>` object as the first parameter. React `props` is not a `ProxyType<T>`.
+We need to turn `props` into `ProxyType<T>` by `useProxy(props)`.
+
+Run requires a 
+
 ## Known issue
 
 - It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
