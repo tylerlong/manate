@@ -95,6 +95,25 @@ export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTri
   return [result, isTrigger];
 }
 
+export function monitor(func: Function, props: { [key: string]: ProxyType<any> }): [result: any, getPaths: string[]] {
+  const events: ProxyEvent[] = [];
+  const proxies = Object.entries(props).filter((entry) => entry[1].__emitter__);
+  const cache: { [key: string]: (event: ProxyEvent) => void } = {};
+  for (const [k, v] of proxies) {
+    cache[k] = (event: ProxyEvent) => {
+      event.paths.unshift(k);
+      events.push(event);
+    };
+    v.__emitter__.on('event', cache[k]);
+  }
+  const result = func();
+  for (const [k, v] of proxies) {
+    v.__emitter__.off('event', cache[k]);
+  }
+  const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
+  return [result, getPaths];
+}
+
 export function autoRun<T>(
   proxy: ProxyType<T>,
   func: () => void,

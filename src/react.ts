@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useProxy, run, releaseChildren, ProxyType } from '.';
+import { useProxy, run, releaseChildren, ProxyType, monitor } from '.';
 import { ProxyEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
@@ -45,20 +45,27 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 }
 
 export const auto = (render: () => JSX.Element, props): JSX.Element => {
+  const [result, getPaths] = monitor(render, props);
   const [_, refresh] = useState(false);
   useEffect(() => {
-    const proxy = useProxy(props);
-    const [, isTrigger] = run(proxy, render);
-    const listener = (event) => {
-      if (isTrigger(event)) {
-        refresh(!_);
+    const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter(
+      (entry) => '__emitter__' in entry[1],
+    );
+    const cache: { [key: string]: (event: ProxyEvent) => void } = {};
+    for (const [k, v] of proxies) {
+      cache[k] = (event: ProxyEvent) => {
+        event.paths.unshift(k);
+        if (getPaths.some((getPath) => getPath.startsWith(event.pathString))) {
+          refresh(!_);
+        }
+      };
+      v.__emitter__.on('event', cache[k]);
+    }
+    return () => {
+      for (const [k, v] of proxies) {
+        v.__emitter__.off('event', cache[k]);
       }
     };
-    proxy.__emitter__.on('event', listener);
-    return () => {
-      proxy.__emitter__.off('event', listener);
-      releaseChildren(proxy);
-    };
-  });
-  return render();
+  }, []);
+  return result;
 };

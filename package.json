@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "version": "1.2.5",
+  "version": "1.2.6-beta1",
   "scripts": {
     "lint": "eslint --fix '**/*.{ts,tsx}' && prettier --write .",
     "test": "jest -w 1 test/$t",
