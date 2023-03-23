@@ -182,7 +182,7 @@ const auto = (render, props): JSX.Element | null => {
 };
 ```
 
-**大的问题**是这个：https://github.com/tylerlong/use-proxy-react-demo/blob/main/src/index.tsx。
+**大的问题**是这个：https://github.com/tylerlong/use-proxy-react-demo/blob/03ca533592a78a446d3688274c7b47059644dda3/src/index.tsx。
 也就是上游 component 是没办法调用`render`的，因为`render`隐藏在了 `useEffect` 里面。于是上游的 `useState` 就彻底废掉了。
 
 就算整个项目都不用useState，也还是有下面这个问题：
@@ -209,19 +209,19 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 
 - cache data for getter functions to make it faster, just like what I did in SubX project
 - When is `typeof path === 'symbol'`?
-- Support React Hooks https://reactjs.org/docs/hooks-intro.html
-  - I think I mean function style react components
 - Native objects 会报错，比如说 `window.speechSynthesis.getVoices()`
 - `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的 property 不全。后来全了。但是新增的 props 并不被 monitor。
   - 一个 workaround 是把 property 的值设为 null。
     - 不设为 undefined，因为 json 不支持，持久化会有问题。 不过这个问题和本项目无关
 - 如果有循环引用的结构，会报错 `Uncaught RangeError: Maximum call stack size exceeded`
+- Rename to "manate": manage + state
+- allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
+- Rename `__emitter__` to `$e`
 
 ## Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
   - you also don't have to `on` and `off` again and again. Sometimes you just `on` and let it on until user explicit it request it to be off.
-    - check the source code of `autoRun`.
 - rewrite some emitter.on to promise.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
