@@ -185,7 +185,7 @@ const auto = (render, props): JSX.Element | null => {
 **大的问题**是这个：https://github.com/tylerlong/use-proxy-react-demo/blob/03ca533592a78a446d3688274c7b47059644dda3/src/index.tsx。
 也就是上游 component 是没办法调用`render`的，因为`render`隐藏在了 `useEffect` 里面。于是上游的 `useState` 就彻底废掉了。
 
-就算整个项目都不用useState，也还是有下面这个问题：
+就算整个项目都不用 useState，也还是有下面这个问题：
 But there is an issue: React `StrictMode` doesn't works for us any more.
 Because StrictMode will try to do double rendering. However, we only invoke `render` in `useEffect`.
 So double rendering will not invoke `render` at all, thus it cannot help us to detect non-pure function issues.

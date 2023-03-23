@@ -1,15 +1,15 @@
 {
-  "license": "MIT",
-  "version": "1.2.6",
-  "scripts": {
-    "lint": "eslint --fix '**/*.{ts,tsx}' && prettier --write .",
-    "test": "jest -w 1 test/$t",
-    "prepublishOnly": "tsc && yarn test"
-  },
   "name": "@tylerlong/use-proxy",
+  "version": "1.2.6",
   "repository": "git@github.com:tylerlong/use-proxy.git",
+  "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "scripts": {
+    "lint": "eslint --fix '**/*.{ts,tsx}' && prettier --write . && sort-package-json",
+    "prepublishOnly": "tsc && yarn test",
+    "test": "jest -w 1 test/$t"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.191",
@@ -26,6 +26,7 @@
     "prettier": "^2.8.6",
     "react": "^18.2.0",
     "react-test-renderer": "^18.2.0",
+    "sort-package-json": "^2.4.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "ttpt": "^0.4.7",
