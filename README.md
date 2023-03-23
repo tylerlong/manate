@@ -211,6 +211,8 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
 - optimize `monitor` -> rename to `supervise`
+- support symbols as prop keys, since you can convert symbols to strings by `toString()`.
+- use symbol for children key.
 
 ## Development Notes
 
