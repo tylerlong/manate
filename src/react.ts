@@ -44,19 +44,21 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   }
 }
 
-export const auto = (render: () => JSX.Element | string, props): JSX.Element => {
-  const proxy = useProxy(props);
-  const [result, isTrigger] = run(proxy, render);
+export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const [_, refresh] = useState(false);
   useEffect(() => {
+    const proxy = useProxy(props);
+    const [, isTrigger] = run(proxy, render);
     const listener = (event) => {
       if (isTrigger(event)) {
-        proxy.__emitter__.off('event', listener);
-        releaseChildren(proxy);
         refresh(!_);
       }
     };
     proxy.__emitter__.on('event', listener);
+    return () => {
+      proxy.__emitter__.off('event', listener);
+      releaseChildren(proxy);
+    };
   });
-  return result;
+  return render();
 };
