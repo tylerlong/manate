@@ -202,7 +202,7 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 ## Todo
 
 - cache data for getter functions to make it faster, just like what I did in SubX project
-- When is `typeof path === 'symbol'`?
+  - computed property?
 - Native objects 会报错，比如说 `window.speechSynthesis.getVoices()`
 - `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的 property 不全。后来全了。但是新增的 props 并不被 monitor。
   - 一个 workaround 是把 property 的值设为 null。
