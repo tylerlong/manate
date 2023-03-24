@@ -210,6 +210,7 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - 如果有循环引用的结构，会报错 `Uncaught RangeError: Maximum call stack size exceeded`
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
+  - pretty hard
 - optimize path checking code
   - use set to check prefix.
   - `getPaths.some((getPath) => getPath.startsWith(setPath))` is slow. Put all prefixes in a set
