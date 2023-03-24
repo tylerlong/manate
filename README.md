@@ -216,7 +216,7 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
   - `getPaths.some((getPath) => getPath.startsWith(setPath))` is slow. Put all prefixes in a set
 - rename `mnitor` to `supervise`
 - support symbols as prop keys, since you can convert symbols to strings by `toString()`.
-- use symbol for children key.
+- use symbol for children key. symbol can make sure that there is no conflict.
 
 ## Development Notes
 
