@@ -2,15 +2,15 @@ import { EventEmitter } from 'stream';
 
 export class ProxyEvent {
   public name: 'get' | 'set';
-  public paths: string[];
+  public paths: PropertyKey[];
 
-  public constructor(name: 'get' | 'set', paths: string[]) {
+  public constructor(name: 'get' | 'set', paths: PropertyKey[]) {
     this.name = name;
     this.paths = paths;
   }
 
   public get pathString() {
-    return this.paths.join('+');
+    return this.paths.map((k) => k.toString()).join('+');
   }
 
   public toString() {
@@ -22,7 +22,7 @@ export class Child {
   public emitter: EventEmitter;
   public listener: (event: ProxyEvent) => void;
 
-  public constructor(path: string, emitter: EventEmitter, parentEmitter: EventEmitter) {
+  public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ProxyEvent) => {
       parentEmitter.emit('event', new ProxyEvent(event.name, [path, ...event.paths]));
@@ -36,15 +36,15 @@ export class Child {
 }
 
 export class Children {
-  public children: { [path: string]: Child } = {};
+  public children: { [path: PropertyKey]: Child } = {};
 
-  public addChild(path: string, emitter: EventEmitter, parentEmitter: EventEmitter) {
+  public addChild(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.releaseChild(path);
     const child = new Child(path, emitter, parentEmitter);
     this.children[path] = child;
   }
 
-  public releaseChild(path: string) {
+  public releaseChild(path: PropertyKey) {
     const child = this.children[path];
     if (child) {
       child.release();

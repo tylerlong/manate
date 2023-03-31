@@ -2,13 +2,15 @@ import { EventEmitter } from 'events';
 
 import { ProxyEvent, Children } from './models';
 
-export type ProxyType<T> = T & { $e: EventEmitter; $c: Children };
+export type ProxyType<T> = T & { $e: EventEmitter };
 
 export const canProxy = (obj: object) => typeof obj === 'object' && obj !== null;
 
+const childrenKey = Symbol('children');
+
 // release all children
 export const releaseChildren = <T>(obj: ProxyType<T>): void => {
-  obj.$c.releasesAll();
+  obj[childrenKey].releasesAll();
 };
 
 export function useProxy<T extends object>(target: T): ProxyType<T> {
@@ -22,7 +24,7 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
   const children = new Children();
 
   // make child a proxy and add it to children
-  const proxyChild = (path: string, value: any) => {
+  const proxyChild = (path: PropertyKey, value: any) => {
     if (!canProxy(value)) {
       return value;
     }
@@ -32,21 +34,21 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
   };
 
   const proxy = new Proxy(target, {
-    get: (target: T, path: string, receiver?: T) => {
+    get: (target: T, path: PropertyKey, receiver?: T) => {
       if (path === '$e') {
         return emitter;
       }
-      if (path === '$c') {
+      if (path === childrenKey) {
         return children;
       }
       const value = Reflect.get(target, path, receiver);
-      if (typeof value !== 'function' && typeof path !== 'symbol') {
+      if (typeof value !== 'function') {
         emitter.emit('event', new ProxyEvent('get', [path]));
       }
       return value;
     },
     // eslint-disable-next-line max-params
-    set: (target: T, path: string, value: any, receiver?: T): boolean => {
+    set: (target: T, path: PropertyKey, value: any, receiver?: T): boolean => {
       // no assign object to itself, doesn't make sense
       // array.length assign oldValue === value, strange
       if (canProxy(value) && value === Reflect.get(target, path)) {
@@ -55,9 +57,7 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       Reflect.set(target, path, proxyChild(path, value), receiver);
-      if (typeof path !== 'symbol') {
-        emitter.emit('event', new ProxyEvent('set', [path]));
-      }
+      emitter.emit('event', new ProxyEvent('set', [path]));
       return true;
     },
   });
