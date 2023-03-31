@@ -1,36 +1,31 @@
-# useProxy
+# manate
 
-The name `useProxy` was inspired by React [useState](https://reactjs.org/docs/hooks-intro.html).
+manate is short for "manage state". It is the most straightforward way to manage global state in React.
 
-Just like `useState`, it is mainly designed to work with React applications.
-
-`useProxy` is the successor of [SubX](https://github.com/tylerlong/subx), which is similar to MobX.
-
-## What's the value of `useProxy`?
-
-It allows you to maintain your app state in OOP style.  
-I am not saying that OOP style is the best practice for React development.  
-But if do want to code your React app in OOP style, you should give this library a try.
+## What's the value of manate?
 
 It supports TypeScript very well.
 
-## Demo application
+It is very straightforward to use. You don't need to learn any new concepts.
 
-[TodoMVC powered by UseProxy](https://chuntaoliu.com/use-proxy-demo-todomvc/)
+It allows you to maintain your app state in OOP style.  
+I am not saying that OOP style is the best practice for state management.
+But if do want to code your state in OOP style, you should give this library a try.
 
-[Source Code](https://github.com/tylerlong/use-proxy-demo-todomvc)
+Merely 200+ lines of code. There is no rocket science in this library.
 
 ## Installation
 
 ```
-yarn add @tylerlong/use-proxy
+yarn add manate
 ```
 
 ## Usage
 
+### Create the state
+
 ```ts
-import { useProxy } from '@tylerlong/use-proxy';
-import { Component } from '@tylerlong/use-proxy/lib/react';
+import { manage } from 'manate';
 
 class Store {
   count = 0;
@@ -38,7 +33,13 @@ class Store {
     this.count += 1;
   }
 }
-const store = useProxy(new Store());
+const store = manage(new Store());
+```
+
+### React class Component
+
+```ts
+import { Component } from 'manate/lib/react';
 
 class App extends Component<{ store: Store }> {
   render() {
@@ -53,10 +54,10 @@ class App extends Component<{ store: Store }> {
 }
 ```
 
-### Functional React Component & React Hooks
+### React functional Component
 
 ```ts
-import { auto } from '@tylerlong/use-proxy/lib/react';
+import { auto } from 'manate/lib/react';
 
 const App = (props: { store: Store }) => {
   const { store } = props;
@@ -72,22 +73,21 @@ const App = (props: { store: Store }) => {
 ```
 
 It's fully compatible with `useState` and `useEffect`.
-A fully working demo is [here](https://github.com/tylerlong/use-proxy-demo-counter).
 
 ## Event Emitter
 
 ```ts
-import { useProxy } from '@tylerlong/use-proxy';
-import { ProxyEvent } from '@tylerlong/use-proxy/lib/models';
+import { manage } from 'manate';
+import { ManateEvent } from 'manate/lib/models';
 
 class Store {}
-const store = useProxy(new Store());
+const store = manage(new Store());
 ```
 
 `store.$e` is an `EventEmitter` which will emit events about read/write to store. You can subscribe to events:
 
 ```ts
-store.$e.on('event', (event: ProxyEvent) => {
+store.$e.on('event', (event: ManateEvent) => {
   // do something with event
 });
 ```
@@ -99,10 +99,10 @@ store.$e.on('event', (event: ProxyEvent) => {
 The signature of `run` is
 
 ```ts
-function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean];
+function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
 ```
 
-- `proxy` is generated from `useProxy` method: `const proxy = useProxy(store)`.
+- `proxy` is generated from `manage` method: `const proxy = manage(store)`.
 - `func` is a function which reads `proxy`.
 - `result` is the result of `func()`.
 - `isTrigger` is a function which returns `true` if an `event` will "trigger" `func()` to have a different result.
@@ -127,7 +127,7 @@ function autoRun<T>(
 ): { start: () => void; stop: () => void };
 ```
 
-- `proxy` is generated from `useProxy` method: `const proxy = useProxy(store)`.
+- `proxy` is generated from `manage` method: `const proxy = manage(store)`.
 - `func` is a function which reads `proxy`.
 - `decorator` is a method to change run schedule of `func`, for example: `func => _.debounce(func, 10, {leading: true, trailing: true})`
 - `start` and `stop` is to start and stop `autoRun`.
@@ -146,7 +146,7 @@ Well, actually it is possible and implementation is even shorter and simpler:
 const auto = (render, props): JSX.Element | null => {
   const [r, refresh] = useState(null);
   useEffect(() => {
-    const proxy = useProxy(props);
+    const proxy = manage(props);
     const { start, stop } = autoRun(proxy, () => {
       refresh(render());
     });
@@ -160,8 +160,7 @@ const auto = (render, props): JSX.Element | null => {
 };
 ```
 
-**Big problem** is：https://github.com/tylerlong/use-proxy-react-demo/blob/03ca533592a78a446d3688274c7b47059644dda3/src/index.tsx。
-Upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless。
+**Big problem** is：upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless。
 
 Another minor issue：
 But there is an issue: React `StrictMode` doesn't works for us any more.
@@ -173,14 +172,13 @@ It's not a good idea to run `autoRun` for every `render`. `run` is more suitable
 
 #### Question #2: why use `run` to support React hooks?
 
-According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`. 
+According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`.
 However, `run` requires a `proxy` object. Building such a `proxy` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
 After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
 
 ## Todo
 
-- Rename to "manate": manage + state
-- allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
+- allow to `import {auto} from 'manate/react'` instead of `import {auto} from 'manate/lib/react'`
   - pretty hard
 
 ## Development Notes
@@ -194,7 +192,7 @@ After investigation, I found that `useRef` can be used to dispose the side effec
 
 ## Known limitations
 
-- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. 
+- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`.
   - Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
 - It doesn't work with some built-in objects, such as `Set` & `Map`.
 - It desn't work with native objects, such as `window.speechSynthesis.getVoices()`.

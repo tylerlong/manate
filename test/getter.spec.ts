@@ -1,16 +1,16 @@
-import { useProxy } from '../src';
-import { ProxyEvent } from '../src/models';
+import { manage } from '../src';
+import { ManateEvent } from '../src/models';
 
 describe('getter', () => {
   test('getter', () => {
-    const proxy = useProxy({
+    const proxy = manage({
       visibility: false,
       get visibleTodos() {
         return !this.visibility;
       },
     });
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     if (proxy.visibleTodos) {
@@ -22,14 +22,14 @@ describe('getter', () => {
   });
 
   test('normal method', () => {
-    const proxy = useProxy({
+    const proxy = manage({
       visibility: false,
       visibleTodos() {
         return !this.visibility;
       },
     });
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     if (proxy.visibleTodos()) {

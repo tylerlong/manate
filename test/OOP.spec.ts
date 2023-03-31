@@ -1,5 +1,5 @@
-import { useProxy } from '../src';
-import { ProxyEvent } from '../src/models';
+import { manage } from '../src';
+import { ManateEvent } from '../src/models';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -29,9 +29,9 @@ describe('OOP', () => {
     const todoItem = new TodoItem('Daily meeting');
     todoList.todoItems.push(todoItem);
 
-    const proxy = useProxy(store);
-    const events: ProxyEvent[] = [];
-    const listener = (event: ProxyEvent) => events.push(event);
+    const proxy = manage(store);
+    const events: ManateEvent[] = [];
+    const listener = (event: ManateEvent) => events.push(event);
     proxy.$e.on('event', listener);
     proxy.todoLists[0].todoItems[0].complete = true;
     proxy.$e.off('event', listener);

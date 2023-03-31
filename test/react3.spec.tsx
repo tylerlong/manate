@@ -2,7 +2,7 @@ import TestRenderer, { act } from 'react-test-renderer';
 import React from 'react';
 
 import { auto } from '../src/react';
-import { useProxy } from '../src';
+import { manage } from '../src';
 
 class Store {
   public hanzi: Hanzi;
@@ -29,7 +29,7 @@ class Hanzi {
   }
 }
 
-const store = useProxy(new Store());
+const store = manage(new Store());
 
 const App = (props: { store: Store }) => {
   const render = () => {

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'stream';
 
-export class ProxyEvent {
+export class ManateEvent {
   public name: 'get' | 'set';
   public paths: PropertyKey[];
 
@@ -20,12 +20,12 @@ export class ProxyEvent {
 
 export class Child {
   public emitter: EventEmitter;
-  public listener: (event: ProxyEvent) => void;
+  public listener: (event: ManateEvent) => void;
 
   public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
-    this.listener = (event: ProxyEvent) => {
-      parentEmitter.emit('event', new ProxyEvent(event.name, [path, ...event.paths]));
+    this.listener = (event: ManateEvent) => {
+      parentEmitter.emit('event', new ManateEvent(event.name, [path, ...event.paths]));
     };
     this.emitter.on('event', this.listener);
   }

@@ -1,8 +1,8 @@
-import { useProxy } from '../src';
+import { manage } from '../src';
 
 describe('Listener count', () => {
   test('default', () => {
-    const proxy = useProxy({
+    const proxy = manage({
       a: {
         b: {
           c: 'hello',

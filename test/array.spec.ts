@@ -1,5 +1,5 @@
-import { useProxy } from '../src';
-import { ProxyEvent } from '../src/models';
+import { manage } from '../src';
+import { ManateEvent } from '../src/models';
 
 describe('array', () => {
   test('proxy set length', () => {
@@ -17,13 +17,13 @@ describe('array', () => {
     expect(keys).toEqual(['0', 'length']);
   });
 
-  test('useProxy set length', () => {
+  test('manage set length', () => {
     class Store {
       public todos: string[] = [];
     }
-    const proxy = useProxy(new Store());
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const proxy = manage(new Store());
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       if (event.name === 'set') {
         events.push(event);
       }

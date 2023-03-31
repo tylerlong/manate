@@ -1,4 +1,4 @@
-import { useProxy } from '../src';
+import { manage } from '../src';
 
 describe('plain objects', () => {
   test('default', () => {
@@ -8,7 +8,7 @@ describe('plain objects', () => {
         return JSON.parse(store._config || '{}');
       }
     }
-    const store = useProxy(new Store());
+    const store = manage(new Store());
     store._config = JSON.stringify({
       someString: 'sss',
       someArr: [],
@@ -20,7 +20,7 @@ describe('plain objects', () => {
     class Store {
       public config = {};
     }
-    const store = useProxy(new Store());
+    const store = manage(new Store());
     store.config = {
       someString: 'sss',
       someArr: [],

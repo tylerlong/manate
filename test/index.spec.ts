@@ -1,11 +1,11 @@
-import { useProxy } from '../src';
-import { ProxyEvent } from '../src/models';
+import { manage } from '../src';
+import { ManateEvent } from '../src/models';
 
 describe('index', () => {
   test('default', () => {
-    const proxy = useProxy({ a: 'hello', b: { c: 'world' } });
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const proxy = manage({ a: 'hello', b: { c: 'world' } });
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     proxy.a = 'world';
@@ -18,10 +18,10 @@ describe('index', () => {
   });
 
   test('subscribe to sub prop', () => {
-    const proxy = useProxy({ a: 'hello', b: { c: 'world' } });
+    const proxy = manage({ a: 'hello', b: { c: 'world' } });
     const emitter = (proxy.b as any).$e;
-    const events: ProxyEvent[] = [];
-    emitter.on('event', (event: ProxyEvent) => {
+    const events: ManateEvent[] = [];
+    emitter.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     proxy.a = 'world';
@@ -33,9 +33,9 @@ describe('index', () => {
     interface A {
       b?: { c: string };
     }
-    const proxy = useProxy<A>({});
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const proxy = manage<A>({});
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     proxy.b = { c: 'hello' };
@@ -51,9 +51,9 @@ describe('index', () => {
     interface A {
       b?: { c: string };
     }
-    const proxy = useProxy<A>({});
-    const events: ProxyEvent[] = [];
-    proxy.$e.on('event', (event: ProxyEvent) => {
+    const proxy = manage<A>({});
+    const events: ManateEvent[] = [];
+    proxy.$e.on('event', (event: ManateEvent) => {
       events.push(event);
     });
     proxy.b = { c: 'hello' };
@@ -70,7 +70,7 @@ describe('index', () => {
   });
 
   test('to JSON', () => {
-    const proxy = useProxy({ a: 'hello', b: { c: 'world' } });
+    const proxy = manage({ a: 'hello', b: { c: 'world' } });
     expect(JSON.stringify(proxy)).toBe('{"a":"hello","b":{"c":"world"}}');
   });
 });

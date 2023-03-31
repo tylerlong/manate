@@ -1,14 +1,14 @@
 import { debounce } from 'lodash';
 import waitFor from 'wait-for-async';
 
-import { useProxy, autoRun } from '../src';
+import { manage, autoRun } from '../src';
 
 describe('autoRun', () => {
   test('default', () => {
     class Store {
       public greeting = 'Hello';
     }
-    const store = useProxy(new Store());
+    const store = manage(new Store());
     const greetings: string[] = [];
     const autoRunner = autoRun(store, () => {
       // this method auto runs when `store.greeting` changes
@@ -24,7 +24,7 @@ describe('autoRun', () => {
     class Store {
       public number = 0;
     }
-    const store = useProxy(new Store());
+    const store = manage(new Store());
     const numbers: number[] = [];
     const autoRunner = autoRun(
       store,

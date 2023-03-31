@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { useProxy, run, releaseChildren, ProxyType } from '.';
-import { ProxyEvent } from './models';
+import { manage, run, releaseChildren, ProxyType } from '.';
+import { ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
   public propsProxy?: ProxyType<P>;
-  public isTrigger!: (event: ProxyEvent) => boolean;
+  public isTrigger!: (event: ManateEvent) => boolean;
 
   public constructor(props: Readonly<P>) {
     super(props);
@@ -14,7 +14,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
     const render = this.render.bind(this);
     this.render = () => {
       this.dispose();
-      this.propsProxy = useProxy(this.props);
+      this.propsProxy = manage(this.props);
       const [result, isTrigger] = run(this.propsProxy, render);
       this.isTrigger = isTrigger;
       this.propsProxy.$e.on('event', this.listener);
@@ -29,7 +29,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
     };
   }
 
-  public listener = (event: ProxyEvent) => {
+  public listener = (event: ManateEvent) => {
     if (this.isTrigger(event)) {
       this.forceUpdate();
     }
@@ -55,10 +55,10 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
       proxy.$e.off('event', listener);
     };
   });
-  const proxy = useProxy(props);
+  const proxy = manage(props);
   const [result, isTrigger] = run(proxy, render);
   const [, refresh] = useState(false);
-  const listener = (event: ProxyEvent) => {
+  const listener = (event: ManateEvent) => {
     if (isTrigger(event)) {
       refresh((r) => !r);
     }

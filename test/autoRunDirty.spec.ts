@@ -1,11 +1,11 @@
-import { useProxy, autoRun } from '../src';
+import { manage, autoRun } from '../src';
 
 describe('autoRunDirty', () => {
   test('default', () => {
     class Store {
       public greeting = 'Hello';
     }
-    const store = useProxy(new Store());
+    const store = manage(new Store());
     const greetings: string[] = [];
     let count = 0;
     const autoRunner = autoRun(store, () => {

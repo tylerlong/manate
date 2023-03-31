@@ -2,7 +2,7 @@ import TestRenderer from 'react-test-renderer';
 import React from 'react';
 
 import { Component } from '../src/react';
-import { useProxy } from '../src';
+import { manage } from '../src';
 
 class Store {
   public count = 0;
@@ -11,7 +11,7 @@ class Store {
   }
 }
 
-const store = useProxy(new Store());
+const store = manage(new Store());
 
 const renderHistory: number[] = [];
 
