@@ -160,32 +160,25 @@ const auto = (render, props): JSX.Element | null => {
 };
 ```
 
-**大的问题**是这个：https://github.com/tylerlong/use-proxy-react-demo/blob/03ca533592a78a446d3688274c7b47059644dda3/src/index.tsx。
-也就是上游 component 是没办法调用`render`的，因为`render`隐藏在了 `useEffect` 里面。于是上游的 `useState` 就彻底废掉了。
+**Big problem** is：https://github.com/tylerlong/use-proxy-react-demo/blob/03ca533592a78a446d3688274c7b47059644dda3/src/index.tsx。
+Upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless。
 
-就算整个项目都不用 useState，也还是有下面这个问题：
+Another minor issue：
 But there is an issue: React `StrictMode` doesn't works for us any more.
 Because StrictMode will try to do double rendering. However, we only invoke `render` in `useEffect`.
 So double rendering will not invoke `render` at all, thus it cannot help us to detect non-pure function issues.
 
-那么能不能在`useEffect`之外执行`autoRun`呢？不行，因为`autoRun` by design 应该是一个 long running 的东西，有副作用。每次`render`都执行`autoRun`不合适。
-其实 `run` 比它更合适。下面具体分析
+So is there a way to run `autoRun` out of `useEffect`? Nope, because `autoRun` by design is long running process and has side effects.
+It's not a good idea to run `autoRun` for every `render`. `run` is more suitable for this case.
 
 #### Question #2: why use `run` to support React hooks?
 
-参考上面对 `autoRun` 的分析，如果我们想要支持上游 component 的 `useState` 以及 `strictMode`, 那么必须要在`useEffect`之外执行`render`。
-但是`run`要求有一个`proxy`对象。构建这样一个`proxy`对象有副作用。并且什么时候 dispose 副作用呢？这个问题回答不好就不能用`run`。
-经过研究，发现用 `useRef` 可以用来 dispose 上一次 render 创建的东西。 这也是当前采用的方案。
+According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`. 
+However, `run` requires a `proxy` object. Building such a `proxy` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
+After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
 
 ## Todo
 
-- cache data for getter functions to make it faster, just like what I did in SubX project
-  - computed property?
-  - pre-mature optimization
-- `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的 property 不全。后来全了。但是新增的 props 并不被 monitor。
-  - 一个 workaround 是把 property 的值设为 null。
-    - 不设为 undefined，因为 json 不支持，持久化会有问题。 不过这个问题和本项目无关
-- 如果有循环引用的结构，会报错 `Uncaught RangeError: Maximum call stack size exceeded`
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
   - pretty hard
@@ -201,6 +194,10 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 
 ## Known limitations
 
-- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
+- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. 
+  - Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
 - It doesn't work with some built-in objects, such as `Set` & `Map`.
 - It desn't work with native objects, such as `window.speechSynthesis.getVoices()`.
+- `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
+  - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.
+- no circular references, otherwise `Uncaught RangeError: Maximum call stack size exceeded`
