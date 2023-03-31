@@ -73,13 +73,15 @@ export function manage<T extends object>(target: T): ProxyType<T> {
 
 export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
   const cache = new Set<string>();
-  const listener = (event: ManateEvent) => cache.add(event.pathString);
+  const listener = (event: ManateEvent) => {
+    if (event.name === 'get') {
+      cache.add(event.pathString);
+    }
+  };
   proxy.$e.on('event', listener);
   const result = func();
   proxy.$e.off('event', listener);
-  const isTrigger = (event: ManateEvent): boolean => {
-    return event.name === 'set' && cache.has(event.pathString);
-  };
+  const isTrigger = (event: ManateEvent) => event.name === 'set' && cache.has(event.pathString);
   return [result, isTrigger];
 }
 

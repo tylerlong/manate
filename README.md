@@ -74,6 +74,11 @@ const App = (props: { store: Store }) => {
 
 It's fully compatible with `useState` and `useEffect`.
 
+## Demo Applications
+
+- [Counter](https://github.com/tylerlong/manate-demo-counter)
+- [TodoMVC](https://github.com/tylerlong/manate-demo-todomvc)
+
 ## Event Emitter
 
 ```ts
