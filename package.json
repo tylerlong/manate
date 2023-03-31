@@ -29,8 +29,8 @@
     "sort-package-json": "^2.4.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
-    "ttpt": "^0.5.2",
-    "typescript": "^5.0.2",
+    "ttpt": "^0.5.3",
+    "typescript": "^5.0.3",
     "wait-for-async": "^0.6.1",
     "yarn-upgrade-all": "^0.7.2"
   }

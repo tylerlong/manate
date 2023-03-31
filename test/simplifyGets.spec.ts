@@ -40,4 +40,42 @@ describe('simplify gets', () => {
       ].sort(),
     );
   });
+
+  test('to set', () => {
+    const gets = [
+      'todoLists',
+      'todoLists+0',
+      'todoLists+0+todoItems',
+      'todoLists+0+todoItems+0',
+      'todoLists',
+      'todoLists+0',
+      'todoLists+0+todoItems',
+      'todoLists+0+todoItems+1',
+      'todoLists',
+      'todoLists+1',
+      'todoLists+1+todoItems',
+      'todoLists+1+todoItems+0',
+      'todoLists',
+      'todoLists+1',
+      'todoLists+1+todoItems',
+      'todoLists+1+todoItems+1',
+    ];
+    const simplifyGets = (gets: string[]): Set<string> => {
+      return new Set(gets);
+    };
+    const result = simplifyGets(gets);
+    expect([...result].sort()).toEqual(
+      [
+        'todoLists',
+        'todoLists+0',
+        'todoLists+0+todoItems',
+        'todoLists+0+todoItems+0',
+        'todoLists+0+todoItems+1',
+        'todoLists+1',
+        'todoLists+1+todoItems',
+        'todoLists+1+todoItems+0',
+        'todoLists+1+todoItems+1',
+      ].sort(),
+    );
+  });
 });
