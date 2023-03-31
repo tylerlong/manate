@@ -201,7 +201,7 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 
 - cache data for getter functions to make it faster, just like what I did in SubX project
   - computed property?
-- Native objects 会报错，比如说 `window.speechSynthesis.getVoices()`
+  - pre-mature optimization
 - `autoRun` 逻辑上有漏洞。比如说我想保存一个对象。一开始这个对象的 property 不全。后来全了。但是新增的 props 并不被 monitor。
   - 一个 workaround 是把 property 的值设为 null。
     - 不设为 undefined，因为 json 不支持，持久化会有问题。 不过这个问题和本项目无关
@@ -209,9 +209,6 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
   - pretty hard
-- optimize path checking code
-  - use set to check prefix.
-  - `getPaths.some((getPath) => getPath.startsWith(setPath))` is slow. Put all prefixes in a set
 - rename `mnitor` to `supervise`
 - support symbols as prop keys, since you can convert symbols to strings by `toString()`.
 - use symbol for children key. symbol can make sure that there is no conflict.
@@ -229,3 +226,4 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 
 - It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`. Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
 - It doesn't work with some built-in objects, such as `Set` & `Map`.
+- It desn't work with native objects, such as `window.speechSynthesis.getVoices()`.

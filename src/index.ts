@@ -91,21 +91,13 @@ export function monitor(props: { [key: string]: ProxyType<any> }, func: Function
 }
 
 export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean] {
-  const events: ProxyEvent[] = [];
-  const listener = (event: ProxyEvent) => events.push(event);
+  const cache = new Set<string>();
+  const listener = (event: ProxyEvent) => cache.add(event.pathString);
   proxy.$e.on('event', listener);
   const result = func();
   proxy.$e.off('event', listener);
-  const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
   const isTrigger = (event: ProxyEvent): boolean => {
-    if (event.name === 'set') {
-      const setPath = event.pathString;
-      if (getPaths.some((getPath) => getPath.startsWith(setPath))) {
-        // if setPath is shorter than getPath, then it's time to refresh
-        return true;
-      }
-    }
-    return false;
+    return event.name === 'set' && cache.has(event.pathString);
   };
   return [result, isTrigger];
 }
