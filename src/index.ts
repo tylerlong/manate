@@ -71,25 +71,6 @@ export function useProxy<T extends object>(target: T): ProxyType<T> {
   return proxy as ProxyType<T>;
 }
 
-export function monitor(props: { [key: string]: ProxyType<any> }, func: Function): [result: any, getPaths: string[]] {
-  const events: ProxyEvent[] = [];
-  const proxies = Object.entries(props).filter((entry) => !!entry[1].$e);
-  const cache: { [key: string]: (event: ProxyEvent) => void } = {};
-  for (const [k, v] of proxies) {
-    cache[k] = (event: ProxyEvent) => {
-      event.paths.unshift(k);
-      events.push(event);
-    };
-    v.$e.on('event', cache[k]);
-  }
-  const result = func();
-  for (const [k, v] of proxies) {
-    v.$e.off('event', cache[k]);
-  }
-  const getPaths = [...new Set(events.filter((event) => event.name === 'get').map((event) => event.pathString))];
-  return [result, getPaths];
-}
-
 export function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ProxyEvent) => boolean] {
   const cache = new Set<string>();
   const listener = (event: ProxyEvent) => cache.add(event.pathString);

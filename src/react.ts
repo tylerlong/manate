@@ -66,31 +66,3 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   proxy.$e.on('event', listener);
   return result;
 };
-
-// 下面这个实现，在 Icon Builder 中测试，界面经常无法刷新。
-// 经过诊断，发现，getPaths 为空。就好像 render 是异步的一样，并没有捕捉到 get 事件。
-// export const auto = (render: () => JSX.Element, props): JSX.Element => {
-//   const [result, getPaths] = monitor(props, render);
-//   const [, refresh] = useState(false);
-//   useEffect(() => {
-//     const proxies = Object.entries(props as { [v: string]: ProxyType<any> }).filter((entry) => !!entry[1].$e);
-//     const cache: { [key: string]: (event: ProxyEvent) => void } = {};
-//     for (const [k, v] of proxies) {
-//       cache[k] = (event: ProxyEvent) => {
-//         if (event.name === 'set') {
-//           event.paths.unshift(k);
-//           if (getPaths.some((getPath) => getPath.startsWith(event.pathString))) {
-//             refresh((r) => !r);
-//           }
-//         }
-//       };
-//       v.$e.on('event', cache[k]);
-//     }
-//     return () => {
-//       for (const [k, v] of proxies) {
-//         v.$e.off('event', cache[k]);
-//       }
-//     };
-//   }, []);
-//   return result;
-// };

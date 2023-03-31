@@ -138,26 +138,6 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
-### `monitor`
-
-This one was originally designed to support React hooks.
-In theory, you may also use it in a context without React.
-
-The signature of `monitor` is:
-
-```ts
-function monitor(props: { [key: string]: ProxyType<any> }, func: Function): [result: any, getPaths: string[]];
-```
-
-- `props` is the props that a React component receives, it could also be any object.
-- `func` is a function to monitor. In context of React, `func` should return `JSX.Element`.
-- `result` is the result of `func()`
-- `getPaths` is the paths that were read (a.k.a get) during the execution of `func()`.
-
-When is it useful? It's kind of low-level compared to `autoRun` and `run`.
-You may monitor the events of `props`, whenever there is a `set` event,you can check `getPaths` to see if they are affected.
-If yes, then you may take some actions, such as call the `func` again.
-
 #### Question #1: why not use `autoRun` to support React hooks?
 
 Well, actually it is possible and implementation is even shorter and simpler:
@@ -209,7 +189,6 @@ So double rendering will not invoke `render` at all, thus it cannot help us to d
 - Rename to "manate": manage + state
 - allow to `import {auto} from 'manate/react'` instead of `import {auto} from '@tylerlong/use-proxy/lib/react'`
   - pretty hard
-- rename `mnitor` to `supervise`
 - support symbols as prop keys, since you can convert symbols to strings by `toString()`.
 - use symbol for children key. symbol can make sure that there is no conflict.
 
