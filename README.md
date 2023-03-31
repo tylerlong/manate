@@ -39,7 +39,7 @@ const store = manage(new Store());
 ### React class Component
 
 ```ts
-import { Component } from 'manate/lib/react';
+import { Component } from 'manate/react';
 
 class App extends Component<{ store: Store }> {
   render() {
@@ -57,7 +57,7 @@ class App extends Component<{ store: Store }> {
 ### React functional Component
 
 ```ts
-import { auto } from 'manate/lib/react';
+import { auto } from 'manate/react';
 
 const App = (props: { store: Store }) => {
   const { store } = props;
@@ -78,7 +78,7 @@ It's fully compatible with `useState` and `useEffect`.
 
 ```ts
 import { manage } from 'manate';
-import { ManateEvent } from 'manate/lib/models';
+import { ManateEvent } from 'manate/models';
 
 class Store {}
 const store = manage(new Store());
@@ -175,11 +175,6 @@ It's not a good idea to run `autoRun` for every `render`. `run` is more suitable
 According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`.
 However, `run` requires a `proxy` object. Building such a `proxy` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
 After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
-
-## Todo
-
-- allow to `import {auto} from 'manate/react'` instead of `import {auto} from 'manate/lib/react'`
-  - pretty hard
 
 ## Development Notes
 

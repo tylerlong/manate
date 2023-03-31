@@ -1,14 +1,15 @@
 {
   "name": "manate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "eslint --fix '**/*.{ts,tsx}' && prettier --write . && sort-package-json",
-    "prepublishOnly": "tsc && yarn test",
-    "test": "jest -w 1 test/$t"
+    "prepublishOnly": "yarn test",
+    "test": "jest -w 1 test/$t",
+    "release": "ts-node scripts/release.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
@@ -26,6 +27,7 @@
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-test-renderer": "^18.2.0",
+    "shell-commands": "^0.2.1",
     "sort-package-json": "^2.4.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
