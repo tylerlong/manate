@@ -21,6 +21,16 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
       return result;
     };
 
+    // rewrite componentDidMount()
+    const componentDidMount = this.componentDidMount ? this.componentDidMount.bind(this) : () => {};
+    this.componentDidMount = () => {
+      // strict mode re-mount
+      if (!this.managed) {
+        this.managed = manage(this.props);
+        this.managed.$e.on('event', this.listener);
+      }
+      componentDidMount();
+    };
     // rewrite componentWillUnmount()
     const componentWillUnmount = this.componentWillUnmount ? this.componentWillUnmount.bind(this) : () => {};
     this.componentWillUnmount = () => {

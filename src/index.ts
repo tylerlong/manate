@@ -7,16 +7,16 @@ const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
 const childrenKey = Symbol('children');
 
 export function manage<T extends object>(target: T): Managed<T> {
-  // return if the object is already a managed
+  // return if the object is already managed
   if ((target as Managed<T>).$e) {
     return target as Managed<T>;
   }
 
-  // two variables belongs to the scope of manage (the managed)
+  // two variables belongs to the scope of the managed
   const emitter = new EventEmitter();
   const children = new Children();
 
-  // manage a child and add it to children
+  // manage a child and add it to children list
   const manageChild = (path: PropertyKey, value: any) => {
     if (!canManage(value)) {
       return value;
@@ -49,7 +49,6 @@ export function manage<T extends object>(target: T): Managed<T> {
     // eslint-disable-next-line max-params
     set: (target: T, path: PropertyKey, value: any, receiver?: T): boolean => {
       // no assign object to itself, doesn't make sense
-      // array.length assign oldValue === value, strange
       if (canManage(value) && value === Reflect.get(target, path)) {
         return true;
       }
