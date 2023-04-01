@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "main": "index.js",

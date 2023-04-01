@@ -2,7 +2,7 @@ import { manage } from '../src';
 
 describe('Listener count', () => {
   test('default', () => {
-    const proxy = manage({
+    const managed = manage({
       a: {
         b: {
           c: 'hello',
@@ -10,17 +10,17 @@ describe('Listener count', () => {
       },
     });
 
-    expect(proxy.$e.listenerCount('event')).toBe(0);
-    expect((proxy.a as any).$e.listenerCount('event')).toBe(1);
-    expect((proxy.a.b as any).$e.listenerCount('event')).toBe(1);
-    expect((proxy.a.b.c as any).$e).toBe(undefined);
-    const temp = proxy.a.b;
-    proxy.a.b = temp;
-    proxy.a.b = temp;
-    proxy.a.b = temp;
-    expect(proxy.$e.listenerCount('event')).toBe(0);
-    expect((proxy.a as any).$e.listenerCount('event')).toBe(1);
-    expect((proxy.a.b as any).$e.listenerCount('event')).toBe(1);
-    expect((proxy.a.b.c as any).$e).toBe(undefined);
+    expect(managed.$e.listenerCount('event')).toBe(0);
+    expect((managed.a as any).$e.listenerCount('event')).toBe(1);
+    expect((managed.a.b as any).$e.listenerCount('event')).toBe(1);
+    expect((managed.a.b.c as any).$e).toBe(undefined);
+    const temp = managed.a.b;
+    managed.a.b = temp;
+    managed.a.b = temp;
+    managed.a.b = temp;
+    expect(managed.$e.listenerCount('event')).toBe(0);
+    expect((managed.a as any).$e.listenerCount('event')).toBe(1);
+    expect((managed.a.b as any).$e.listenerCount('event')).toBe(1);
+    expect((managed.a.b.c as any).$e).toBe(undefined);
   });
 });

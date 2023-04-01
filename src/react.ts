@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import { manage, run, releaseChildren, ProxyType } from '.';
+import { manage, run, releaseChildren, Manate } from '.';
 import { ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
-  public propsProxy?: ProxyType<P>;
+  public managedProps?: Manate<P>;
   public isTrigger!: (event: ManateEvent) => boolean;
 
   public constructor(props: Readonly<P>) {
@@ -14,10 +14,10 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
     const render = this.render.bind(this);
     this.render = () => {
       this.dispose();
-      this.propsProxy = manage(this.props);
-      const [result, isTrigger] = run(this.propsProxy, render);
+      this.managedProps = manage(this.props);
+      const [result, isTrigger] = run(this.managedProps, render);
       this.isTrigger = isTrigger;
-      this.propsProxy.$e.on('event', this.listener);
+      this.managedProps.$e.on('event', this.listener);
       return result;
     };
 
@@ -36,10 +36,10 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   };
 
   public dispose() {
-    if (this.propsProxy) {
-      releaseChildren(this.propsProxy);
-      this.propsProxy.$e.off('event', this.listener);
-      this.propsProxy = undefined;
+    if (this.managedProps) {
+      releaseChildren(this.managedProps);
+      this.managedProps.$e.off('event', this.listener);
+      this.managedProps = undefined;
     }
   }
 }
@@ -48,27 +48,27 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
   prev.current?.();
   const dispose = () => {
-    releaseChildren(proxy);
-    proxy.$e.off('event', listener);
-    proxy = undefined;
+    releaseChildren(managed);
+    managed.$e.off('event', listener);
+    managed = undefined;
   };
   prev.current = dispose;
   useEffect(() => {
-    if (!proxy) {
+    if (!managed) {
       // strict mode re-mount
-      proxy = manage(props);
-      proxy.$e.on('event', listener);
+      managed = manage(props);
+      managed.$e.on('event', listener);
     }
     return dispose;
   }, []);
-  let proxy = manage(props);
-  const [result, isTrigger] = run(proxy, render);
+  let managed = manage(props);
+  const [result, isTrigger] = run(managed, render);
   const [, refresh] = useState(false);
   const listener = (event: ManateEvent) => {
     if (isTrigger(event)) {
       refresh((r) => !r);
     }
   };
-  proxy.$e.on('event', listener);
+  managed.$e.on('event', listener);
   return result;
 };

@@ -1,6 +1,7 @@
 # manate
 
-manate is short for "manage state". It is the most straightforward way to manage global state in React.
+manate is short for "manage state". (pronunciation is close to "many-it")
+It is the most straightforward way to manage global state in React.
 
 ## What's the value of manate?
 
@@ -104,17 +105,17 @@ store.$e.on('event', (event: ManateEvent) => {
 The signature of `run` is
 
 ```ts
-function run<T>(proxy: ProxyType<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
+function run<T>(managed: Manate<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
 ```
 
-- `proxy` is generated from `manage` method: `const proxy = manage(store)`.
-- `func` is a function which reads `proxy`.
+- `managed` is generated from `manage` method: `const managed = manage(store)`.
+- `func` is a function which reads `managed`.
 - `result` is the result of `func()`.
 - `isTrigger` is a function which returns `true` if an `event` will "trigger" `func()` to have a different result.
   - when it returns true, most likely it's time to run `func()` again(because you will get a different result from last time).
 
-When you invoke `run(proxy, func)`, `func()` is invoked immediately.
-You can subscribe to `proxy.$e` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
+When you invoke `run(managed, func)`, `func()` is invoked immediately.
+You can subscribe to `managed.$e` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
 
 For a sample usage of `run`, please check [./src/react.ts](./src/react.ts).
 
@@ -126,19 +127,19 @@ The signature of `autoRun` is
 
 ```ts
 function autoRun<T>(
-  proxy: ProxyType<T>,
+  managed: Manate<T>,
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void };
 ```
 
-- `proxy` is generated from `manage` method: `const proxy = manage(store)`.
-- `func` is a function which reads `proxy`.
+- `managed` is generated from `manage` method: `const managed = manage(store)`.
+- `func` is a function which reads `managed`.
 - `decorator` is a method to change run schedule of `func`, for example: `func => _.debounce(func, 10, {leading: true, trailing: true})`
 - `start` and `stop` is to start and stop `autoRun`.
 
 When you invoke `start()`, `func()` is invoked immediately.
-`func()` will be invoked automatically afterwards if there are trigger events from `proxy` which change the result of `func()`.
+`func()` will be invoked automatically afterwards if there are trigger events from `managed` which change the result of `func()`.
 Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
@@ -151,14 +152,14 @@ Well, actually it is possible and implementation is even shorter and simpler:
 const auto = (render, props): JSX.Element | null => {
   const [r, refresh] = useState(null);
   useEffect(() => {
-    const proxy = manage(props);
-    const { start, stop } = autoRun(proxy, () => {
+    const managed = manage(props);
+    const { start, stop } = autoRun(managed, () => {
       refresh(render());
     });
     start();
     return () => {
       stop();
-      releaseChildren(proxy);
+      releaseChildren(managed);
     };
   }, []);
   return r;
@@ -178,7 +179,7 @@ It's not a good idea to run `autoRun` for every `render`. `run` is more suitable
 #### Question #2: why use `run` to support React hooks?
 
 According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`.
-However, `run` requires a `proxy` object. Building such a `proxy` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
+However, `run` requires a `managed` object. Building such a `managed` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
 After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
 
 ## Development Notes

@@ -29,12 +29,12 @@ describe('OOP', () => {
     const todoItem = new TodoItem('Daily meeting');
     todoList.todoItems.push(todoItem);
 
-    const proxy = manage(store);
+    const managed = manage(store);
     const events: ManateEvent[] = [];
     const listener = (event: ManateEvent) => events.push(event);
-    proxy.$e.on('event', listener);
-    proxy.todoLists[0].todoItems[0].complete = true;
-    proxy.$e.off('event', listener);
+    managed.$e.on('event', listener);
+    managed.todoLists[0].todoItems[0].complete = true;
+    managed.$e.off('event', listener);
     expect(events.map((event) => event.toString())).toEqual([
       'get: todoLists',
       'get: todoLists+0',
