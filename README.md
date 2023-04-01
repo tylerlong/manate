@@ -182,6 +182,20 @@ According to the analysis above, if we want to support upstream component's `use
 However, `run` requires a `managed` object. Building such a `managed` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
 After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
 
+## React Strict Mode
+
+Ref: https://react.dev/reference/react/StrictMode
+
+For functional components, `StrictMode` will run `useEffect`, then cleanup, then run `useEffect` again.
+
+For class components, `StrictMode` will run `componentDidMount`, then `componentWillUnmount`, then `componentDidMount` again.
+If `componentDidMount` is undefined, it will run neither. However, we cannot assume that `componentDidMount` is undefined.
+
+For both cases, we do need the dispose logic in `componentWillUnmount` or `useEffect` cleanup. If we want to support `StrictMode`, we must write some setup code in `useEffect` and `componentDidMount`.
+Otherwise, dispose without re-setup, it won't work.
+
+For more details, please refer to `./src/react.ts`.
+
 ## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
@@ -200,8 +214,3 @@ After investigation, I found that `useRef` can be used to dispose the side effec
 - `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
   - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.
 - no circular references, otherwise `Uncaught RangeError: Maximum call stack size exceeded`
-
-
-## Todo
-
-- Does class component support strict mode?

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'stream';
+import { EventEmitter } from 'events';
 
 export type Managed<T> = T & { $e: EventEmitter; dispose: () => void };
 
