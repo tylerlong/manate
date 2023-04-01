@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import { manage, run, releaseChildren } from '.';
+import { manage, run } from '.';
 import { Managed, ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
@@ -36,11 +36,8 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   };
 
   public dispose() {
-    if (this.managed) {
-      releaseChildren(this.managed);
-      this.managed.$e.off('event', this.listener);
-      this.managed = undefined;
-    }
+    this.managed?.dispose();
+    this.managed = undefined;
   }
 }
 
@@ -48,8 +45,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
   prev.current?.();
   const dispose = () => {
-    releaseChildren(managed);
-    managed.$e.off('event', listener);
+    managed.dispose();
     managed = undefined;
   };
   prev.current = dispose;

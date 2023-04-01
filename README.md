@@ -200,3 +200,8 @@ After investigation, I found that `useRef` can be used to dispose the side effec
 - `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
   - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.
 - no circular references, otherwise `Uncaught RangeError: Maximum call stack size exceeded`
+
+
+## Todo
+
+- Does class component support strict mode?

@@ -6,11 +6,6 @@ const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
 
 const childrenKey = Symbol('children');
 
-// release all children
-export const releaseChildren = <T>(obj: Managed<T>): void => {
-  obj[childrenKey].releasesAll();
-};
-
 export function manage<T extends object>(target: T): Managed<T> {
   // return if the object is already a managed
   if ((target as Managed<T>).$e) {
@@ -38,6 +33,12 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       if (path === childrenKey) {
         return children;
+      }
+      if (path === 'dispose') {
+        return () => {
+          children.releasesAll();
+          emitter.removeAllListeners();
+        };
       }
       const value = Reflect.get(target, path, receiver);
       if (typeof value !== 'function') {

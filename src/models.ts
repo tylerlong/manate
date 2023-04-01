@@ -1,6 +1,6 @@
 import { EventEmitter } from 'stream';
 
-export type Managed<T> = T & { $e: EventEmitter };
+export type Managed<T> = T & { $e: EventEmitter; dispose: () => void };
 
 export class ManateEvent {
   public name: 'get' | 'set';
