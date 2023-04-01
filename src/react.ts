@@ -50,24 +50,21 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const dispose = () => {
     releaseChildren(proxy);
     proxy.$e.off('event', listener);
+    proxy = undefined;
   };
-  let unmounted = false;
   prev.current = dispose;
   useEffect(() => {
-    unmounted = false;
-    return () => {
-      // componentWillUnmount, cannot dispose here becauase of strict mode
-      unmounted = true;
-    };
+    if (!proxy) {
+      // strict mode re-mount
+      proxy = manage(props);
+      proxy.$e.on('event', listener);
+    }
+    return dispose;
   }, []);
-  const proxy = manage(props);
+  let proxy = manage(props);
   const [result, isTrigger] = run(proxy, render);
   const [, refresh] = useState(false);
   const listener = (event: ManateEvent) => {
-    if (unmounted) {
-      dispose();
-      return;
-    }
     if (isTrigger(event)) {
       refresh((r) => !r);
     }
