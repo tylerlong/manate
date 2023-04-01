@@ -1,22 +1,20 @@
 import { EventEmitter } from 'events';
 
-import { ManateEvent, Children } from './models';
+import { ManateEvent, Children, Managed } from './models';
 
-export type Manate<T> = T & { $e: EventEmitter };
-
-export const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
+const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
 
 const childrenKey = Symbol('children');
 
 // release all children
-export const releaseChildren = <T>(obj: Manate<T>): void => {
+export const releaseChildren = <T>(obj: Managed<T>): void => {
   obj[childrenKey].releasesAll();
 };
 
-export function manage<T extends object>(target: T): Manate<T> {
+export function manage<T extends object>(target: T): Managed<T> {
   // return if the object is already a managed
-  if ((target as Manate<T>).$e) {
-    return target as Manate<T>;
+  if ((target as Managed<T>).$e) {
+    return target as Managed<T>;
   }
 
   // two variables belongs to the scope of manage (the managed)
@@ -68,10 +66,10 @@ export function manage<T extends object>(target: T): Manate<T> {
     Reflect.set(target, path, manageChild(path, value), target);
   }
 
-  return managed as Manate<T>;
+  return managed as Managed<T>;
 }
 
-export function run<T>(managed: Manate<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
+export function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
   const cache = new Set<string>();
   const listener = (event: ManateEvent) => {
     if (event.name === 'get') {
@@ -86,7 +84,7 @@ export function run<T>(managed: Manate<T>, func: Function): [result: any, isTrig
 }
 
 export function autoRun<T>(
-  managed: Manate<T>,
+  managed: Managed<T>,
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void } {

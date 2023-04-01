@@ -1,5 +1,7 @@
 import { EventEmitter } from 'stream';
 
+export type Managed<T> = T & { $e: EventEmitter };
+
 export class ManateEvent {
   public name: 'get' | 'set';
   public paths: PropertyKey[];

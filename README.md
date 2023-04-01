@@ -105,7 +105,7 @@ store.$e.on('event', (event: ManateEvent) => {
 The signature of `run` is
 
 ```ts
-function run<T>(managed: Manate<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
+function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
 ```
 
 - `managed` is generated from `manage` method: `const managed = manage(store)`.
@@ -127,7 +127,7 @@ The signature of `autoRun` is
 
 ```ts
 function autoRun<T>(
-  managed: Manate<T>,
+  managed: Managed<T>,
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void };

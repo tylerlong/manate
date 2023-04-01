@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-import { manage, run, releaseChildren, Manate } from '.';
-import { ManateEvent } from './models';
+import { manage, run, releaseChildren } from '.';
+import { Managed, ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
-  public managed?: Manate<P>;
+  public managed?: Managed<P>;
   public isTrigger!: (event: ManateEvent) => boolean;
 
   public constructor(props: Readonly<P>) {
