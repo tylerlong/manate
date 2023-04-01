@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { manage, run, releaseChildren, ProxyType } from '.';
 import { ManateEvent } from './models';
@@ -46,13 +46,13 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 
 export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
-  if (prev.current) {
-    prev.current();
-  }
-  prev.current = () => {
+  prev.current?.();
+  const dispose = () => {
     releaseChildren(proxy);
     proxy.$e.off('event', listener);
   };
+  prev.current = dispose;
+  useEffect(() => dispose, []); // componentWillUnmount
   const proxy = manage(props);
   const [result, isTrigger] = run(proxy, render);
   const [, refresh] = useState(false);
