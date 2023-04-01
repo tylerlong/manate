@@ -4,7 +4,7 @@ import { manage, run, releaseChildren, Manate } from '.';
 import { ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
-  public managedProps?: Manate<P>;
+  public managed?: Manate<P>;
   public isTrigger!: (event: ManateEvent) => boolean;
 
   public constructor(props: Readonly<P>) {
@@ -14,10 +14,10 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
     const render = this.render.bind(this);
     this.render = () => {
       this.dispose();
-      this.managedProps = manage(this.props);
-      const [result, isTrigger] = run(this.managedProps, render);
+      this.managed = manage(this.props);
+      const [result, isTrigger] = run(this.managed, render);
       this.isTrigger = isTrigger;
-      this.managedProps.$e.on('event', this.listener);
+      this.managed.$e.on('event', this.listener);
       return result;
     };
 
@@ -36,10 +36,10 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   };
 
   public dispose() {
-    if (this.managedProps) {
-      releaseChildren(this.managedProps);
-      this.managedProps.$e.off('event', this.listener);
-      this.managedProps = undefined;
+    if (this.managed) {
+      releaseChildren(this.managed);
+      this.managed.$e.off('event', this.listener);
+      this.managed = undefined;
     }
   }
 }

@@ -28,9 +28,9 @@ export function manage<T extends object>(target: T): Manate<T> {
     if (!canManage(value)) {
       return value;
     }
-    const managedChild = manage(value);
-    children.addChild(path, managedChild.$e, emitter);
-    return managedChild;
+    const child = manage(value);
+    children.addChild(path, child.$e, emitter);
+    return child;
   };
 
   const managed = new Proxy(target, {
