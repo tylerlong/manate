@@ -3127,10 +3127,10 @@ tsutils@^3.21.0:
   dependencies:
     tslib "^1.8.1"
 
-ttpt@^0.5.4:
-  version "0.5.4"
-  resolved "https://registry.npmjs.org/ttpt/-/ttpt-0.5.4.tgz#1012d4053cf4577209264339a9c99c454fa017c5"
-  integrity sha512-AdLUPcW43+rgxYYKRmqdeP9J+FL/l/A3nxgz4cqJ3BXjOHqgEtQ1t4/GSB9F4dMUOlDmnr2hij9b3m70p5UPwQ==
+ttpt@^0.5.7:
+  version "0.5.7"
+  resolved "https://registry.npmjs.org/ttpt/-/ttpt-0.5.7.tgz#4f2180cf4b2fd1a0d9bf37c33fa8ab35f2b61d47"
+  integrity sha512-uFH9o+tTzYXdVfrf67xXz4MXHjhPKvRofevJy+0r/lzKffYf1r1g/e6ROGxeEWM2WjaVhcfwRpwZuzOZddKFDA==
   dependencies:
     lodash "^4.17.21"
     shell-commands "^0.1.2"

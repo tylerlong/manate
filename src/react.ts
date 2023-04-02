@@ -55,7 +55,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
   prev.current?.();
   const dispose = () => {
-    managed.dispose();
+    managed?.dispose();
     managed = undefined;
   };
   prev.current = dispose;

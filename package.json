@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "main": "index.js",
@@ -31,7 +31,7 @@
     "sort-package-json": "^2.4.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
-    "ttpt": "^0.5.4",
+    "ttpt": "^0.5.7",
     "typescript": "^5.0.3",
     "wait-for-async": "^0.6.1",
     "yarn-upgrade-all": "^0.7.2"
