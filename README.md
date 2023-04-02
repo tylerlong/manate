@@ -196,6 +196,14 @@ Otherwise, dispose without re-setup, it won't work.
 
 For more details, please refer to `./src/react.ts`.
 
+## `useState(boolean)` to re-render
+
+It's a bad idea. Because boolean has only two values.
+If you want to trigger even number of re-render, the result is no re-render at all.
+Because `b === !!b`.
+
+So we use `useState(integer)` to re-render.
+
 ## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.

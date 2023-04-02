@@ -69,10 +69,10 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   }, []);
   let managed = manage(props);
   const [result, isTrigger] = run(managed, render);
-  const [, refresh] = useState(false);
+  const [, refresh] = useState(0);
   const listener = (event: ManateEvent) => {
     if (isTrigger(event)) {
-      refresh((r) => !r);
+      refresh((i) => i + 1);
     }
   };
   managed.$e.on('event', listener);
