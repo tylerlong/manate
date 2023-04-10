@@ -213,6 +213,12 @@ So we use `useState(integer)` to re-render.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
 
+## Todo
+
+- Reference https://github.com/pmndrs/valtio
+  - This one is very similar to mine
+  - It supports "Holding objects in state without tracking them"
+
 ## Known limitations
 
 - It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`.
