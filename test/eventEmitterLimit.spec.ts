@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import EventEmitter from '../src/events';
 
 describe('EventEmitter Limit', () => {
   test('default', () => {

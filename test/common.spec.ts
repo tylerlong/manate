@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import EventEmitter from '../src/events';
 
 describe('index', () => {
   test('event emitter on and off', () => {
