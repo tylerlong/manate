@@ -1,5 +1,5 @@
 import { manage } from '../src';
-import { ManateEvent } from '../src/models';
+import type { ManateEvent } from '../src/models';
 
 describe('OOP', () => {
   test('todo list', () => {

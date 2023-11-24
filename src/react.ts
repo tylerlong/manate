@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 import { manage, run } from '.';
-import { Managed, ManateEvent } from './models';
+import type { Managed, ManateEvent } from './models';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
   public managed?: Managed<P>;

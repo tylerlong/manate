@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 
-import { ManateEvent, Children, Managed } from './models';
+import type { Managed } from './models';
+import { ManateEvent, Children } from './models';
 
 const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
 
