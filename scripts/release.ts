@@ -14,6 +14,8 @@ const main = async () => {
     rm models.js
     rm react.d.ts
     rm react.js
+    rm event-emitter.d.ts
+    rm event-emitter.js
   `);
 };
 main();

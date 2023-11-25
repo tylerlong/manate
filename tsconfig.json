@@ -5,7 +5,8 @@
     "esModuleInterop": true,
     "target": "ESNext",
     "moduleResolution": "nodenext",
-    "declaration": true
+    "declaration": true,
+    "module": "NodeNext",
   },
   "include": ["src/**/*.ts"]
 }
