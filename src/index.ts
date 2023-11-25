@@ -1,4 +1,4 @@
-import EventEmitter from './events';
+import EventEmitter from './event-emitter';
 
 import type { Managed } from './models';
 import { ManateEvent, Children } from './models';
@@ -43,7 +43,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       const value = Reflect.get(target, path, receiver);
       if (typeof value !== 'function') {
-        emitter.emit('event', new ManateEvent('get', [path]));
+        emitter.emit(new ManateEvent('get', [path]));
       }
       return value;
     },
@@ -56,7 +56,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
-      emitter.emit('event', new ManateEvent('set', [path]));
+      emitter.emit(new ManateEvent('set', [path]));
       return true;
     },
   });
@@ -77,9 +77,9 @@ export function run<T>(managed: Managed<T>, func: Function): [result: any, isTri
       cache.add(event.pathString);
     }
   };
-  managed.$e.on('event', listener);
+  managed.$e.on(listener);
   const result = func();
-  managed.$e.off('event', listener);
+  managed.$e.off(listener);
   const isTrigger = (event: ManateEvent) => event.name === 'set' && cache.has(event.pathString);
   return [result, isTrigger];
 }
@@ -92,9 +92,9 @@ export function autoRun<T>(
   let isTrigger: (event: ManateEvent) => boolean = () => true;
   const listener = (event: ManateEvent) => {
     if (isTrigger(event)) {
-      managed.$e.off('event', listener);
+      managed.$e.off(listener);
       runOnce();
-      managed.$e.on('event', listener);
+      managed.$e.on(listener);
     }
   };
   let runOnce = () => {
@@ -106,8 +106,8 @@ export function autoRun<T>(
   return {
     start: () => {
       runOnce();
-      managed.$e.on('event', listener);
+      managed.$e.on(listener);
     },
-    stop: () => managed.$e.off('event', listener),
+    stop: () => managed.$e.off(listener),
   };
 }

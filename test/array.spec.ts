@@ -23,7 +23,7 @@ describe('array', () => {
     }
     const managed = manage(new Store());
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       if (event.name === 'set') {
         events.push(event);
       }

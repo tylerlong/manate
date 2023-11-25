@@ -90,13 +90,15 @@ class Store {}
 const store = manage(new Store());
 ```
 
-`store.$e` is an `EventEmitter` which will emit events about read/write to store. You can subscribe to events:
+`store.$e` is an [EventEmitter](./src/events.ts) which will emit events about read/write to store. You can subscribe to events:
 
 ```ts
-store.$e.on('event', (event: ManateEvent) => {
+store.$e.on((event: ManateEvent) => {
   // do something with event
 });
 ```
+
+Please note that, this `EventEmitter` is not the same as `EventEmitter` in Node.js. It's a custom implementation.
 
 ## Utility methods
 

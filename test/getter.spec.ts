@@ -10,7 +10,7 @@ describe('getter', () => {
       },
     });
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       events.push(event);
     });
     if (managed.visibleTodos) {
@@ -29,7 +29,7 @@ describe('getter', () => {
       },
     });
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       events.push(event);
     });
     if (managed.visibleTodos()) {

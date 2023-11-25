@@ -17,7 +17,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
       this.managed = manage(this.props);
       const [result, isTrigger] = run(this.managed, render);
       this.isTrigger = isTrigger;
-      this.managed.$e.on('event', this.listener);
+      this.managed.$e.on(this.listener);
       return result;
     };
 
@@ -27,7 +27,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
       // strict mode re-mount
       if (!this.managed) {
         this.managed = manage(this.props);
-        this.managed.$e.on('event', this.listener);
+        this.managed.$e.on(this.listener);
       }
       componentDidMount();
     };
@@ -63,7 +63,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
     if (!managed) {
       // strict mode re-mount
       managed = manage(props);
-      managed.$e.on('event', listener);
+      managed.$e.on(listener);
     }
     return dispose;
   }, []);
@@ -75,6 +75,6 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
       refresh((i) => i + 1);
     }
   };
-  managed.$e.on('event', listener);
+  managed.$e.on(listener);
   return result;
 };

@@ -32,9 +32,9 @@ describe('OOP', () => {
     const managed = manage(store);
     const events: ManateEvent[] = [];
     const listener = (event: ManateEvent) => events.push(event);
-    managed.$e.on('event', listener);
+    managed.$e.on(listener);
     managed.todoLists[0].todoItems[0].complete = true;
-    managed.$e.off('event', listener);
+    managed.$e.off(listener);
     expect(events.map((event) => event.toString())).toEqual([
       'get: todoLists',
       'get: todoLists+0',

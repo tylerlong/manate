@@ -10,17 +10,17 @@ describe('Listener count', () => {
       },
     });
 
-    expect(managed.$e.listenerCount('event')).toBe(0);
-    expect((managed.a as any).$e.listenerCount('event')).toBe(1);
-    expect((managed.a.b as any).$e.listenerCount('event')).toBe(1);
+    expect(managed.$e.listenerCount()).toBe(0);
+    expect((managed.a as any).$e.listenerCount()).toBe(1);
+    expect((managed.a.b as any).$e.listenerCount()).toBe(1);
     expect((managed.a.b.c as any).$e).toBe(undefined);
     const temp = managed.a.b;
     managed.a.b = temp;
     managed.a.b = temp;
     managed.a.b = temp;
-    expect(managed.$e.listenerCount('event')).toBe(0);
-    expect((managed.a as any).$e.listenerCount('event')).toBe(1);
-    expect((managed.a.b as any).$e.listenerCount('event')).toBe(1);
+    expect(managed.$e.listenerCount()).toBe(0);
+    expect((managed.a as any).$e.listenerCount()).toBe(1);
+    expect((managed.a.b as any).$e.listenerCount()).toBe(1);
     expect((managed.a.b.c as any).$e).toBe(undefined);
   });
 });

@@ -1,4 +1,4 @@
-import EventEmitter from '../src/events';
+import EventEmitter from '../src/event-emitter';
 import { manage } from '../src';
 
 describe('getter', () => {

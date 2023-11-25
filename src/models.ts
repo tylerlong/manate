@@ -1,4 +1,4 @@
-import type EventEmitter from './events';
+import type EventEmitter from './event-emitter';
 
 export type Managed<T> = T & { $e: EventEmitter; dispose: () => void };
 
@@ -27,13 +27,13 @@ export class Child {
   public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ManateEvent) => {
-      parentEmitter.emit('event', new ManateEvent(event.name, [path, ...event.paths]));
+      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths]));
     };
-    this.emitter.on('event', this.listener);
+    this.emitter.on(this.listener);
   }
 
   public release() {
-    this.emitter.off('event', this.listener);
+    this.emitter.off(this.listener);
   }
 }
 

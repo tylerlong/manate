@@ -5,7 +5,7 @@ describe('index', () => {
   test('default', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       events.push(event);
     });
     managed.a = 'world';
@@ -21,7 +21,7 @@ describe('index', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
     const emitter = (managed.b as any).$e;
     const events: ManateEvent[] = [];
-    emitter.on('event', (event: ManateEvent) => {
+    emitter.on((event: ManateEvent) => {
       events.push(event);
     });
     managed.a = 'world';
@@ -35,7 +35,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       events.push(event);
     });
     managed.b = { c: 'hello' };
@@ -53,7 +53,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const events: ManateEvent[] = [];
-    managed.$e.on('event', (event: ManateEvent) => {
+    managed.$e.on((event: ManateEvent) => {
       events.push(event);
     });
     managed.b = { c: 'hello' };

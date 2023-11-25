@@ -1,11 +1,11 @@
-import EventEmitter from '../src/events';
+import EventEmitter from '../src/event-emitter';
 
 describe('EventEmitter Limit', () => {
   test('default', () => {
     const eventEmitter = new EventEmitter();
     for (let i = 0; i < 10; i++) {
-      eventEmitter.on('event', () => {});
+      eventEmitter.on(() => {});
     }
-    expect(eventEmitter.listenerCount('event')).toBe(10);
+    expect(eventEmitter.listenerCount()).toBe(10);
   });
 });
