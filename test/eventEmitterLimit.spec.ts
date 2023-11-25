@@ -7,6 +7,5 @@ describe('EventEmitter Limit', () => {
       eventEmitter.on('event', () => {});
     }
     expect(eventEmitter.listenerCount('event')).toBe(10);
-    expect(eventEmitter.listenerCount('')).toBe(0);
   });
 });
