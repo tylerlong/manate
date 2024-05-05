@@ -1,24 +1,24 @@
 class EventEmitter {
-  private events: Function[] = [];
+  private listeners: Function[] = [];
 
   public on(listener: Function) {
-    this.events.push(listener);
+    this.listeners.push(listener);
   }
 
   public off(listener: Function) {
-    this.events = this.events.filter((l) => l !== listener);
+    this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
   public emit(...args: any[]) {
-    this.events.forEach((listener) => listener(...args));
+    this.listeners.forEach((listener) => listener(...args));
   }
 
   public removeAllListeners() {
-    this.events = [];
+    this.listeners = [];
   }
 
   public listenerCount() {
-    return this.events.length;
+    return this.listeners.length;
   }
 }
 
