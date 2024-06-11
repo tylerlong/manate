@@ -46,7 +46,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   };
 
   public dispose() {
-    this.managed?.dispose();
+    this.managed?._dispose();
     this.managed = undefined;
   }
 }
@@ -55,7 +55,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
   prev.current?.();
   const dispose = () => {
-    managed?.dispose();
+    managed?._dispose();
     managed = undefined;
   };
   prev.current = dispose;

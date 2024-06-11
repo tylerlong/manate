@@ -35,7 +35,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       if (path === childrenKey) {
         return children;
       }
-      if (path === 'dispose') {
+      if (path === '_dispose') {
         return () => {
           children.releasesAll();
           emitter.removeAllListeners();
