@@ -1,3 +1,5 @@
+import type { ManateEvent } from './models';
+
 class EventEmitter {
   private listeners: Function[] = [];
 
@@ -9,8 +11,8 @@ class EventEmitter {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
-  public emit(...args: any[]) {
-    this.listeners.forEach((listener) => listener(...args));
+  public emit(me: ManateEvent) {
+    this.listeners.forEach((listener) => listener(me));
   }
 
   public removeAllListeners() {
