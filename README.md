@@ -118,7 +118,7 @@ class A {
 
 const a = new A();
 const ma = manage(a);
-ma.b.c = 4; // will not trigger a set event
+ma.b.c = 4; // will not trigger a set event because `ma.b` is excluded.
 ```
 
 You may invoke the `exclude` method at any time:
@@ -276,8 +276,7 @@ So we use `useState(integer)` to re-render.
 ## Todo
 
 - Reference https://github.com/pmndrs/valtio
-  - This one is very similar to mine
-  - It supports "Holding objects in state without tracking them"
+  - This one is very similar to manate
 
 ## Known limitations
 
