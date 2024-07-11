@@ -2,7 +2,13 @@ import EventEmitter from './event-emitter';
 import type { Managed } from './models';
 import { ManateEvent, Children } from './models';
 
-const canManage = (obj: object) => typeof obj === 'object' && obj !== null;
+const excludeSet = new WeakSet<object>();
+export const exclude = <T extends object>(obj: T): T => {
+  excludeSet.add(obj);
+  return obj;
+};
+
+const canManage = (obj: object) => typeof obj === 'object' && obj !== null && !excludeSet.has(obj);
 
 const childrenKey = Symbol('children');
 
@@ -42,7 +48,9 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       const value = Reflect.get(target, path, receiver);
       if (typeof value !== 'function') {
-        emitter.emit(new ManateEvent('get', [path]));
+        if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+          emitter.emit(new ManateEvent('get', [path]));
+        }
       }
       return value;
     },
@@ -55,7 +63,9 @@ export function manage<T extends object>(target: T): Managed<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
-      emitter.emit(new ManateEvent('set', [path]));
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+        emitter.emit(new ManateEvent('set', [path]));
+      }
       return true;
     },
   });

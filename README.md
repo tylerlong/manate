@@ -100,6 +100,64 @@ store.$e.on((event: ManateEvent) => {
 
 Please note that, this `EventEmitter` is not the same as `EventEmitter` in Node.js. It's a custom implementation.
 
+## Reference but do not track
+
+Sometimes we only want to keep a reference to an object, but we don't want to track its changes.
+
+You may `exclude` it from being tracked.
+
+```ts
+import { exclude, manage } from 'manate';
+
+class B {
+  public c = 1;
+}
+class A {
+  public b = exclude(new B());
+}
+
+const a = new A();
+const ma = manage(a);
+ma.b.c = 4; // will not trigger a set event
+```
+
+You may invoke the `exclude` method at any time:
+
+```ts
+class B {
+  public c = 1;
+}
+class A {
+  public b;
+}
+
+const a = new A();
+const b = new B();
+exclude(b);
+a.b = b;
+const ma = manage(a);
+```
+
+You may invoke the exlcude method before or after you manage the object:
+
+```ts
+class B {
+  public c = 1;
+}
+class A {
+  public b;
+}
+
+const a = new A();
+const b = new B();
+a.b = b;
+const ma = manage(a);
+exclude(ma.b);
+```
+
+For more details, please refer to the test cases in [./test/exclude.spec.ts](./test/exclude.spec.ts).
+
+
 ## Utility methods
 
 ### `run`
