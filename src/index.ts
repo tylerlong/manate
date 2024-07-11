@@ -1,5 +1,4 @@
 import EventEmitter from './event-emitter';
-
 import type { Managed } from './models';
 import { ManateEvent, Children } from './models';
 
