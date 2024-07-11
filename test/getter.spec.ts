@@ -9,9 +9,9 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     managed.$e.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     if (managed.visibleTodos) {
       expect(events).toEqual([
@@ -28,9 +28,9 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     managed.$e.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     if (managed.visibleTodos()) {
       expect(events).toEqual([{ name: 'get', paths: ['visibility'] }]);

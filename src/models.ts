@@ -5,10 +5,12 @@ export type Managed<T> = T & { $e: EventEmitter; _dispose: () => void };
 export class ManateEvent {
   public name: 'get' | 'set';
   public paths: PropertyKey[];
+  public emitters: WeakSet<EventEmitter>;
 
-  public constructor(name: 'get' | 'set', paths: PropertyKey[]) {
+  public constructor(name: 'get' | 'set', paths: PropertyKey[], emitters: WeakSet<EventEmitter> = null) {
     this.name = name;
     this.paths = paths;
+    this.emitters = emitters ?? new WeakSet();
   }
 
   public get pathString() {
@@ -27,7 +29,7 @@ export class Child {
   public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ManateEvent) => {
-      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths]));
+      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths], event.emitters));
     };
     this.emitter.on(this.listener);
   }

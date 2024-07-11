@@ -4,9 +4,9 @@ import type { ManateEvent } from '../src/models';
 describe('index', () => {
   test('default', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     managed.$e.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     managed.a = 'world';
     managed.b.c = 'yes!';
@@ -20,9 +20,9 @@ describe('index', () => {
   test('subscribe to sub prop', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
     const emitter = (managed.b as any).$e;
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     emitter.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     managed.a = 'world';
     managed.b.c = 'yes!';
@@ -34,9 +34,9 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     managed.$e.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     managed.b = { c: 'hello' };
     managed.b.c = 'world';
@@ -52,9 +52,9 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
-    const events: ManateEvent[] = [];
+    const events: { name: string; paths: PropertyKey[] }[] = [];
     managed.$e.on((event: ManateEvent) => {
-      events.push(event);
+      events.push({ name: event.name, paths: event.paths });
     });
     managed.b = { c: 'hello' };
     const temp = managed.b;

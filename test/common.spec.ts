@@ -1,4 +1,5 @@
 import EventEmitter from '../src/event-emitter';
+import { ManateEvent } from '../src/models';
 
 describe('index', () => {
   test('event emitter on and off', () => {
@@ -8,6 +9,6 @@ describe('index', () => {
     };
     eventEmitter.on(callback);
     eventEmitter.removeAllListeners();
-    eventEmitter.emit('Hello');
+    eventEmitter.emit(new ManateEvent('set', []));
   });
 });

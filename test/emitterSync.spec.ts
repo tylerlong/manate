@@ -1,19 +1,20 @@
 import EventEmitter from '../src/event-emitter';
+import { ManateEvent } from '../src/models';
 
 describe('emitter sync', () => {
   test('default', async () => {
     const emitter = new EventEmitter();
-    const list: number[] = [];
-    emitter.on((number: number) => {
-      list.push(number);
+    const list: ManateEvent[] = [];
+    emitter.on((me: ManateEvent) => {
+      list.push(me);
     });
-    emitter.emit(0);
-    emitter.emit(1);
-    emitter.emit(2);
-    list.push(100);
-    emitter.emit(3);
-    emitter.emit(4);
-    emitter.emit(5);
-    expect(list).toEqual([0, 1, 2, 100, 3, 4, 5]);
+    emitter.emit(new ManateEvent('set', [0]));
+    emitter.emit(new ManateEvent('set', [1]));
+    emitter.emit(new ManateEvent('set', [2]));
+    list.push(new ManateEvent('set', [100]));
+    emitter.emit(new ManateEvent('set', [3]));
+    emitter.emit(new ManateEvent('set', [4]));
+    emitter.emit(new ManateEvent('set', [5]));
+    expect(list.map((me) => me.paths[0])).toEqual([0, 1, 2, 100, 3, 4, 5]);
   });
 });

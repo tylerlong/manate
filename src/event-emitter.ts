@@ -12,6 +12,10 @@ class EventEmitter {
   }
 
   public emit(me: ManateEvent) {
+    if (me.emitters.has(this)) {
+      return;
+    }
+    me.emitters.add(this);
     this.listeners.forEach((listener) => listener(me));
   }
 
