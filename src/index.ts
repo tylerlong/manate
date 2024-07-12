@@ -8,7 +8,14 @@ export const exclude = <T extends object>(obj: T): T => {
   return obj;
 };
 
-const canManage = (obj: object) => typeof obj === 'object' && obj !== null && !excludeSet.has(obj);
+const canManage = (obj: object) =>
+  typeof obj === 'object' &&
+  obj !== null &&
+  !excludeSet.has(obj) &&
+  !(obj instanceof Map) &&
+  !(obj instanceof Set) &&
+  !(obj instanceof WeakMap) &&
+  !(obj instanceof WeakSet);
 
 const childrenKey = Symbol('children');
 
