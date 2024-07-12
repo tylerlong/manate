@@ -282,8 +282,7 @@ So we use `useState(integer)` to re-render.
 
 - It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`.
   - Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
-- It doesn't monitor some built-in objects, such as `Set` & `Map`.
-- It desn't work with native objects, such as `window.speechSynthesis.getVoices()`.
+- It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
 - `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
   - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.
 - `_dispose` is a reserved property/function name. Don't use it as a property/function name.

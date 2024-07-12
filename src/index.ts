@@ -9,13 +9,7 @@ export const exclude = <T extends object>(obj: T): T => {
 };
 
 const canManage = (obj: object) =>
-  typeof obj === 'object' &&
-  obj !== null &&
-  !excludeSet.has(obj) &&
-  !(obj instanceof Map) &&
-  !(obj instanceof Set) &&
-  !(obj instanceof WeakMap) &&
-  !(obj instanceof WeakSet);
+  obj && (Array.isArray(obj) || obj.toString() === '[object Object]') && !excludeSet.has(obj);
 
 const childrenKey = Symbol('children');
 
@@ -54,7 +48,7 @@ export function manage<T extends object>(target: T): Managed<T> {
         };
       }
       const value = Reflect.get(target, path, receiver);
-      if (typeof value !== 'function') {
+      if (typeof path !== 'symbol' && typeof value !== 'function') {
         if (!excludeSet.has(target) && !excludeSet.has(managed)) {
           emitter.emit(new ManateEvent('get', [path]));
         }
