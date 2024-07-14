@@ -1,6 +1,7 @@
 import type EventEmitter from './event-emitter';
+import type { disposeSymbol } from '.';
 
-export type Managed<T> = T & { $e: EventEmitter; _dispose: () => void };
+export type Managed<T> = T & { $e: EventEmitter; [disposeSymbol]: () => void };
 
 export class ManateEvent {
   public name: 'get' | 'set';

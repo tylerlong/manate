@@ -2,6 +2,8 @@ import EventEmitter from './event-emitter';
 import type { Managed } from './models';
 import { ManateEvent, Children } from './models';
 
+export const disposeSymbol = Symbol('dispose');
+
 const excludeSet = new WeakSet<object>();
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
@@ -41,7 +43,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       if (path === childrenKey) {
         return children;
       }
-      if (path === '_dispose') {
+      if (path === disposeSymbol) {
         return () => {
           children.releasesAll();
           emitter.removeAllListeners();

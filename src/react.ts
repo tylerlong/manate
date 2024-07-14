@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { manage, run } from '.';
 import type { Managed, ManateEvent } from './models';
+import { disposeSymbol } from '.';
 
 export class Component<P = {}, S = {}> extends React.Component<P, S> {
   public managed?: Managed<P>;
@@ -46,7 +47,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
   };
 
   public dispose() {
-    this.managed?._dispose();
+    this.managed?.[disposeSymbol]();
     this.managed = undefined;
   }
 }
@@ -55,7 +56,7 @@ export const auto = (render: () => JSX.Element, props): JSX.Element => {
   const prev = useRef<() => void>();
   prev.current?.();
   const dispose = () => {
-    managed?._dispose();
+    managed?.[disposeSymbol]();
     managed = undefined;
   };
   prev.current = dispose;
