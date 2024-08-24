@@ -41,19 +41,16 @@ describe('React', () => {
   });
 
   test('functional component', async () => {
-    const App = (props: { store: Store }) => {
-      const render = () => {
-        const { store } = props;
-        renderHistory.push(store.count);
-        return (
-          <div>
-            <span>{store.count}</span>
-            <button onClick={() => store.increase()}>+</button>
-          </div>
-        );
-      };
-      return auto(render, props);
-    };
+    const App = auto((props: { store: Store }) => {
+      const { store } = props;
+      renderHistory.push(store.count);
+      return (
+        <div>
+          <span>{store.count}</span>
+          <button onClick={() => store.increase()}>+</button>
+        </div>
+      );
+    });
     store.count = 0;
     renderHistory.length = 0;
     let renderer;

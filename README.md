@@ -37,48 +37,24 @@ class Store {
 const store = manage(new Store());
 ```
 
-### React class Component
+### React
 
-```ts
-import { Component } from 'manate/react';
-
-class App extends Component<{ store: Store }> {
-  render() {
-    const store = this.props.store;
-    return (
-      <div>
-        <span>{store.count}</span>
-        <button onClick={() => store.increase()}>+</button>
-      </div>
-    );
-  }
-}
-```
-
-### React functional Component
-
-```ts
+```tsx
 import { auto } from 'manate/react';
 
-const App = (props: { store: Store }) => {
+const App = auto((props: { store: Store }) => {
   const { store } = props;
-  const render = () => (
+  return (
     <Space>
       <Button onClick={() => store.decrease()}>-</Button>
       {store.count}
       <Button onClick={() => store.increase()}>+</Button>
     </Space>
   );
-  return auto(render, props);
-};
+});
 ```
 
-It's fully compatible with `useState` and `useEffect`.
-
-## Demo Applications
-
-- [Counter](https://github.com/tylerlong/manate-demo-counter)
-- [TodoMVC](https://github.com/tylerlong/manate-demo-todomvc)
+It's fully compatible with React hooks.
 
 ## Event Emitter
 
@@ -157,7 +133,6 @@ exclude(ma.b);
 
 For more details, please refer to the test cases in [./test/exclude.spec.ts](./test/exclude.spec.ts).
 
-
 ## Utility methods
 
 ### `run`
@@ -226,12 +201,9 @@ const auto = (render, props): JSX.Element | null => {
 };
 ```
 
-**Big problem** is：upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless。
+Short answer: it's a bad practice to generate the result of render in `useEffect`.
 
-Another minor issue：
-But there is an issue: React `StrictMode` doesn't works for us any more.
-Because StrictMode will try to do double rendering. However, we only invoke `render` in `useEffect`.
-So double rendering will not invoke `render` at all, thus it cannot help us to detect non-pure function issues.
+**Big problem** is：upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless.
 
 So is there a way to run `autoRun` out of `useEffect`? Nope, because `autoRun` by design is long running process and has side effects.
 It's not a good idea to run `autoRun` for every `render`. `run` is more suitable for this case.
@@ -277,6 +249,7 @@ So we use `useState(integer)` to re-render.
 
 - Reference https://github.com/pmndrs/valtio
   - This one is very similar to manate
+- Deprecated API in React test cases
 
 ## Known limitations
 

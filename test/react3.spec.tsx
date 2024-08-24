@@ -31,28 +31,22 @@ class Hanzi {
 
 const store = manage(new Store());
 
-const App = (props: { store: Store }) => {
-  const render = () => {
-    const store = props.store;
-    return (
-      <>
-        <button onClick={() => store.changeHanzi()}>Change Hanzi</button>
-        <HanziComponent hanzi={store.hanzi} />
-      </>
-    );
-  };
-  return auto(render, props);
-};
+const App = auto((props: { store: Store }) => {
+  const store = props.store;
+  return (
+    <>
+      <button onClick={() => store.changeHanzi()}>Change Hanzi</button>
+      <HanziComponent hanzi={store.hanzi} />
+    </>
+  );
+});
 
 const renderHistory: string[] = [];
-const HanziComponent = (props: { hanzi: Hanzi }) => {
-  const render = () => {
-    const { hanzi } = props;
-    renderHistory.push(hanzi.hanzi);
-    return <>{hanzi.hanzi}</>;
-  };
-  return auto(render, props);
-};
+const HanziComponent = auto((props: { hanzi: Hanzi }) => {
+  const { hanzi } = props;
+  renderHistory.push(hanzi.hanzi);
+  return <>{hanzi.hanzi}</>;
+});
 
 describe('React', () => {
   test('default', async () => {
