@@ -6,7 +6,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "lint": "eslint --fix '**/*.{ts,tsx}' && prettier --write . && sort-package-json",
+    "lint": "tsc --jsx react --skipLibCheck --noEmit --target ESNext --moduleResolution NodeNext --module NodeNext ./src/*.ts && eslint --fix '**/*.{ts,tsx,js,jsx}' && prettier --write . && sort-package-json",
     "prepublishOnly": "yarn test && tsc && cp lib/* . && rm -rf lib",
     "postpublish": "ts-node scripts/postpublish.ts",
     "test": "jest -w 1 test/$t"

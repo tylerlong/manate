@@ -54,7 +54,7 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 }
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
-  const temp = (props: P) => {
+  return memo((props: P) => {
     const render = () => Component(props);
     const prev = useRef<() => void>();
     prev.current?.();
@@ -81,6 +81,5 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
     };
     managed.$e.on(listener);
     return result;
-  };
-  return memo(temp);
+  });
 };
