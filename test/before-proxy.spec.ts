@@ -2,7 +2,7 @@ import { manage } from '../src';
 import type { ManateEvent } from '../src/models';
 
 describe('before proxy', () => {
-  test("Updagte an object before it's proxied", () => {
+  test("Update an object before it's proxied", () => {
     class A {
       public b: B;
     }
@@ -22,7 +22,7 @@ describe('before proxy', () => {
     expect(events).toEqual(['set-b']);
   });
 
-  test("Updagte an object after it's proxied", () => {
+  test("Update an object after it's proxied", () => {
     class A {
       public b: B;
     }
@@ -42,7 +42,7 @@ describe('before proxy', () => {
     expect(events).toEqual(['set-b', 'get-b', 'set-b+c']);
   });
 
-  test("Updagte an object after it's proxied - 2", () => {
+  test("Update an object after it's proxied - 2", () => {
     class A {
       public b: B;
     }
