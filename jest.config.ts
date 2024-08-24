@@ -1,6 +1,6 @@
 const config = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   testTimeout: 1000,
 };
 

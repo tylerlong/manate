@@ -1,4 +1,5 @@
-import TestRenderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { Component } from '../src/react';
@@ -21,7 +22,7 @@ class App extends Component<{ store: Store }> {
     renderHistory.push(store.count);
     return (
       <div>
-        <span>{store.count}</span>
+        <span role="counter">{store.count}</span>
         <button onClick={() => store.increase()}>+</button>
       </div>
     );
@@ -31,17 +32,17 @@ class App extends Component<{ store: Store }> {
 describe('React', () => {
   test('default', async () => {
     expect(store.$e.listenerCount()).toBe(0);
-    const renderer = TestRenderer.create(<App store={store} />);
+    render(<App store={store} />);
     expect(store.$e.listenerCount()).toBe(1);
-    const minusButton = renderer.root.find((el) => el.type === 'button' && el.children && el.children[0] === '+');
-    minusButton.props.onClick();
+    const minusButton = screen.getByText('+');
+    await userEvent.click(minusButton);
     expect(store.$e.listenerCount()).toBe(1);
-    minusButton.props.onClick();
+    await userEvent.click(minusButton);
     expect(store.$e.listenerCount()).toBe(1);
-    minusButton.props.onClick();
+    await userEvent.click(minusButton);
     expect(store.$e.listenerCount()).toBe(1);
-    const span = renderer.root.find((el) => el.type === 'span');
-    expect(store.count).toEqual(parseInt(span.children[0] as string, 10));
+    const span = await screen.findByRole('counter');
+    expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(3);
     expect(renderHistory).toEqual([0, 1, 2, 3]);
   });
