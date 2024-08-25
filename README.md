@@ -249,7 +249,6 @@ So we use `useState(integer)` to re-render.
 
 - Reference https://github.com/pmndrs/valtio
   - This one is very similar to manate
-- Deprecated API in React test cases
 
 ## Known limitations
 
