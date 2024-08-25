@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { manage } from '../src';
 import type { ManateEvent } from '../src/models';
 

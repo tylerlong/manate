@@ -1,4 +1,6 @@
-import { render, screen } from '@testing-library/react';
+// @vitest-environment jsdom
+import { describe, expect, test } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -45,5 +47,6 @@ describe('React', () => {
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(3);
     expect(renderHistory).toEqual([0, 1, 2, 3]);
+    cleanup();
   });
 });

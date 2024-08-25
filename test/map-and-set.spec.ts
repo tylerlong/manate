@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { manage } from '../src';
 
 describe('map and set', () => {

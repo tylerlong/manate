@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+// @vitest-environment jsdom
+import { render, screen, cleanup, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React, { act } from 'react';
+import React from 'react';
+import { describe, expect, test } from 'vitest';
 
 import { Component } from '../src/react';
 import { manage } from '../src';
@@ -74,5 +76,6 @@ describe('React', () => {
       store.hanzi.hanzi = '阳';
     });
     expect(renderHistory).toEqual(['刘', '劉', '春', '耀', '涛', '阳']);
+    cleanup();
   });
 });

@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
-import React, { act } from 'react';
+// @vitest-environment jsdom
+import { render, screen, cleanup, act } from '@testing-library/react';
+import React from 'react';
+import { describe, expect, test } from 'vitest';
 
 import { Component, auto } from '../src/react';
 import { manage } from '../src';
@@ -42,6 +44,7 @@ describe('React', () => {
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(2);
     expect(renderHistory).toEqual([0, 1, 2]);
+    cleanup();
   });
 
   test('functional component', async () => {
@@ -68,5 +71,6 @@ describe('React', () => {
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(2);
     expect(renderHistory).toEqual([0, 1, 2]);
+    cleanup();
   });
 });

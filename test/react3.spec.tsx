@@ -1,6 +1,8 @@
+// @vitest-environment jsdom
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, expect, test } from 'vitest';
 
 import { auto } from '../src/react';
 import { manage } from '../src';
@@ -64,5 +66,6 @@ describe('React', () => {
     expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春']);
     await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春', '涛']);
+    cleanup();
   });
 });

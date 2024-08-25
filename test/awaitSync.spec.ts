@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 describe('await sync', () => {
   test('default', async () => {
     const func = () => 1;

@@ -1,3 +1,5 @@
+import { describe, test } from 'vitest';
+
 import EventEmitter from '../src/event-emitter';
 import { ManateEvent } from '../src/models';
 

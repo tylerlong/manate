@@ -1,3 +1,5 @@
+import { describe, test } from 'vitest';
+
 import { manage } from '../src';
 
 describe('circular', () => {
