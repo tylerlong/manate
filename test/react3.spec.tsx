@@ -48,7 +48,7 @@ const renderHistory: string[] = [];
 const HanziComponent = auto((props: { hanzi: Hanzi }) => {
   const { hanzi } = props;
   renderHistory.push(hanzi.hanzi);
-  return <>{hanzi.hanzi}</>;
+  return hanzi.hanzi;
 });
 
 describe('React', () => {
