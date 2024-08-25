@@ -1,5 +1,5 @@
-import TestRenderer, { act } from 'react-test-renderer';
-import React from 'react';
+import { render, screen } from '@testing-library/react';
+import React, { act } from 'react';
 
 import { Component, auto } from '../src/react';
 import { manage } from '../src';
@@ -23,7 +23,7 @@ describe('React', () => {
         renderHistory.push(store.count);
         return (
           <div>
-            <span>{store.count}</span>
+            <span role="count">{store.count}</span>
             <button onClick={() => store.increase()}>+</button>
           </div>
         );
@@ -31,11 +31,15 @@ describe('React', () => {
     }
     store.count = 0;
     renderHistory.length = 0;
-    const renderer = TestRenderer.create(<App store={store} />);
-    store.count += 1;
-    store.count += 1;
-    const span = renderer.root.find((el) => el.type === 'span');
-    expect(store.count).toEqual(parseInt(span.children[0] as string, 10));
+    render(<App store={store} />);
+    act(() => {
+      store.count += 1;
+    });
+    act(() => {
+      store.count += 1;
+    });
+    const span = screen.getByRole('count');
+    expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(2);
     expect(renderHistory).toEqual([0, 1, 2]);
   });
@@ -46,24 +50,23 @@ describe('React', () => {
       renderHistory.push(store.count);
       return (
         <div>
-          <span>{store.count}</span>
+          <span role="count">{store.count}</span>
           <button onClick={() => store.increase()}>+</button>
         </div>
       );
     });
     store.count = 0;
     renderHistory.length = 0;
-    let renderer;
-    await act(async () => {
-      renderer = TestRenderer.create(<App store={store} />);
-    });
-    await act(async () => {
-      store.count += 1;
+    render(<App store={store} />);
+    act(() => {
       store.count += 1;
     });
-    const span = renderer.root.find((el) => el.type === 'span');
-    expect(store.count).toEqual(parseInt(span.children[0] as string, 10));
+    act(() => {
+      store.count += 1;
+    });
+    const span = screen.getByRole('count');
+    expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
     expect(store.count).toBe(2);
-    expect(renderHistory).toEqual([0, 2, 2]);
+    expect(renderHistory).toEqual([0, 1, 2]);
   });
 });

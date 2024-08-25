@@ -1,5 +1,6 @@
-import TestRenderer from 'react-test-renderer';
-import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import React, { act } from 'react';
 
 import { Component } from '../src/react';
 import { manage } from '../src';
@@ -54,20 +55,24 @@ class HanziComponent extends Component<{ hanzi: Hanzi }> {
 
 describe('React', () => {
   test('default', async () => {
-    const renderer = TestRenderer.create(<App store={store} />);
-    const changeButton = renderer.root.find(
-      (el) => el.type === 'button' && el.children && el.children[0] === 'Change Hanzi',
-    );
+    render(<App store={store} />);
+    const changeButton = screen.getByText('Change Hanzi');
     expect(renderHistory).toEqual(['刘']);
-    store.hanzi.hanzi = '劉';
+    act(() => {
+      store.hanzi.hanzi = '劉';
+    });
     expect(renderHistory).toEqual(['刘', '劉']);
-    changeButton.props.onClick();
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '劉', '春']);
-    store.hanzi.hanzi = '耀';
+    act(() => {
+      store.hanzi.hanzi = '耀';
+    });
     expect(renderHistory).toEqual(['刘', '劉', '春', '耀']);
-    changeButton.props.onClick();
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '劉', '春', '耀', '涛']);
-    store.hanzi.hanzi = '阳';
+    act(() => {
+      store.hanzi.hanzi = '阳';
+    });
     expect(renderHistory).toEqual(['刘', '劉', '春', '耀', '涛', '阳']);
   });
 });

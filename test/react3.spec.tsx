@@ -1,5 +1,6 @@
-import TestRenderer, { act } from 'react-test-renderer';
 import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { auto } from '../src/react';
 import { manage } from '../src';
@@ -50,33 +51,18 @@ const HanziComponent = auto((props: { hanzi: Hanzi }) => {
 
 describe('React', () => {
   test('default', async () => {
-    let renderer;
-    await act(async () => {
-      renderer = TestRenderer.create(<App store={store} />);
-    });
-    const changeButton = renderer.root.find(
-      (el) => el.type === 'button' && el.children && el.children[0] === 'Change Hanzi',
-    );
+    render(<App store={store} />);
+    const changeButton = screen.getByText('Change Hanzi');
     expect(renderHistory).toEqual(['刘']);
-    await act(async () => {
-      changeButton.props.onClick();
-    });
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春']);
-    await act(async () => {
-      changeButton.props.onClick();
-    });
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春', '涛']);
-    await act(async () => {
-      changeButton.props.onClick();
-    });
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春', '涛', '刘']);
-    await act(async () => {
-      changeButton.props.onClick();
-    });
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春']);
-    await act(async () => {
-      changeButton.props.onClick();
-    });
+    await userEvent.click(changeButton);
     expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春', '涛']);
   });
 });
