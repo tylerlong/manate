@@ -8,8 +8,8 @@
   "scripts": {
     "lint": "tsc --jsx react --skipLibCheck --noEmit --target ESNext --moduleResolution NodeNext --module NodeNext ./src/*.ts && eslint --fix '**/*.{ts,tsx,js,jsx}' && prettier --write . && sort-package-json",
     "prepublishOnly": "yarn test && tsc && cp lib/* . && rm -rf lib",
-    "postpublish": "ts-node scripts/postpublish.ts",
-    "test": "jest -w 1 test/$t"
+    "postpublish": "rm index.* models.* react.* event-emitter.*",
+    "test": "jest"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -32,7 +32,6 @@
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "shell-commands": "^0.4.2",
     "sort-package-json": "^2.10.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
