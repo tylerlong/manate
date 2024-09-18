@@ -59,8 +59,9 @@ export function manage<T extends object>(target: T): Managed<T> {
     },
     // eslint-disable-next-line max-params
     set: (target: T, path: PropertyKey, value: any, receiver?: T): boolean => {
-      // no assign object to itself, doesn't make sense
-      if (canManage(value) && value === Reflect.get(target, path)) {
+      // do not trigger if assign the same value
+      // array length is a special case, it is always the same value
+      if (path !== 'length' && value === Reflect.get(target, path)) {
         return true;
       }
       // remove old child in case there is one
