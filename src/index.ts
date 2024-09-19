@@ -72,6 +72,20 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       return true;
     },
+    deleteProperty: (target: T, path: string) => {
+      delete target[path];
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+        emitter.emit(new ManateEvent('delete', [path]));
+      }
+      return true;
+    },
+    ownKeys: (target: T) => {
+      const value = Object.getOwnPropertyNames(target);
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+        emitter.emit(new ManateEvent('keys', []));
+      }
+      return value;
+    },
   });
 
   // first time init
@@ -84,16 +98,32 @@ export function manage<T extends object>(target: T): Managed<T> {
 }
 
 export function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
-  const cache = new Set<string>();
+  const caches = { get: new Set<string>(), keys: new Set<string>() };
   const listener = (event: ManateEvent) => {
-    if (event.name === 'get') {
-      cache.add(event.pathString);
+    if (event.name === 'keys' || event.name === 'get') {
+      caches[event.name].add(event.pathString);
     }
   };
   managed.$e.on(listener);
   const result = func();
   managed.$e.off(listener);
-  const isTrigger = (event: ManateEvent) => event.name === 'set' && cache.has(event.pathString);
+  const isTrigger = (event: ManateEvent) => {
+    switch (event.name) {
+      case 'set': {
+        if (caches.get.has(event.pathString) || caches.keys.has(event.parentPathString)) {
+          return true;
+        }
+        break;
+      }
+      case 'delete': {
+        if (caches.get.has(event.pathString) || caches.keys.has(event.parentPathString)) {
+          return true;
+        }
+        break;
+      }
+    }
+    return false;
+  };
   return [result, isTrigger];
 }
 

@@ -245,6 +245,16 @@ So we use `useState(integer)` to re-render.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
 
+
+### No complex logic for `isTrigger`
+
+Most events will be triggered by `set-get` and `delete-get` pairs. 
+In real apps, we will have `get` events for all parent paths. So we don't need to check parent paths for events triggering at all.
+
+`set-keys` is just a complementary to `set-get`. No need to check parent paths since `set-get` will be tiggered anyway.
+`delete-keys` is just a complementary to `delete-get`. No need to check parent paths since `delete-get` will be tiggered anyway.
+
+
 ## Todo
 
 - Reference https://github.com/pmndrs/valtio
