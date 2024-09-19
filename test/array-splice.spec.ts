@@ -13,9 +13,12 @@ describe('array splice', () => {
     arr.splice(2, 1);
     expect(events).toEqual([
       'get: length',
+      'has: 2',
       'get: 2',
+      'has: 3',
       'get: 3',
       'set: 2',
+      'has: 4',
       'get: 4',
       'set: 3',
       'delete: 4',

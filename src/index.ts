@@ -72,7 +72,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       return true;
     },
-    deleteProperty: (target: T, path: string) => {
+    deleteProperty: (target: T, path: PropertyKey) => {
       delete target[path];
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent('delete', [path]));
@@ -83,6 +83,13 @@ export function manage<T extends object>(target: T): Managed<T> {
       const value = Object.getOwnPropertyNames(target);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent('keys', []));
+      }
+      return value;
+    },
+    has: (target: T, path: PropertyKey) => {
+      const value = path in target;
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+        emitter.emit(new ManateEvent('has', [path]));
       }
       return value;
     },
@@ -98,9 +105,9 @@ export function manage<T extends object>(target: T): Managed<T> {
 }
 
 export function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
-  const caches = { get: new Set<string>(), keys: new Set<string>() };
+  const caches = { get: new Set<string>(), keys: new Set<string>(), has: new Set<string>() };
   const listener = (event: ManateEvent) => {
-    if (event.name === 'keys' || event.name === 'get') {
+    if (event.name in caches) {
       caches[event.name].add(event.pathString);
     }
   };
@@ -110,13 +117,21 @@ export function run<T>(managed: Managed<T>, func: Function): [result: any, isTri
   const isTrigger = (event: ManateEvent) => {
     switch (event.name) {
       case 'set': {
-        if (caches.get.has(event.pathString) || caches.keys.has(event.parentPathString)) {
+        if (
+          caches.get.has(event.pathString) ||
+          caches.keys.has(event.parentPathString) ||
+          caches.has.has(event.pathString)
+        ) {
           return true;
         }
         break;
       }
       case 'delete': {
-        if (caches.get.has(event.pathString) || caches.keys.has(event.parentPathString)) {
+        if (
+          caches.get.has(event.pathString) ||
+          caches.keys.has(event.parentPathString) ||
+          caches.has.has(event.pathString)
+        ) {
           return true;
         }
         break;

@@ -4,11 +4,15 @@ import type { disposeSymbol } from '.';
 export type Managed<T> = T & { $e: EventEmitter; [disposeSymbol]: () => void };
 
 export class ManateEvent {
-  public name: 'get' | 'set' | 'delete' | 'keys';
+  public name: 'get' | 'set' | 'delete' | 'keys' | 'has';
   public paths: PropertyKey[];
   public emitters: WeakSet<EventEmitter>;
 
-  public constructor(name: 'get' | 'set' | 'delete' | 'keys', paths: PropertyKey[], emitters?: WeakSet<EventEmitter>) {
+  public constructor(
+    name: 'get' | 'set' | 'delete' | 'keys' | 'has',
+    paths: PropertyKey[],
+    emitters?: WeakSet<EventEmitter>,
+  ) {
     this.name = name;
     this.paths = paths;
     this.emitters = emitters ?? new WeakSet();

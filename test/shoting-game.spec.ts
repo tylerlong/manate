@@ -36,6 +36,7 @@ describe('shot gaming', () => {
     expect(events).toEqual([
       'get: gun+bullets',
       'get: gun+bullets+length',
+      'has: gun+bullets+0',
       'get: gun+bullets+0',
       'get: gun+bullets+0+id',
     ]);

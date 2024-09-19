@@ -254,6 +254,8 @@ In real apps, we will have `get` events for all parent paths. So we don't need t
 `set-keys` is just a complementary to `set-get`. No need to check parent paths since `set-get` will be tiggered anyway.
 `delete-keys` is just a complementary to `delete-get`. No need to check parent paths since `delete-get` will be tiggered anyway.
 
+Same applies to `set-has` and `delete-has`.
+
 
 ## Todo
 
@@ -262,8 +264,7 @@ In real apps, we will have `get` events for all parent paths. So we don't need t
 
 ## Known limitations
 
-- It only monitors `get` and `set` of properties. It doesn't monitor `delete`, `has` and `keys`.
-  - Because in 99.9% cases, `get` & `set` are sufficient to monitor and manage data.
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
 - `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
+  - I am not sure that it is still an issue
   - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.
