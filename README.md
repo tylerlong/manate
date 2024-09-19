@@ -245,17 +245,15 @@ So we use `useState(integer)` to re-render.
   - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
   - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
 
-
 ### No complex logic for `isTrigger`
 
-Most events will be triggered by `set-get` and `delete-get` pairs. 
+Most events will be triggered by `set-get` and `delete-get` pairs.
 In real apps, we will have `get` events for all parent paths. So we don't need to check parent paths for events triggering at all.
 
 `set-keys` is just a complementary to `set-get`. No need to check parent paths since `set-get` will be tiggered anyway.
 `delete-keys` is just a complementary to `delete-get`. No need to check parent paths since `delete-get` will be tiggered anyway.
 
 Same applies to `set-has` and `delete-has`.
-
 
 ## Todo
 
@@ -265,6 +263,3 @@ Same applies to `set-has` and `delete-has`.
 ## Known limitations
 
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
-- `autoRun` doesn't monitor brand new properties. It only monitors existing properties.
-  - I am not sure that it is still an issue
-  - workaround: pre-define all properties in the object. Event it doesn't have value yet, set it to `null`. `null` is better than `undefined` because `undefined` is not a valid value for JSON string.

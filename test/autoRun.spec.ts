@@ -41,4 +41,19 @@ describe('autoRun', () => {
     await waitFor({ interval: 20 });
     expect(numbers).toEqual([0, 4]);
   });
+
+  test('unknown property', async () => {
+    class Store {
+      public number = 0;
+    }
+    const store = manage(new Store());
+    const numbers: number[] = [];
+    const { start, stop } = autoRun(store, () => {
+      numbers.push((store as any).number2); // number2 is an unknown property
+    });
+    start();
+    (store as any).number2 = 1;
+    stop();
+    expect(numbers).toEqual([undefined, 1]);
+  });
 });
