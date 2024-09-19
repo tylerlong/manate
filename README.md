@@ -5,15 +5,14 @@ It is the most straightforward way to manage global state in React.
 
 ## What's the value of manate?
 
+It allows you to maintain your app state in OOP style, although OOP is optional to use this library.
+
 It supports TypeScript very well.
 
 It is very straightforward to use. You don't need to learn any new concepts.
 
-It allows you to maintain your app state in OOP style.  
-I am not saying that OOP style is the best practice for state management.
-But if do want to code your state in OOP style, you should give this library a try.
+Merely 300 lines of code. There is no rocket science in this library.
 
-Merely 200+ lines of code. There is no rocket science in this library.
 
 ## Installation
 
@@ -179,55 +178,6 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
-#### Question #1: why not use `autoRun` to support React hooks?
-
-Well, actually it is possible and implementation is even shorter and simpler:
-
-```ts
-const auto = (render, props): JSX.Element | null => {
-  const [r, refresh] = useState(null);
-  useEffect(() => {
-    const managed = manage(props);
-    const { start, stop } = autoRun(managed, () => {
-      refresh(render());
-    });
-    start();
-    return () => {
-      stop();
-      releaseChildren(managed);
-    };
-  }, []);
-  return r;
-};
-```
-
-Short answer: it's a bad practice to generate the result of render in `useEffect`.
-
-**Big problem** is：upstream components cannot invoke `render`, because `render` is inside `useEffect`. So upstream `useState` becomes useless.
-
-So is there a way to run `autoRun` out of `useEffect`? Nope, because `autoRun` by design is long running process and has side effects.
-It's not a good idea to run `autoRun` for every `render`. `run` is more suitable for this case.
-
-#### Question #2: why use `run` to support React hooks?
-
-According to the analysis above, if we want to support upstream component's `useState` and `strictMode`, we must run `render` outside `useEffect`.
-However, `run` requires a `managed` object. Building such a `managed` object has side effects. And when to dispose side effects? If we cannot answer this question, we cannot use `run`.
-After investigation, I found that `useRef` can be used to dispose the side effects created in last render.
-
-## React Strict Mode
-
-Ref: https://react.dev/reference/react/StrictMode
-
-For functional components, `StrictMode` will run `useEffect`, then cleanup, then run `useEffect` again.
-
-For class components, `StrictMode` will run `componentDidMount`, then `componentWillUnmount`, then `componentDidMount` again.
-If `componentDidMount` is undefined, it will run neither. However, we cannot assume that `componentDidMount` is undefined.
-
-For both cases, we do need the dispose logic in `componentWillUnmount` or `useEffect` cleanup. If we want to support `StrictMode`, we must write some setup code in `useEffect` and `componentDidMount`.
-Otherwise, dispose without re-setup, it won't work.
-
-For more details, please refer to `./src/react.ts`.
-
 ## `useState(boolean)` to re-render
 
 It's a bad idea. Because boolean has only two values.
@@ -256,9 +206,6 @@ Instead, we could make `position` a property of `monster`.
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
   - you also don't have to `on` and `off` again and again. Sometimes you just `on` and let it on until user explicit it request it to be off.
 - `run` and `autoRun` only support sync methods. for async methods, make sure that the async part is irrelevant because it won't be monitored.
-- rewrite some emitter.on to promise.
-  - the idea is great, but it will turn the library from sync to async, which will cause unexpected consequences.
-  - `React.render`, `EventEmitter.on`, `rxjs.observable.next` are all sync, there must be a good reason to stay with sync.
 
 ### No complex logic for `isTrigger`
 
@@ -274,7 +221,5 @@ Same applies to `set-has` and `delete-has`.
 
 - Reference https://github.com/pmndrs/valtio
   - This one is very similar to manate
-
-## Known limitations
-
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
+  - we could support `Set` and `Map`, to be done.

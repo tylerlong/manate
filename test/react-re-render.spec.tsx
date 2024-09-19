@@ -93,15 +93,22 @@ describe('React re-render', () => {
     render(<App store={store} />);
     expect(appCount).toBe(1);
     expect(bulletCount).toBe(1);
+
     act(() => {
       store.bullets[1] = new Bullet();
     });
-
     // re-render
     // this is inevitable in my opinion, because we have to re-render the parent to add new child
     expect(appCount).toBe(2);
-
     expect(bulletCount).toBe(2);
+
+    act(() => {
+      store.bullets[2] = new Bullet();
+    });
+    // re-render
+    // this is inevitable in my opinion, because we have to re-render the parent to add new child
+    expect(appCount).toBe(3);
+    expect(bulletCount).toBe(3);
     cleanup();
   });
 });
