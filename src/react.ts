@@ -1,57 +1,7 @@
-import type { FunctionComponent } from 'react';
-import React, { useState, useRef, useEffect, memo } from 'react';
+import { useState, useRef, useEffect, memo, type FunctionComponent } from 'react';
 
-import { manage, run } from '.';
+import { manage, run, disposeSymbol } from '.';
 import type { Managed, ManateEvent } from './models';
-import { disposeSymbol } from '.';
-
-export class Component<P = {}, S = {}> extends React.Component<P, S> {
-  public managed?: Managed<P>;
-  public isTrigger!: (event: ManateEvent) => boolean;
-
-  public constructor(props: Readonly<P>) {
-    super(props);
-
-    // rewrite render()
-    const render = this.render.bind(this);
-    this.render = () => {
-      this.dispose();
-      this.managed = manage(this.props);
-      const [result, isTrigger] = run(this.managed, render);
-      this.isTrigger = isTrigger;
-      this.managed.$e.on(this.listener);
-      return result;
-    };
-
-    // rewrite componentDidMount()
-    const componentDidMount = this.componentDidMount ? this.componentDidMount.bind(this) : () => {};
-    this.componentDidMount = () => {
-      // strict mode re-mount
-      if (!this.managed) {
-        this.managed = manage(this.props);
-        this.managed.$e.on(this.listener);
-      }
-      componentDidMount();
-    };
-    // rewrite componentWillUnmount()
-    const componentWillUnmount = this.componentWillUnmount ? this.componentWillUnmount.bind(this) : () => {};
-    this.componentWillUnmount = () => {
-      this.dispose();
-      componentWillUnmount();
-    };
-  }
-
-  public listener = (event: ManateEvent) => {
-    if (this.isTrigger(event)) {
-      this.forceUpdate();
-    }
-  };
-
-  public dispose() {
-    this.managed?.[disposeSymbol]();
-    this.managed = undefined;
-  }
-}
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo((props: P) => {

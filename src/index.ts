@@ -1,6 +1,5 @@
 import EventEmitter from './event-emitter';
-import type { Managed } from './models';
-import { ManateEvent, Children } from './models';
+import { ManateEvent, Children, type Managed } from './models';
 
 export const disposeSymbol = Symbol('dispose');
 
