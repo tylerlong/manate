@@ -236,6 +236,21 @@ Because `b === !!b`.
 
 So we use `useState(integer)` to re-render.
 
+## Best Practices
+
+Avoid using non-managed React props. Because it may cause lots of re-renders.
+
+For example:
+
+```tsx
+<Monster monster={monster} position={[0,0,0]}>
+```
+
+Above will re-render every time its parent re-renders. Because `[0,0,0]` is a new array every time.
+
+Instead, we could make `position` a property of `monster`.
+
+
 ## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
