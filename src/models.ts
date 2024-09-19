@@ -4,11 +4,11 @@ import type { disposeSymbol } from '.';
 export type Managed<T> = T & { $e: EventEmitter; [disposeSymbol]: () => void };
 
 export class ManateEvent {
-  public name: 'get' | 'set';
+  public name: 'get' | 'set' | 'delete' | 'keys';
   public paths: PropertyKey[];
   public emitters: WeakSet<EventEmitter>;
 
-  public constructor(name: 'get' | 'set', paths: PropertyKey[], emitters: WeakSet<EventEmitter> = null) {
+  public constructor(name: 'get' | 'set' | 'delete' | 'keys', paths: PropertyKey[], emitters?: WeakSet<EventEmitter>) {
     this.name = name;
     this.paths = paths;
     this.emitters = emitters ?? new WeakSet();
@@ -16,6 +16,13 @@ export class ManateEvent {
 
   public get pathString() {
     return this.paths.map((k) => k.toString()).join('+');
+  }
+
+  public get parentPathString() {
+    return this.paths
+      .slice(0, -1)
+      .map((k) => k.toString())
+      .join('+');
   }
 
   public toString() {

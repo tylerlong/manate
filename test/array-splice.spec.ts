@@ -11,6 +11,15 @@ describe('array splice', () => {
       events.push(event.toString());
     });
     arr.splice(2, 1);
-    expect(events).toEqual(['get: length', 'get: 2', 'get: 3', 'set: 2', 'get: 4', 'set: 3', 'set: length']);
+    expect(events).toEqual([
+      'get: length',
+      'get: 2',
+      'get: 3',
+      'set: 2',
+      'get: 4',
+      'set: 3',
+      'delete: 4',
+      'set: length',
+    ]);
   });
 });
