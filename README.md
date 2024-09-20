@@ -217,6 +217,41 @@ In real apps, we will have `get` events for all parent paths. So we don't need t
 
 Same applies to `set-has` and `delete-has`.
 
+## React support details
+
+I tried to use `autoRun` to implement `auto`. The code is short and it passes most tests:
+
+```ts
+import { useState, useEffect, memo, type FunctionComponent, type ReactNode } from 'react';
+
+import { manage, disposeSymbol, autoRun } from '.';
+
+export const auto = <P extends object>(Component: FunctionComponent<P>) => {
+  return memo((props: P) => {
+    const [r, setR] = useState<ReactNode>(null);
+    useEffect(() => {
+      const managed = manage(props);
+      const { start, stop } = autoRun(managed, () => {
+        setR(Component(managed));
+      });
+      start();
+      return () => {
+        stop();
+        managed?.[disposeSymbol]();
+      };
+    }, [props]);
+    return r;
+  });
+};
+```
+
+However, there are two major issues:
+
+1. React components are considered synchronous. We use `useEffect` to invoke `autoRun` to invoke `render` function, which is asynchronous. 
+  - It will cause all kinds of issues if we change from sync to async.
+2. We cannot use hooks at all. For example, `useRef` will cause "Error: Invalid hook call. Hooks can only be called inside of the body of a function component."
+  - I think it is because we run the render method in `useEffect`, which is not "the body of a function component".
+
 ## Todo
 
 - Reference https://github.com/pmndrs/valtio
