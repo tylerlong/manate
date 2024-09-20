@@ -57,8 +57,7 @@ describe('React re-render', () => {
     expect(bulletCount).toBe(4);
     cleanup();
 
-    // why this test case works? Because child's parent is not store, it is React props
-    // so change to child will not notify parent at all
+    // why this test case works? because React is async, refer to mutiple-parent.spec.tsx
   });
 
   test('Add new child', async () => {

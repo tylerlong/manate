@@ -256,6 +256,15 @@ Since `autoRun` is not a pure function, it has to be in `useEffect`. So we canno
 And we must have the render function run in the body of the function component. And we use `useRef` and `useEffect` to dispose.
 For more information, please refer to [./src/react.ts](./src/react.ts).
 
+## React async
+
+As I tested, if a react component has several children components. The react component will render first, then the children components will render.
+Which means, the render function will finish before children render functions start.
+Which means, component will not get those "get" events triggered by children components.
+Which means, change in children components will not trigger the parent component to re-render.
+
+This is very unexpected. But it may not be a bad thing at all. Since we don't want to re-render the parent component if the change in children components doesn't affect the parent component.
+
 ## Todo
 
 - Reference https://github.com/pmndrs/valtio
