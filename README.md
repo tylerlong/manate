@@ -252,6 +252,10 @@ However, there are two major issues:
 2. We cannot use hooks at all. For example, `useRef` will cause "Error: Invalid hook call. Hooks can only be called inside of the body of a function component."
   - I think it is because we run the render method in `useEffect`, which is not "the body of a function component".
 
+Since `autoRun` is not a pure function, it has to be in `useEffect`. So we cannot use `autoRun`. We need to use `run` instead.
+And we must have the render function run in the body of the function component. And we use `useRef` and `useEffect` to dispose.
+For more information, please refer to [./src/react.ts](./src/react.ts).
+
 ## Todo
 
 - Reference https://github.com/pmndrs/valtio

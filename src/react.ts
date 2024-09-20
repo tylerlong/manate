@@ -5,24 +5,26 @@ import type { Managed, ManateEvent } from './models';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo((props: P) => {
-    const render = () => Component(props);
-    const prev = useRef<() => void>();
-    prev.current?.();
+    // dispose
+    const disposeFunction = useRef<() => void>();
+    disposeFunction.current?.();
     const dispose = () => {
       managed?.[disposeSymbol]();
       managed = undefined;
     };
-    prev.current = dispose;
+    disposeFunction.current = dispose;
     useEffect(() => {
       if (!managed) {
-        // strict mode re-mount
+        // <StrictMode /> will run useEffect, dispose and re-run useEffect
         managed = manage(props);
         managed.$e.on(listener);
       }
       return dispose;
     }, []);
+
+    // run and refresh
     let managed: Managed<P> | undefined = manage(props);
-    const [result, isTrigger] = run(managed, render);
+    const [result, isTrigger] = run(managed, () => Component(props));
     const [, refresh] = useState(0);
     const listener = (event: ManateEvent) => {
       if (isTrigger(event)) {
