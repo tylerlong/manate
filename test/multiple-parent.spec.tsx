@@ -113,4 +113,51 @@ describe('multiple parent', () => {
 
     // this test case proves that React is "async"
   });
+
+  test('plain React', () => {
+    let id = 0;
+    class Bullet {
+      public id: number;
+      public speed = 10;
+      public constructor() {
+        this.id = id++;
+      }
+    }
+    class Store {
+      public bullets: { [key: number]: Bullet } = {};
+    }
+
+    const events: string[] = [];
+    const BulletComponent = (props: { bullet: Bullet }) => {
+      events.push('BulletComponent start');
+      const { bullet } = props;
+      events.push('BulletComponent end');
+      return bullet.speed;
+    };
+
+    const App = (props: { store: Store }) => {
+      events.push('App start');
+      const { store } = props;
+      const temp = Object.values(store.bullets).map((bullet) => <BulletComponent key={bullet.id} bullet={bullet} />);
+      events.push('App end');
+      return temp;
+    };
+
+    const store = manage(new Store());
+    store.bullets[0] = new Bullet();
+    store.bullets[1] = new Bullet();
+
+    render(<App store={store} />);
+    expect(events).toEqual([
+      'App start',
+      'App end',
+      'BulletComponent start',
+      'BulletComponent end',
+      'BulletComponent start',
+      'BulletComponent end',
+    ]);
+    cleanup();
+
+    // this test case proves that React is "async"
+  });
 });
