@@ -271,3 +271,7 @@ This is very unexpected. But it may not be a bad thing at all. Since we don't wa
   - This one is very similar to manate
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
   - we could support `Set` and `Map`, to be done.
+- Support transaction
+  - when in transiction, isTrigger will return false.
+  - when transaction ends, isTrigger will return return cached results. If one of them is true, then return true.
+  - typical example: array.splice should only isTrigger once
