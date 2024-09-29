@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
+import { autoRun, manage } from '../src';
 import type { ManateEvent } from '../src/models';
 
 describe('array splice', () => {
@@ -24,5 +24,20 @@ describe('array splice', () => {
       'delete: 4',
       'set: length',
     ]);
+  });
+
+  test('autoRun', () => {
+    const arr = manage([1, 2, 3, 4, 5]);
+    let count = 0;
+    const { start, stop } = autoRun(arr, () => {
+      JSON.stringify(arr);
+      count++;
+    });
+    start(); // trigger the first run
+    arr.$t = true;
+    arr.splice(2, 1); // trigger the second run
+    arr.$t = false;
+    stop();
+    expect(count).toBe(2);
   });
 });

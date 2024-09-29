@@ -49,7 +49,7 @@ export function manage<T extends object>(target: T): Managed<T> {
         };
       }
       const value = Reflect.get(target, path, receiver);
-      if (typeof path !== 'symbol' && typeof value !== 'function') {
+      if (path !== '$t' && typeof path !== 'symbol' && typeof value !== 'function') {
         if (!excludeSet.has(target) && !excludeSet.has(managed)) {
           emitter.emit(new ManateEvent('get', [path]));
         }
@@ -147,10 +147,13 @@ export function autoRun<T>(
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void } {
   let isTrigger: (event: ManateEvent) => boolean = () => true;
+  let triggered = false;
   const listener = (event: ManateEvent) => {
-    if (isTrigger(event)) {
+    triggered = triggered || isTrigger(event);
+    if (!managed.$t && triggered) {
       managed.$e.off(listener);
       runOnce();
+      triggered = false;
       managed.$e.on(listener);
     }
   };

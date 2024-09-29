@@ -1,7 +1,7 @@
 import type { disposeSymbol } from '.';
 import type EventEmitter from './event-emitter';
 
-export type Managed<T> = T & { $e: EventEmitter; [disposeSymbol]: () => void };
+export type Managed<T> = T & { $e: EventEmitter; [disposeSymbol]: () => void; $t: boolean };
 
 export class ManateEvent {
   public name: 'get' | 'set' | 'delete' | 'keys' | 'has';
