@@ -4,7 +4,7 @@ import { ManateEvent, Children } from './models';
 export { ManateEvent };
 
 export type Managed<T> = {
-  [K in keyof T]: T[K] extends object ? Managed<T[K]> : T[K];
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? T[K] : T[K] extends object ? Managed<T[K]> : T[K];
 } & {
   $e: EventEmitter;
   $t: boolean; // for transaction
