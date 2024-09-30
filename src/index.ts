@@ -149,10 +149,7 @@ export function autoRun<T>(
   let isTrigger: (event: ManateEvent) => boolean = () => true;
   const transactions = new Map<string, boolean>();
   const listener = (event: ManateEvent) => {
-    if (event.name !== 'set' && event.name !== 'delete') {
-      return;
-    }
-    let triggered = false;
+    let shouldRun = false;
     // start/end transaction
     if (event.name === 'set' && event.paths[event.paths.length - 1] === '$t') {
       const value = event.paths.reduce((acc, key) => acc[key], managed) as unknown as boolean;
@@ -163,7 +160,7 @@ export function autoRun<T>(
         // end transaction
         const parentKeys = Array.from(transactions.keys()).filter((key) => event.parentPathString.startsWith(key));
         if (parentKeys.length === 1) {
-          triggered = transactions.get(parentKeys[0]) || false;
+          shouldRun = transactions.get(parentKeys[0]) || false;
         } else {
           // from long to short
           parentKeys.sort((k1, k2) => k2.length - k1.length);
@@ -172,19 +169,22 @@ export function autoRun<T>(
         transactions.delete(parentKeys[0]);
       }
     } else {
+      const triggered = isTrigger(event);
+      if (!triggered) {
+        return;
+      }
       const transactionKeys = Array.from(transactions.keys()).filter((key) => event.parentPathString.startsWith(key));
       if (transactionKeys.length === 0) {
-        // no transaction for this event
-        triggered = isTrigger(event);
+        shouldRun = true;
       } else {
         // only update the longest key
         const longestKey = transactionKeys.reduce((shortest, current) =>
           current.length > shortest.length ? current : shortest,
         );
-        transactions.set(longestKey, transactions.get(longestKey) || isTrigger(event));
+        transactions.set(longestKey, true);
       }
     }
-    if (triggered) {
+    if (shouldRun) {
       managed.$e.off(listener);
       runOnce();
       transactions.forEach((_, key) => transactions.set(key, false));
