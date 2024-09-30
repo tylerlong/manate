@@ -10,13 +10,13 @@ describe('emitter sync', () => {
     emitter.on((me: ManateEvent) => {
       list.push(me);
     });
-    emitter.emit(new ManateEvent('set', [0]));
-    emitter.emit(new ManateEvent('set', [1]));
-    emitter.emit(new ManateEvent('set', [2]));
-    list.push(new ManateEvent('set', [100]));
-    emitter.emit(new ManateEvent('set', [3]));
-    emitter.emit(new ManateEvent('set', [4]));
-    emitter.emit(new ManateEvent('set', [5]));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [0] }));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [1] }));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [2] }));
+    list.push(new ManateEvent({ name: 'set', paths: [100] }));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [3] }));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [4] }));
+    emitter.emit(new ManateEvent({ name: 'set', paths: [5] }));
     expect(list.map((me) => me.paths[0])).toEqual([0, 1, 2, 100, 3, 4, 5]);
   });
 });

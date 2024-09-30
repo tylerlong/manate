@@ -57,7 +57,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       const value = Reflect.get(target, path, receiver);
       if (path !== '$t' && typeof path !== 'symbol' && typeof value !== 'function') {
         if (!excludeSet.has(target) && !excludeSet.has(managed)) {
-          emitter.emit(new ManateEvent('get', [path]));
+          emitter.emit(new ManateEvent({ name: 'get', paths: [path] }));
         }
       }
       return value;
@@ -74,12 +74,11 @@ export function manage<T extends object>(target: T): Managed<T> {
       Reflect.set(target, path, manageChild(path, value), receiver);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(
-          new ManateEvent(
-            'set',
-            [path],
-            undefined,
-            typeof value === 'number' || typeof value === 'boolean' ? value : undefined,
-          ),
+          new ManateEvent({
+            name: 'set',
+            paths: [path],
+            value: typeof value === 'number' || typeof value === 'boolean' ? value : undefined,
+          }),
         );
       }
       return true;
@@ -89,21 +88,21 @@ export function manage<T extends object>(target: T): Managed<T> {
       children.releaseChild(path);
       delete target[path];
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
-        emitter.emit(new ManateEvent('delete', [path]));
+        emitter.emit(new ManateEvent({ name: 'delete', paths: [path] }));
       }
       return true;
     },
     ownKeys: (target: T) => {
       const value = Object.getOwnPropertyNames(target);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
-        emitter.emit(new ManateEvent('keys', []));
+        emitter.emit(new ManateEvent({ name: 'keys', paths: [] }));
       }
       return value;
     },
     has: (target: T, path: PropertyKey) => {
       const value = path in target;
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
-        emitter.emit(new ManateEvent('has', [path]));
+        emitter.emit(new ManateEvent({ name: 'has', paths: [path] }));
       }
       return value;
     },

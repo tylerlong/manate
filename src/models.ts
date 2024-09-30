@@ -6,17 +6,16 @@ export class ManateEvent {
   public value: number | boolean | undefined; // only save value for number and boolean
   public emitters: WeakSet<EventEmitter>;
 
-  // eslint-disable-next-line max-params
-  public constructor(
-    name: 'get' | 'set' | 'delete' | 'keys' | 'has',
-    paths: PropertyKey[],
-    emitters?: WeakSet<EventEmitter>,
-    value?: number | boolean,
-  ) {
-    this.name = name;
-    this.paths = paths;
-    this.emitters = emitters ?? new WeakSet();
-    this.value = value;
+  public constructor(options: {
+    name: 'get' | 'set' | 'delete' | 'keys' | 'has';
+    paths: PropertyKey[];
+    emitters?: WeakSet<EventEmitter>;
+    value?: number | boolean;
+  }) {
+    this.name = options.name;
+    this.paths = options.paths;
+    this.emitters = options.emitters ?? new WeakSet();
+    this.value = options.value;
   }
 
   public get pathString() {
@@ -66,7 +65,7 @@ class Child {
   public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ManateEvent) => {
-      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths], event.emitters, event.value));
+      parentEmitter.emit(new ManateEvent({ ...event, paths: [path, ...event.paths] }));
     };
     this.emitter.on(this.listener);
   }
