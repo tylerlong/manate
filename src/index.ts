@@ -73,7 +73,14 @@ export function manage<T extends object>(target: T): Managed<T> {
       children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
-        emitter.emit(new ManateEvent('set', [path]));
+        emitter.emit(
+          new ManateEvent(
+            'set',
+            [path],
+            undefined,
+            typeof value === 'number' || typeof value === 'boolean' ? value : undefined,
+          ),
+        );
       }
       return true;
     },
@@ -154,7 +161,7 @@ export function autoRun<T>(
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void } {
-  const transactionsManager = new TransactionsManager(managed);
+  const transactionsManager = new TransactionsManager();
   const listener = (event: ManateEvent) => {
     if (transactionsManager.shouldRun(event)) {
       managed.$e.off(listener);

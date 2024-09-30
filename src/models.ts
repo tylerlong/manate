@@ -3,16 +3,20 @@ import type EventEmitter from './event-emitter';
 export class ManateEvent {
   public name: 'get' | 'set' | 'delete' | 'keys' | 'has';
   public paths: PropertyKey[];
+  public value: number | boolean | undefined; // only save value for number and boolean
   public emitters: WeakSet<EventEmitter>;
 
+  // eslint-disable-next-line max-params
   public constructor(
     name: 'get' | 'set' | 'delete' | 'keys' | 'has',
     paths: PropertyKey[],
     emitters?: WeakSet<EventEmitter>,
+    value?: number | boolean,
   ) {
     this.name = name;
     this.paths = paths;
     this.emitters = emitters ?? new WeakSet();
+    this.value = value;
   }
 
   public get pathString() {
@@ -62,7 +66,7 @@ class Child {
   public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
     this.emitter = emitter;
     this.listener = (event: ManateEvent) => {
-      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths], event.emitters));
+      parentEmitter.emit(new ManateEvent(event.name, [path, ...event.paths], event.emitters, event.value));
     };
     this.emitter.on(this.listener);
   }

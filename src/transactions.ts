@@ -1,13 +1,10 @@
-import type { Managed } from '.';
 import type { ManateEvent } from './models';
 
-class TransactionsManager<T> {
+class TransactionsManager {
   public isTrigger: (event: ManateEvent) => boolean;
   public transactions = new Map<string, boolean>();
-  private managed: Managed<T>;
 
-  public constructor(managed: Managed<T>, isTrigger: (event: ManateEvent) => boolean = () => false) {
-    this.managed = managed;
+  public constructor(isTrigger: (event: ManateEvent) => boolean = () => false) {
     this.isTrigger = isTrigger;
   }
 
@@ -15,8 +12,7 @@ class TransactionsManager<T> {
     let r = false;
     // start/end transaction
     if (event.name === 'set' && event.paths[event.paths.length - 1] === '$t') {
-      const value = event.paths.reduce((acc, key) => acc[key], this.managed) as unknown as boolean;
-      if (value === true) {
+      if (event.value === true) {
         // start transaction
         this.transactions.set(event.parentPathString, false);
       } else {
