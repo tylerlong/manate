@@ -13,7 +13,6 @@ It is very straightforward to use. You don't need to learn any new concepts.
 
 Merely 300 lines of code. There is no rocket science in this library.
 
-
 ## Installation
 
 ```
@@ -200,7 +199,6 @@ Above will re-render every time its parent re-renders. Because `[0,0,0]` is a ne
 
 Instead, we could make `position` a property of `monster`.
 
-
 ## Transactions
 
 Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
@@ -217,7 +215,7 @@ managed.$t = false; // end transaction
 // `console.log` will be triggered if there were changes
 ```
 
-There could be multiple transactions at the same time. 
+There could be multiple transactions at the same time.
 Transactions could be nested. An change will not trigger run until all enclosing transactions end.
 
 ```ts
@@ -227,12 +225,11 @@ const { start } = autoRun(managed, () => {
 start(); // trigger `console.log`
 managed.$t = true;
 managed.a.$t = true;
-// changes to `managed.a` will not trigger console.log until both transactions end 
+// changes to `managed.a` will not trigger console.log until both transactions end
 managed.a.$t = false;
 managed.$t = false;
 // `console.log` will be triggered if there were changes
 ```
-
 
 ## Development Notes
 
@@ -280,10 +277,13 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
 
 However, there are two major issues:
 
-1. React components are considered synchronous. We use `useEffect` to invoke `autoRun` to invoke `render` function, which is asynchronous. 
-  - It will cause all kinds of issues if we change from sync to async.
+1. React components are considered synchronous. We use `useEffect` to invoke `autoRun` to invoke `render` function, which is asynchronous.
+
+- It will cause all kinds of issues if we change from sync to async.
+
 2. We cannot use hooks at all. For example, `useRef` will cause "Error: Invalid hook call. Hooks can only be called inside of the body of a function component."
-  - I think it is because we run the render method in `useEffect`, which is not "the body of a function component".
+
+- I think it is because we run the render method in `useEffect`, which is not "the body of a function component".
 
 Since `autoRun` is not a pure function, it has to be in `useEffect`. So we cannot use `autoRun`. We need to use `run` instead.
 And we must have the render function run in the body of the function component. And we use `useRef` and `useEffect` to dispose.
@@ -304,4 +304,3 @@ This is very unexpected. But it may not be a bad thing at all. Since we don't wa
   - This one is very similar to manate
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
   - we could support `Set` and `Map`, to be done.
-- typings update: all properties should also be `Managed<K>`.

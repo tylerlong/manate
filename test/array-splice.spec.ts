@@ -26,7 +26,7 @@ describe('array splice', () => {
     ]);
   });
 
-  test('autoRun', () => {
+  test('autoRun+transaction', () => {
     const arr = manage([1, 2, 3, 4, 5]);
     let count = 0;
     const { start, stop } = autoRun(arr, () => {

@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
 import { autoRun, manage } from '../src';
-import type { Managed } from '../src/models';
 
 describe('transaction', () => {
   test('default', () => {
@@ -29,7 +28,7 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
     mo.a2.b2.c2.d2 = 1; // changes not covered by transaction
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
@@ -47,7 +46,7 @@ describe('transaction', () => {
     });
     start(); // trigger the first run
     mo.$t = true;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true; // we never end this transaction
+    mo.a1.b1.c1.$t = true; // we never end this transaction
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
@@ -65,11 +64,11 @@ describe('transaction', () => {
     });
     start(); // trigger the first run
     mo.$t = true;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = false;
+    mo.a1.b1.c1.$t = false;
     mo.$t = false;
     stop();
     expect(count).toBe(2);
@@ -84,12 +83,12 @@ describe('transaction', () => {
     });
     start(); // trigger the first run
     mo.$t = true;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
     mo.$t = false;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = false;
+    mo.a1.b1.c1.$t = false;
     stop();
     expect(count).toBe(2);
   });
@@ -103,11 +102,11 @@ describe('transaction', () => {
     });
     start(); // trigger the first run
     mo.$t = true;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = false;
+    mo.a1.b1.c1.$t = false;
     mo.a2.b2.c2.d2 = 1; // will not trigger more since there is a global transaction
     mo.$t = false;
     stop();
@@ -122,16 +121,16 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = false;
-    (mo.a2.b2.c2 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = false;
+    mo.a2.b2.c2.$t = true;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    (mo.a2.b2.c2 as unknown as Managed<{ $t: boolean }>).$t = false;
+    mo.a2.b2.c2.$t = false;
     stop();
     expect(count).toBe(3);
   });
@@ -144,16 +143,16 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = true;
-    (mo.a2.b2.c2 as unknown as Managed<{ $t: boolean }>).$t = true;
+    mo.a1.b1.c1.$t = true;
+    mo.a2.b2.c2.$t = true;
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    (mo.a1.b1.c1 as unknown as Managed<{ $t: boolean }>).$t = false;
-    (mo.a2.b2.c2 as unknown as Managed<{ $t: boolean }>).$t = false; // will not trigger since it is just triggered
+    mo.a1.b1.c1.$t = false;
+    mo.a2.b2.c2.$t = false; // will not trigger since it is just triggered
     stop();
     expect(count).toBe(2);
   });

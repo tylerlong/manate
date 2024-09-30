@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, memo, type FunctionComponent } from 'react';
 
+import type { Managed } from '.';
 import { manage, run, disposeSymbol } from '.';
-import type { Managed, ManateEvent } from './models';
+import type { ManateEvent } from './models';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo((props: P) => {

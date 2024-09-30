@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
 import { manage } from '../src';
-import type { Managed } from '../src/models';
 
 describe('native code', () => {
   test('Map', () => {
@@ -10,7 +9,7 @@ describe('native code', () => {
       public m: Map<string, string> = new Map();
     }
     const c = manage(new C());
-    expect((c.b as Managed<{ d: number }>).$e).toBeDefined();
-    expect((c.m as Managed<Map<string, string>>).$e).not.toBeDefined();
+    expect(c.b.$e).toBeDefined();
+    expect(c.m.$e).not.toBeDefined();
   });
 });

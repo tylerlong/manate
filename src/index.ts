@@ -1,18 +1,17 @@
 import EventEmitter from './event-emitter';
-import { ManateEvent, Children, type Managed } from './models';
+import { ManateEvent, Children } from './models';
+import type { Managed } from './types';
+import { excludeSet, canManage } from './utils';
+
+export { Managed };
 
 export const disposeSymbol = Symbol('dispose');
+const childrenSymbol = Symbol('children');
 
-const excludeSet = new WeakSet<object>();
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
   return obj;
 };
-
-const canManage = (obj: object) =>
-  obj && (Array.isArray(obj) || obj.toString() === '[object Object]') && !excludeSet.has(obj);
-
-const childrenKey = Symbol('children');
 
 export function manage<T extends object>(target: T): Managed<T> {
   // return if the object is already managed
@@ -39,7 +38,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       if (path === '$e') {
         return emitter;
       }
-      if (path === childrenKey) {
+      if (path === childrenSymbol) {
         return children;
       }
       if (path === disposeSymbol) {
