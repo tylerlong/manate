@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage } from '../src';
-import type { ManateEvent } from '../src/models';
+import { autoRun, manage, type ManateEvent } from '../src';
 
 describe('keys', () => {
   test('default', () => {

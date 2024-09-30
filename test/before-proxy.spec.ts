@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
-import type { ManateEvent } from '../src/models';
+import { manage, type ManateEvent } from '../src';
 
 describe('before proxy', () => {
   test("Update an object before it's proxied", () => {

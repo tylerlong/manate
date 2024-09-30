@@ -1,4 +1,4 @@
-import type { ManateEvent } from './models';
+import type { ManateEvent } from '.';
 
 class EventEmitter {
   private listeners: Function[] = [];

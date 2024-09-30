@@ -1,12 +1,21 @@
 import EventEmitter from './event-emitter';
 import { ManateEvent, Children } from './models';
-import type { Managed } from './types';
-import { excludeSet, canManage } from './utils';
 
-export { Managed };
+export { ManateEvent };
+
+export type Managed<T> = {
+  [K in keyof T]: T[K] extends object ? Managed<T[K]> : T[K];
+} & {
+  $e: EventEmitter;
+  $t: boolean; // for transaction
+  [disposeSymbol]: () => void;
+};
 
 export const disposeSymbol = Symbol('dispose');
-const childrenSymbol = Symbol('children');
+
+const excludeSet = new WeakSet<object>();
+const canManage = (obj: object) =>
+  obj && (Array.isArray(obj) || obj.toString() === '[object Object]') && !excludeSet.has(obj);
 
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
@@ -38,9 +47,6 @@ export function manage<T extends object>(target: T): Managed<T> {
       if (path === '$e') {
         return emitter;
       }
-      if (path === childrenSymbol) {
-        return children;
-      }
       if (path === disposeSymbol) {
         return () => {
           children.releasesAll();
@@ -71,6 +77,8 @@ export function manage<T extends object>(target: T): Managed<T> {
       return true;
     },
     deleteProperty: (target: T, path: PropertyKey) => {
+      // remove old child in case there is one
+      children.releaseChild(path);
       delete target[path];
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent('delete', [path]));

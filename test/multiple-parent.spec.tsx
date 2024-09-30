@@ -3,8 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import type { ManateEvent } from '../src/models';
-import { manage } from '../src';
+import { manage, type ManateEvent } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {

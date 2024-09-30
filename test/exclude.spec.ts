@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { exclude, manage } from '../src';
-import type { ManateEvent } from '../src/models';
+import { exclude, manage, type ManateEvent } from '../src';
 
 describe('exclude', () => {
   test('exclude beforewards', () => {
