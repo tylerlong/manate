@@ -147,13 +147,47 @@ export function autoRun<T>(
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void } {
   let isTrigger: (event: ManateEvent) => boolean = () => true;
-  let triggered = false;
+  const transactions = new Map<string, boolean>();
   const listener = (event: ManateEvent) => {
-    triggered = triggered || isTrigger(event);
-    if (!managed.$t && triggered) {
+    if (event.name !== 'set' && event.name !== 'delete') {
+      return;
+    }
+    let triggered = false;
+    // start/end transaction
+    if (event.name === 'set' && event.paths[event.paths.length - 1] === '$t') {
+      const value = event.paths.reduce((acc, key) => acc[key], managed) as unknown as boolean;
+      if (value === true) {
+        // start transaction
+        transactions.set(event.parentPathString, false);
+      } else {
+        // end transaction
+        const parentKeys = Array.from(transactions.keys()).filter((key) => event.parentPathString.startsWith(key));
+        if (parentKeys.length === 1) {
+          triggered = transactions.get(parentKeys[0]) || false;
+        } else {
+          // from long to short
+          parentKeys.sort((k1, k2) => k2.length - k1.length);
+          transactions.set(parentKeys[1], transactions.get(parentKeys[1]) || transactions.get(parentKeys[0]) || false);
+        }
+        transactions.delete(parentKeys[0]);
+      }
+    } else {
+      const transactionKeys = Array.from(transactions.keys()).filter((key) => event.parentPathString.startsWith(key));
+      if (transactionKeys.length === 0) {
+        // no transaction for this event
+        triggered = isTrigger(event);
+      } else {
+        // only update the longest key
+        const longestKey = transactionKeys.reduce((shortest, current) =>
+          current.length > shortest.length ? current : shortest,
+        );
+        transactions.set(longestKey, transactions.get(longestKey) || isTrigger(event));
+      }
+    }
+    if (triggered) {
       managed.$e.off(listener);
       runOnce();
-      triggered = false;
+      transactions.forEach((_, key) => transactions.set(key, false));
       managed.$e.on(listener);
     }
   };

@@ -201,6 +201,39 @@ Above will re-render every time its parent re-renders. Because `[0,0,0]` is a ne
 Instead, we could make `position` a property of `monster`.
 
 
+## Transactions
+
+Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
+
+```ts
+const { start } = autoRun(managed, () => {
+  console.log(JSON.stringify(managed));
+});
+start(); // trigger `console.log`
+managed.$t = true; // start transaction
+// perform changes to managed
+// no matter how many changes you make, `console.log` will not be triggered
+managed.$t = false; // end transaction
+// `console.log` will be triggered if there were changes
+```
+
+There could be multiple transactions at the same time. 
+Transactions could be nested. An change will not trigger run until all enclosing transactions end.
+
+```ts
+const { start } = autoRun(managed, () => {
+  console.log(JSON.stringify(managed));
+});
+start(); // trigger `console.log`
+managed.$t = true;
+managed.a.$t = true;
+// changes to `managed.a` will not trigger console.log until both transactions end 
+managed.a.$t = false;
+managed.$t = false;
+// `console.log` will be triggered if there were changes
+```
+
+
 ## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
@@ -271,7 +304,4 @@ This is very unexpected. But it may not be a bad thing at all. Since we don't wa
   - This one is very similar to manate
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
   - we could support `Set` and `Map`, to be done.
-- Support transaction
-  - when in transiction, isTrigger will return false.
-  - when transaction ends, isTrigger will return return cached results. If one of them is true, then return true.
-  - typical example: array.splice should only isTrigger once
+- typings update: all properties should also be `Managed<K>`.
