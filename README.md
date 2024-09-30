@@ -303,4 +303,3 @@ This is very unexpected. But it may not be a bad thing at all. Since we don't wa
   - This one is very similar to manate
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
   - we could support `Set` and `Map`, to be done.
-- React support transaction
