@@ -1,11 +1,10 @@
 import EventEmitter from './event-emitter';
-import { ManateEvent, Children } from './models';
+import { ManateEvent } from './models';
 import TransactionsManager from './transactions';
 
 export { ManateEvent };
 
-const emitterSymbol = Symbol('e');
-export const disposeSymbol = Symbol('dispose');
+const emitterSymbol = Symbol('emitter');
 
 export const $ = <T>(t: T): EventEmitter => {
   if (!t[emitterSymbol]) {
@@ -28,9 +27,8 @@ export function manage<T extends object>(target: T): T {
     return target;
   }
 
-  // two variables belongs to the scope of the managed
+  // this variable belongs to the scope of the managed
   const emitter = new EventEmitter();
-  const children = new Children();
 
   // manage a child and add it to children list
   const manageChild = (path: PropertyKey, value: any) => {
@@ -38,7 +36,7 @@ export function manage<T extends object>(target: T): T {
       return value;
     }
     const child = manage(value);
-    children.addChild(path, $(child), emitter);
+    emitter.children.addChild(path, $(child), emitter);
     return child;
   };
 
@@ -46,12 +44,6 @@ export function manage<T extends object>(target: T): T {
     get: (target: T, path: PropertyKey, receiver?: T) => {
       if (path === emitterSymbol) {
         return emitter;
-      }
-      if (path === disposeSymbol) {
-        return () => {
-          children.releasesAll();
-          emitter.removeAllListeners();
-        };
       }
       const value = Reflect.get(target, path, receiver);
       if (typeof value !== 'function' && !excludeSet.has(target) && !excludeSet.has(managed)) {
@@ -67,7 +59,7 @@ export function manage<T extends object>(target: T): T {
         return true;
       }
       // remove old child in case there is one
-      children.releaseChild(path);
+      emitter.children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(
@@ -82,7 +74,7 @@ export function manage<T extends object>(target: T): T {
     },
     deleteProperty: (target: T, path: PropertyKey) => {
       // remove old child in case there is one
-      children.releaseChild(path);
+      emitter.children.releaseChild(path);
       delete target[path];
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent({ name: 'delete', paths: [path] }));

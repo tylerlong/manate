@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, memo, type FunctionComponent } from 'react';
 
-import { manage, run, disposeSymbol, $, type ManateEvent } from '.';
+import { manage, run, $, type ManateEvent } from '.';
 import TransactionsManager from './transactions';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
@@ -9,7 +9,7 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
     const disposeFunction = useRef<() => void>();
     disposeFunction.current?.();
     const dispose = () => {
-      managed?.[disposeSymbol]();
+      if (managed) $(managed).dispose();
       managed = undefined;
     };
     disposeFunction.current = dispose;

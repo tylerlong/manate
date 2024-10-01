@@ -255,7 +255,7 @@ I tried to use `autoRun` to implement `auto`. The code is short and it passes mo
 ```ts
 import { useState, useEffect, memo, type FunctionComponent, type ReactNode } from 'react';
 
-import { manage, disposeSymbol, autoRun } from '.';
+import { manage, autoRun } from '.';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo((props: P) => {
@@ -268,7 +268,7 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
       start();
       return () => {
         stop();
-        managed?.[disposeSymbol]();
+        $(managed).dispose();
       };
     }, [props]);
     return r;

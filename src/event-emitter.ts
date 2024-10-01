@@ -1,6 +1,8 @@
+import { Children } from './models';
 import { ManateEvent } from '.';
 
 class EventEmitter {
+  public children = new Children();
   private listeners: Function[] = [];
 
   public on(listener: Function) {
@@ -32,6 +34,11 @@ class EventEmitter {
   }
   public commit() {
     this.emit(new ManateEvent({ name: 'transaction', paths: [], value: false }));
+  }
+
+  public dispose() {
+    this.removeAllListeners();
+    this.children.releasesAll();
   }
 }
 
