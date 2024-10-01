@@ -51,7 +51,7 @@ export class Children {
     }
   }
 
-  public releasesAll() {
+  public releaseAll() {
     for (const path of Object.keys(this.children)) {
       this.releaseChild(path);
     }

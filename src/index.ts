@@ -36,7 +36,7 @@ export function manage<T extends object>(target: T): T {
       return value;
     }
     const child = manage(value);
-    emitter.children.addChild(path, $(child), emitter);
+    emitter.addChild(path, $(child));
     return child;
   };
 
@@ -59,7 +59,7 @@ export function manage<T extends object>(target: T): T {
         return true;
       }
       // remove old child in case there is one
-      emitter.children.releaseChild(path);
+      emitter.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(
@@ -74,7 +74,7 @@ export function manage<T extends object>(target: T): T {
     },
     deleteProperty: (target: T, path: PropertyKey) => {
       // remove old child in case there is one
-      emitter.children.releaseChild(path);
+      emitter.releaseChild(path);
       delete target[path];
       if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent({ name: 'delete', paths: [path] }));

@@ -2,7 +2,7 @@ import { Children } from './models';
 import { ManateEvent } from '.';
 
 class EventEmitter {
-  public children = new Children();
+  private children = new Children();
   private listeners: Function[] = [];
 
   public on(listener: Function) {
@@ -13,6 +13,9 @@ class EventEmitter {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
+  /**
+   * @internal
+   */
   public emit(me: ManateEvent) {
     if (me.emitters.has(this)) {
       return; // prevent infinite loop
@@ -38,7 +41,20 @@ class EventEmitter {
 
   public dispose() {
     this.removeAllListeners();
-    this.children.releasesAll();
+    this.children.releaseAll();
+  }
+
+  /**
+   * @internal
+   */
+  public releaseChild(path: PropertyKey) {
+    this.children.releaseChild(path);
+  }
+  /**
+   * @internal
+   */
+  public addChild(path: PropertyKey, emitter: EventEmitter) {
+    this.children.addChild(path, emitter, this);
   }
 }
 
