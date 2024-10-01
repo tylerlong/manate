@@ -18,10 +18,10 @@ describe('typings', () => {
 
   test('dedault', async () => {
     const mo = manage({ a: { b: 1 } });
-    mo.a.$e.on(() => {
+    (mo.a as Managed<typeof mo.a>).$e.on(() => {
       // does nothing
     });
-    mo.a = manage({ b: 2 }); // manage it so TS compiler will not complain
+    mo.a = { b: 2 };
   });
 
   // test('extend', async () => {

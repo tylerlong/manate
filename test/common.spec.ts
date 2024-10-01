@@ -11,6 +11,6 @@ describe('index', () => {
     };
     eventEmitter.on(callback);
     eventEmitter.removeAllListeners();
-    eventEmitter.emit(new ManateEvent('set', []));
+    eventEmitter.emit(new ManateEvent({ name: 'set', paths: [] }));
   });
 });

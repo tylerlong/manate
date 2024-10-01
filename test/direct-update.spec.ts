@@ -19,9 +19,9 @@ What does this test case tell us?
     }
     const original = new WebPhone();
     const webPhone = manage(original);
-    expect(webPhone.callSessions.$e).toBeDefined();
+    expect(webPhone.callSessions['$e']).toBeDefined();
     original.callSessions.push(new CallSession());
-    expect(webPhone.callSessions[0].$e).toBeDefined();
+    expect(webPhone.callSessions[0]['$e']).toBeDefined();
     const events: string[] = [];
     webPhone.$e.on((event: ManateEvent) => {
       events.push(event.toString());

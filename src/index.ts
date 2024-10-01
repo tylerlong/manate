@@ -4,18 +4,13 @@ import TransactionsManager from './transactions';
 
 export { ManateEvent };
 
-export type Managed<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any ? T[K] : T[K] extends object ? Managed<T[K]> : T[K];
-} & {
-  $e: EventEmitter;
-};
+export type Managed<T> = T & { $e: EventEmitter };
 
 export const disposeSymbol = Symbol('dispose');
 
 const excludeSet = new WeakSet<object>();
 const canManage = (obj: object) =>
   obj && (Array.isArray(obj) || obj.toString() === '[object Object]') && !excludeSet.has(obj);
-
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
   return obj;
