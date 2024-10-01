@@ -11,7 +11,6 @@ export type Managed<T> = {
   $t: { begin: () => void; commit: () => void };
 };
 
-export const transactionSymbol = Symbol('transaction');
 export const disposeSymbol = Symbol('dispose');
 
 const excludeSet = new WeakSet<object>();
@@ -50,16 +49,8 @@ export function manage<T extends object>(target: T): Managed<T> {
       }
       if (path === '$t') {
         return {
-          begin: () => {
-            if (!target[transactionSymbol]) {
-              target[transactionSymbol] = true;
-              emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: true }));
-            }
-          },
-          commit: () => {
-            target[transactionSymbol] = false;
-            emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: false }));
-          },
+          begin: () => emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: true })),
+          commit: () => emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: false })),
         };
       }
       if (path === disposeSymbol) {
