@@ -1,4 +1,5 @@
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
+
 import { manage, type Managed } from '../src';
 
 describe('typings', () => {
@@ -21,5 +22,20 @@ describe('typings', () => {
       // does nothing
     });
     mo.a = manage({ b: 2 }); // manage it so TS compiler will not complain
+  });
+
+  // test('extend', async () => {
+  //   class A {
+  //     private p1 = 1;
+  //   }
+  //   const mo = manage(new A());
+  //   const a: A = mo; // doesn't compile.
+  //   expect(a).toBeDefined();
+  // });
+
+  test('cast', async () => {
+    const o = { a: 1 };
+    const mo = o as Managed<typeof o>;
+    expect(mo).toBeDefined();
   });
 });
