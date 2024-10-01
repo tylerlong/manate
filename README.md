@@ -203,14 +203,16 @@ Instead, we could make `position` a property of `monster`.
 Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
 
 ```ts
+import { Transaction } from 'manate';
+
 const { start } = autoRun(managed, () => {
   console.log(JSON.stringify(managed));
 });
 start(); // trigger `console.log`
-managed.$t = true; // start transaction
+const t = new Transaction(managed); // start transaction
 // perform changes to managed
 // no matter how many changes you make, `console.log` will not be triggered
-managed.$t = false; // end transaction
+t.commit(); // end transaction
 // `console.log` will be triggered if there were changes
 ```
 
@@ -222,11 +224,11 @@ const { start } = autoRun(managed, () => {
   console.log(JSON.stringify(managed));
 });
 start(); // trigger `console.log`
-managed.$t = true;
-managed.a.$t = true;
+const t1 = new Transaction(managed);
+const t2 = new Transaction(managed.a);
 // changes to `managed.a` will not trigger console.log until both transactions end
-managed.a.$t = false;
-managed.$t = false;
+t2.commit();
+t1.commit();
 // `console.log` will be triggered if there were changes
 ```
 

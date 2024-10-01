@@ -4,14 +4,13 @@ import TransactionsManager from './transactions';
 
 export { ManateEvent };
 
-export type Managed<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any ? T[K] : T[K] extends object ? Managed<T[K]> : T[K];
-} & {
+export type Managed<T> = T & {
   $e: EventEmitter;
-  $t: boolean; // for transaction
+  [transactionSymbol]: boolean;
   [disposeSymbol]: () => void;
 };
 
+export const transactionSymbol = Symbol('transaction');
 export const disposeSymbol = Symbol('dispose');
 
 const excludeSet = new WeakSet<object>();
@@ -55,7 +54,7 @@ export function manage<T extends object>(target: T): Managed<T> {
         };
       }
       const value = Reflect.get(target, path, receiver);
-      if (path !== '$t' && typeof path !== 'symbol' && typeof value !== 'function') {
+      if (typeof path !== 'symbol' && typeof value !== 'function') {
         if (!excludeSet.has(target) && !excludeSet.has(managed)) {
           emitter.emit(new ManateEvent({ name: 'get', paths: [path] }));
         }
@@ -182,4 +181,18 @@ export function autoRun<T>(
     },
     stop: () => managed.$e.off(listener),
   };
+}
+
+export class Transaction<T> {
+  private managed: Managed<T>;
+  public constructor(managed: Managed<T>) {
+    this.managed = managed;
+    if (this.managed[transactionSymbol]) {
+      throw new Error('Transaction already exists for ' + this.managed);
+    }
+    this.managed[transactionSymbol] = true;
+  }
+  public commit() {
+    this.managed[transactionSymbol] = false;
+  }
 }

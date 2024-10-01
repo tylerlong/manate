@@ -1,3 +1,4 @@
+import { transactionSymbol } from '.';
 import type { ManateEvent } from './models';
 
 class TransactionsManager {
@@ -11,7 +12,7 @@ class TransactionsManager {
   public shouldRun(event: ManateEvent) {
     let r = false;
     // start/end transaction
-    if (event.name === 'set' && event.paths[event.paths.length - 1] === '$t') {
+    if (event.name === 'set' && event.paths[event.paths.length - 1] === transactionSymbol) {
       if (event.value === true) {
         // start transaction
         this.transactions.set(event.parentPathString, false);

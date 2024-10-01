@@ -4,7 +4,7 @@ import React from 'react';
 import { describe, expect, test } from 'vitest';
 
 import { auto } from '../src/react';
-import { manage } from '../src';
+import { manage, Transaction } from '../src';
 
 class Store {
   public count = 0;
@@ -32,16 +32,16 @@ describe('React', () => {
     store.count = 0;
     renderHistory.length = 0;
     render(<App store={store} />);
-    act(() => {
-      store.$t = true; // transaction start
-      store.count += 1;
-    });
+    const t = new Transaction(store); // transaction start
     act(() => {
       store.count += 1;
     });
     act(() => {
       store.count += 1;
-      store.$t = false; // transaction end
+    });
+    act(() => {
+      store.count += 1;
+      t.commit(); // transaction end
     });
     const span = screen.getByRole('count');
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
