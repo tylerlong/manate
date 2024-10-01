@@ -1,4 +1,3 @@
-import { transactionSymbol } from '.';
 import type { ManateEvent } from './models';
 
 class TransactionsManager {
@@ -12,13 +11,13 @@ class TransactionsManager {
   public shouldRun(event: ManateEvent) {
     let r = false;
     // start/end transaction
-    if (event.name === 'set' && event.paths[event.paths.length - 1] === transactionSymbol) {
+    if (event.name === 'transaction') {
       if (event.value === true) {
         // start transaction
-        this.transactions.set(event.parentPathString, false);
+        this.transactions.set(event.pathString, false);
       } else {
         // end transaction
-        const parentKeys = Array.from(this.transactions.keys()).filter((key) => event.parentPathString.startsWith(key));
+        const parentKeys = Array.from(this.transactions.keys()).filter((key) => event.pathString.startsWith(key));
         if (parentKeys.length === 1) {
           r = this.transactions.get(parentKeys[0]) || false;
         } else {
@@ -36,9 +35,7 @@ class TransactionsManager {
       if (!triggered) {
         return;
       }
-      const transactionKeys = Array.from(this.transactions.keys()).filter((key) =>
-        event.parentPathString.startsWith(key),
-      );
+      const transactionKeys = Array.from(this.transactions.keys()).filter((key) => event.pathString.startsWith(key));
       if (transactionKeys.length === 0) {
         r = true;
       } else {

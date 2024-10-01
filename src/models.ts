@@ -1,13 +1,13 @@
 import type EventEmitter from './event-emitter';
 
 export class ManateEvent {
-  public name: 'get' | 'set' | 'delete' | 'keys' | 'has';
+  public name: 'get' | 'set' | 'delete' | 'keys' | 'has' | 'transaction';
   public paths: PropertyKey[];
   public value: number | boolean | undefined; // only save value for number and boolean
   public emitters: WeakSet<EventEmitter>;
 
   public constructor(options: {
-    name: 'get' | 'set' | 'delete' | 'keys' | 'has';
+    name: 'get' | 'set' | 'delete' | 'keys' | 'has' | 'transaction';
     paths: PropertyKey[];
     emitters?: WeakSet<EventEmitter>;
     value?: number | boolean;

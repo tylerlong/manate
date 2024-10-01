@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, Transaction, type ManateEvent } from '../src';
+import { autoRun, manage, type ManateEvent } from '../src';
 
 describe('array splice', () => {
   test('default', () => {
@@ -33,9 +33,9 @@ describe('array splice', () => {
       count++;
     });
     start(); // trigger the first run
-    const t = new Transaction(arr);
+    arr.$t.begin();
     arr.splice(2, 1); // trigger the second run
-    t.commit();
+    arr.$t.commit();
     stop();
     expect(count).toBe(2);
   });

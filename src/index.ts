@@ -4,10 +4,11 @@ import TransactionsManager from './transactions';
 
 export { ManateEvent };
 
-export type Managed<T> = T & {
+export type Managed<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? T[K] : T[K] extends object ? Managed<T[K]> : T[K];
+} & {
   $e: EventEmitter;
-  [transactionSymbol]: boolean;
-  [disposeSymbol]: () => void;
+  $t: { begin: () => void; commit: () => void };
 };
 
 export const transactionSymbol = Symbol('transaction');
@@ -47,6 +48,20 @@ export function manage<T extends object>(target: T): Managed<T> {
       if (path === '$e') {
         return emitter;
       }
+      if (path === '$t') {
+        return {
+          begin: () => {
+            if (!target[transactionSymbol]) {
+              target[transactionSymbol] = true;
+              emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: true }));
+            }
+          },
+          commit: () => {
+            target[transactionSymbol] = false;
+            emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: false }));
+          },
+        };
+      }
       if (path === disposeSymbol) {
         return () => {
           children.releasesAll();
@@ -71,7 +86,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
-      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
+      if (typeof path !== 'symbol' && !excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(
           new ManateEvent({
             name: 'set',
@@ -181,18 +196,4 @@ export function autoRun<T>(
     },
     stop: () => managed.$e.off(listener),
   };
-}
-
-export class Transaction<T> {
-  private managed: Managed<T>;
-  public constructor(managed: Managed<T>) {
-    this.managed = managed;
-    if (this.managed[transactionSymbol]) {
-      throw new Error('Transaction already exists for ' + this.managed);
-    }
-    this.managed[transactionSymbol] = true;
-  }
-  public commit() {
-    this.managed[transactionSymbol] = false;
-  }
 }
