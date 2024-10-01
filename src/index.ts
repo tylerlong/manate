@@ -4,9 +4,15 @@ import TransactionsManager from './transactions';
 
 export { ManateEvent };
 
-export type Managed<T> = T & { $e: EventEmitter };
-
+const emitterSymbol = Symbol('e');
 export const disposeSymbol = Symbol('dispose');
+
+export const $ = <T>(t: T): EventEmitter => {
+  if (!t[emitterSymbol]) {
+    throw new Error('Not managed object');
+  }
+  return t[emitterSymbol];
+};
 
 const excludeSet = new WeakSet<object>();
 const canManage = (obj: object) =>
@@ -16,10 +22,10 @@ export const exclude = <T extends object>(obj: T): T => {
   return obj;
 };
 
-export function manage<T extends object>(target: T): Managed<T> {
+export function manage<T extends object>(target: T): T {
   // return if the object is already managed
-  if ((target as Managed<T>).$e) {
-    return target as Managed<T>;
+  if (target[emitterSymbol]) {
+    return target;
   }
 
   // two variables belongs to the scope of the managed
@@ -32,13 +38,13 @@ export function manage<T extends object>(target: T): Managed<T> {
       return value;
     }
     const child = manage(value);
-    children.addChild(path, child.$e, emitter);
+    children.addChild(path, $(child), emitter);
     return child;
   };
 
   const managed = new Proxy(target, {
     get: (target: T, path: PropertyKey, receiver?: T) => {
-      if (path === '$e') {
+      if (path === emitterSymbol) {
         return emitter;
       }
       if (path === disposeSymbol) {
@@ -105,19 +111,19 @@ export function manage<T extends object>(target: T): Managed<T> {
     Reflect.set(target, path, manageChild(path, value), target);
   }
 
-  return managed as Managed<T>;
+  return managed;
 }
 
-export function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
+export function run<T>(managed: T, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
   const caches = { get: new Set<string>(), keys: new Set<string>(), has: new Set<string>() };
   const listener = (event: ManateEvent) => {
     if (event.name in caches) {
       caches[event.name].add(event.pathString);
     }
   };
-  managed.$e.on(listener);
+  $(managed).on(listener);
   const result = func();
-  managed.$e.off(listener);
+  $(managed).off(listener);
   const isTrigger = (event: ManateEvent) => {
     switch (event.name) {
       case 'set': {
@@ -147,17 +153,17 @@ export function run<T>(managed: Managed<T>, func: Function): [result: any, isTri
 }
 
 export function autoRun<T>(
-  managed: Managed<T>,
+  managed: T,
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void } {
   const transactionsManager = new TransactionsManager();
   const listener = (event: ManateEvent) => {
     if (transactionsManager.shouldRun(event)) {
-      managed.$e.off(listener);
+      $(managed).off(listener);
       runOnce();
       transactionsManager.reset();
-      managed.$e.on(listener);
+      $(managed).on(listener);
     }
   };
   let runOnce = () => {
@@ -169,8 +175,8 @@ export function autoRun<T>(
   return {
     start: () => {
       runOnce();
-      managed.$e.on(listener);
+      $(managed).on(listener);
     },
-    stop: () => managed.$e.off(listener),
+    stop: () => $(managed).off(listener),
   };
 }

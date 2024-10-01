@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('direct update', () => {
   test('default', () => {
@@ -19,11 +19,11 @@ What does this test case tell us?
     }
     const original = new WebPhone();
     const webPhone = manage(original);
-    expect(webPhone.callSessions['$e']).toBeDefined();
+    expect($(webPhone.callSessions)).toBeDefined();
     original.callSessions.push(new CallSession());
-    expect(webPhone.callSessions[0]['$e']).toBeDefined();
+    expect($(webPhone.callSessions[0])).toBeDefined();
     const events: string[] = [];
-    webPhone.$e.on((event: ManateEvent) => {
+    $(webPhone).on((event: ManateEvent) => {
       events.push(event.toString());
     });
     original.callSessions[0].status = 'calling'; // trigger event

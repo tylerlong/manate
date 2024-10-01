@@ -57,16 +57,16 @@ It's fully compatible with React hooks.
 ## Event Emitter
 
 ```ts
-import { manage, type ManateEvent } from 'manate';
+import { manage, $, type ManateEvent } from 'manate';
 
 class Store {}
 const store = manage(new Store());
 ```
 
-`store.$e` is an [EventEmitter](./src/events.ts) which will emit events about read/write to store. You can subscribe to events:
+`$(store)` is an [EventEmitter](./src/events.ts) which will emit events about read/write to store. You can subscribe to events:
 
 ```ts
-store.$e.on((event: ManateEvent) => {
+$(store).on((event: ManateEvent) => {
   // do something with event
 });
 ```
@@ -137,7 +137,7 @@ For more details, please refer to the test cases in [./test/exclude.spec.ts](./t
 The signature of `run` is
 
 ```ts
-function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
+function run<T>(managed: T, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
 ```
 
 - `managed` is generated from `manage` method: `const managed = manage(store)`.
@@ -147,7 +147,7 @@ function run<T>(managed: Managed<T>, func: Function): [result: any, isTrigger: (
   - when it returns true, most likely it's time to run `func()` again(because you will get a different result from last time).
 
 When you invoke `run(managed, func)`, `func()` is invoked immediately.
-You can subscribe to `managed.$e` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
+You can subscribe to `$(managed)` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
 
 For a sample usage of `run`, please check [./src/react.ts](./src/react.ts).
 
@@ -159,7 +159,7 @@ The signature of `autoRun` is
 
 ```ts
 function autoRun<T>(
-  managed: Managed<T>,
+  managed: T,
   func: () => void,
   decorator?: (func: () => void) => () => void,
 ): { start: () => void; stop: () => void };
@@ -203,16 +203,16 @@ Instead, we could make `position` a property of `monster`.
 Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
 
 ```ts
-import { Transaction } from 'manate';
+import { $ } from 'manate';
 
 const { start } = autoRun(managed, () => {
   console.log(JSON.stringify(managed));
 });
 start(); // trigger `console.log`
-const t = new Transaction(managed); // start transaction
+$(managed).begin(); // start transaction
 // perform changes to managed
 // no matter how many changes you make, `console.log` will not be triggered
-t.commit(); // end transaction
+$(managed).commit(); // end transaction
 // `console.log` will be triggered if there were changes
 ```
 
@@ -224,11 +224,11 @@ const { start } = autoRun(managed, () => {
   console.log(JSON.stringify(managed));
 });
 start(); // trigger `console.log`
-const t1 = new Transaction(managed);
-const t2 = new Transaction(managed.a);
+$(managed).begin();
+$(managed.a).begin();
 // changes to `managed.a` will not trigger console.log until both transactions end
-t2.commit();
-t1.commit();
+$(managed.a).commit();
+$(managed).commit();
 // `console.log` will be triggered if there were changes
 ```
 

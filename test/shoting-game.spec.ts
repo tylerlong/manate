@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('shot gaming', () => {
   test('default', () => {
@@ -20,7 +20,7 @@ describe('shot gaming', () => {
     const game = new Game();
     const mg = manage(game);
     const events: string[] = [];
-    mg.$e.on((event: ManateEvent) => {
+    $(mg).on((event: ManateEvent) => {
       events.push(event.toString());
     });
     game.gun.bullets.push(new Bullet());

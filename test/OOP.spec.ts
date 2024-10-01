@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -33,9 +33,9 @@ describe('OOP', () => {
     const managed = manage(store);
     const events: ManateEvent[] = [];
     const listener = (event: ManateEvent) => events.push(event);
-    managed.$e.on(listener);
+    $(managed).on(listener);
     managed.todoLists[0].todoItems[0].complete = true;
-    managed.$e.off(listener);
+    $(managed).off(listener);
     expect(events.map((event) => event.toString())).toEqual([
       'get: todoLists',
       'get: todoLists+0',

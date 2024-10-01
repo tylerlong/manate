@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('index', () => {
   test('default', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    managed.$e.on((event: ManateEvent) => {
+    $(managed).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     managed.a = 'world';
@@ -20,7 +20,7 @@ describe('index', () => {
 
   test('subscribe to sub prop', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
-    const emitter = (managed.b as any).$e;
+    const emitter = $(managed.b);
     const events: { name: string; paths: PropertyKey[] }[] = [];
     emitter.on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
@@ -36,7 +36,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    managed.$e.on((event: ManateEvent) => {
+    $(managed).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     managed.b = { c: 'hello' };
@@ -54,7 +54,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    managed.$e.on((event: ManateEvent) => {
+    $(managed).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     managed.b = { c: 'hello' };

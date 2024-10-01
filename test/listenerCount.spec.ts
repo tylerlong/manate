@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
+import { manage, $ } from '../src';
 
 describe('Listener count', () => {
   test('default', () => {
@@ -12,17 +12,17 @@ describe('Listener count', () => {
       },
     });
 
-    expect(managed.$e.listenerCount()).toBe(0);
-    expect((managed.a as any).$e.listenerCount()).toBe(1);
-    expect((managed.a.b as any).$e.listenerCount()).toBe(1);
-    expect((managed.a.b.c as any).$e).toBe(undefined);
+    expect($(managed).listenerCount()).toBe(0);
+    expect($(managed.a).listenerCount()).toBe(1);
+    expect($(managed.a.b).listenerCount()).toBe(1);
+    expect(() => $(managed.a.b.c)).toThrow();
     const temp = managed.a.b;
     managed.a.b = temp;
     managed.a.b = temp;
     managed.a.b = temp;
-    expect(managed.$e.listenerCount()).toBe(0);
-    expect((managed.a as any).$e.listenerCount()).toBe(1);
-    expect((managed.a.b as any).$e.listenerCount()).toBe(1);
-    expect((managed.a.b.c as any).$e).toBe(undefined);
+    expect($(managed).listenerCount()).toBe(0);
+    expect($(managed.a).listenerCount()).toBe(1);
+    expect($(managed.a.b).listenerCount()).toBe(1);
+    expect(() => $(managed.a.b.c)).toThrow();
   });
 });

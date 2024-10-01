@@ -1,24 +1,24 @@
-import { describe, expect, test } from 'vitest';
+import { describe, test } from 'vitest';
 
-import { manage, type Managed } from '../src';
+import { $, manage } from '../src';
 
 describe('typings', () => {
-  test('function should not be Managed<T[K]>', async () => {
+  test('default 1', async () => {
     class Store {
       public count = 0;
       public increase() {
         this.count += 1;
       }
     }
-    const store = new Store() as unknown as Managed<Store>;
-    store.increase(); // is not Managed<T[K]>, so TS compiler doesn't complain
+    const store = new Store();
+    store.increase();
     const mo = manage(store);
-    mo.increase(); // is not Managed<T[K]>, so TS compiler will complain
+    mo.increase();
   });
 
-  test('dedault', async () => {
+  test('default 2', async () => {
     const mo = manage({ a: { b: 1 } });
-    (mo.a as Managed<typeof mo.a>).$e.on(() => {
+    $(mo.a).on(() => {
       // does nothing
     });
     mo.a = { b: 2 };
@@ -32,10 +32,4 @@ describe('typings', () => {
   //   const a: A = mo; // doesn't compile.
   //   expect(a).toBeDefined();
   // });
-
-  test('cast', async () => {
-    const o = { a: 1 };
-    const mo = o as Managed<typeof o>;
-    expect(mo).toBeDefined();
-  });
 });

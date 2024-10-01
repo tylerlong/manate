@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import type { Managed } from '../src';
-import { autoRun, manage } from '../src';
+import { autoRun, manage, $ } from '../src';
 
 describe('transaction', () => {
   test('default', () => {
@@ -12,11 +11,11 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$e.begin();
+    $(mo).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$e.commit();
+    $(mo).commit();
     stop();
     expect(count).toBe(2);
   });
@@ -29,12 +28,12 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    const mc = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    mc.$e.begin();
+    const mc = mo.a1.b1.c1;
+    $(mc).begin();
     mo.a2.b2.c2.d2 = 1; // changes not covered by transaction
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    mc.$e.commit();
+    $(mc).commit();
     stop();
     expect(count).toBe(4);
   });
@@ -47,13 +46,13 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$e.begin();
-    (mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>).$e.begin();
+    $(mo).begin();
+    $(mo.a1.b1.c1).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$e.commit();
-    // we didn't invoke mo.a1.b1.c1.$e.commit();
+    $(mo).commit();
+    // we didn't invoke $(mo.a1.b1.c1).commit();
     stop();
     expect(count).toBe(1);
   });
@@ -66,14 +65,14 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$e.begin();
-    const mc = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    mc.$e.begin();
+    $(mo).begin();
+    const mc = mo.a1.b1.c1;
+    $(mc).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mc.$e.commit();
-    mo.$e.commit();
+    $(mc).commit();
+    $(mo).commit();
     stop();
     expect(count).toBe(2);
   });
@@ -86,14 +85,14 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$e.begin();
-    const mc = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    mc.$e.begin();
+    $(mo).begin();
+    const mc = mo.a1.b1.c1;
+    $(mc).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$e.commit();
-    mc.$e.commit();
+    $(mo).commit();
+    $(mc).commit();
     stop();
     expect(count).toBe(2);
   });
@@ -106,15 +105,15 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$e.begin();
-    const mc = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    mc.$e.begin();
+    $(mo).begin();
+    const mc = mo.a1.b1.c1;
+    $(mc).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mc.$e.commit();
+    $(mc).commit();
     mo.a2.b2.c2.d2 = 1; // will not trigger more since there is a global transaction
-    mo.$e.commit();
+    $(mo).commit();
     stop();
     expect(count).toBe(2);
   });
@@ -127,18 +126,18 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    const mc1 = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    mc1.$e.begin();
+    const mc1 = mo.a1.b1.c1;
+    $(mc1).begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mc1.$e.commit();
-    const mc2 = mo.a2.b2.c2 as Managed<typeof mo.a2.b2.c2>;
-    mc2.$e.begin();
+    $(mc1).commit();
+    const mc2 = mo.a2.b2.c2;
+    $(mc2).begin();
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    mc2.$e.commit();
+    $(mc2).commit();
     stop();
     expect(count).toBe(3);
   });
@@ -151,18 +150,18 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    const mc1 = mo.a1.b1.c1 as Managed<typeof mo.a1.b1.c1>;
-    const mc2 = mo.a2.b2.c2 as Managed<typeof mo.a2.b2.c2>;
-    mc1.$e.begin();
-    mc2.$e.begin();
+    const mc1 = mo.a1.b1.c1;
+    const mc2 = mo.a2.b2.c2;
+    $(mc1).begin();
+    $(mc2).begin();
     mc1.d1 = 1;
     mc1.d1 = 2;
     mc1.d1 = 3;
     mc2.d2 = 1;
     mc2.d2 = 2;
     mc2.d2 = 3;
-    mc1.$e.commit();
-    mc2.$e.commit(); // will not trigger again because just triggered
+    $(mc1).commit();
+    $(mc2).commit(); // will not trigger again because just triggered
     stop();
     expect(count).toBe(2);
   });

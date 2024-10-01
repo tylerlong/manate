@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { exclude, manage, type ManateEvent } from '../src';
+import { exclude, manage, type ManateEvent, $ } from '../src';
 
 describe('exclude', () => {
   test('exclude beforewards', () => {
@@ -15,7 +15,7 @@ describe('exclude', () => {
     ma.parent = b;
 
     const eventsCache: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       eventsCache.push(`${event.name} ${event.pathString}`);
     });
 
@@ -34,7 +34,7 @@ describe('exclude', () => {
     ma.parent = b;
 
     const eventsCache: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       eventsCache.push(`${event.name} ${event.pathString}`);
     });
 
@@ -60,7 +60,7 @@ describe('exclude', () => {
     a.b = exclude(b);
     const ma = manage(a);
     const eventsCache: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       eventsCache.push(`${event.name} ${event.pathString}`);
     });
     ma.b.c = 4;
@@ -78,7 +78,7 @@ describe('exclude', () => {
     const a = new A();
     const ma = manage(a);
     const eventsCache: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       eventsCache.push(`${event.name} ${event.pathString}`);
     });
     ma.b.c = 4;

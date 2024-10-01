@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
+import { manage, $ } from '../src';
 
 describe('native code', () => {
   test('Map', () => {
@@ -9,7 +9,7 @@ describe('native code', () => {
       public m: Map<string, string> = new Map();
     }
     const c = manage(new C());
-    expect(c.b['$e']).toBeDefined();
-    expect(c.m['$e']).not.toBeDefined();
+    expect($(c.b)).toBeDefined();
+    expect(() => $(c.m)).toThrow();
   });
 });

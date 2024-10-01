@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, memo, type FunctionComponent } from 'react';
 
-import { manage, run, disposeSymbol, type Managed, type ManateEvent } from '.';
+import { manage, run, disposeSymbol, $, type ManateEvent } from '.';
 import TransactionsManager from './transactions';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
@@ -17,13 +17,13 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
       if (!managed) {
         // <StrictMode /> will run useEffect, dispose and re-run useEffect
         managed = manage(props);
-        managed.$e.on(listener);
+        $(managed).on(listener);
       }
       return dispose;
     }, []);
 
     // run and refresh
-    let managed: Managed<P> | undefined = manage(props);
+    let managed: P | undefined = manage(props);
     const [result, isTrigger] = run(managed, () => Component(props));
     const [, refresh] = useState(0);
     const transactionsManager = new TransactionsManager(isTrigger);
@@ -32,7 +32,7 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
         refresh((i) => i + 1);
       }
     };
-    managed.$e.on(listener);
+    $(managed).on(listener);
     return result;
   });
 };

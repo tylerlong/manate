@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('before proxy', () => {
   test("Update an object before it's proxied", () => {
@@ -14,7 +14,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const events: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       events.push(`${event.name}-${event.pathString}`);
     });
     const b = new B();
@@ -34,7 +34,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const events: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       events.push(`${event.name}-${event.pathString}`);
     });
     const b = new B();
@@ -54,7 +54,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const events: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       events.push(`${event.name}-${event.pathString}`);
     });
     const b = new B();

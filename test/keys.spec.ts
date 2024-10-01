@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, type ManateEvent } from '../src';
+import { autoRun, manage, type ManateEvent, $ } from '../src';
 
 describe('keys', () => {
   test('default', () => {
@@ -41,7 +41,7 @@ describe('keys', () => {
     }
     const store = manage(new Store());
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    store.$e.on((event: ManateEvent) => {
+    $(store).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     expect(Object.values(store.monsters)).toEqual([]); // trigger events

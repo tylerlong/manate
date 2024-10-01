@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
+import { manage, $ } from '../src';
 
 describe('plain objects', () => {
   test('default', () => {
@@ -15,7 +15,7 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     });
-    expect(store.config.$e).toBeUndefined();
+    expect(() => $(store.config)).toThrow();
   });
 
   test('another way', () => {
@@ -27,9 +27,9 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     };
-    expect(store.$e).toBeDefined();
-    expect((store.config as any).$e).toBeDefined();
+    expect($(store)).toBeDefined();
+    expect($(store.config)).toBeDefined();
     const plainObject = JSON.parse(JSON.stringify(store.config));
-    expect(plainObject.$e).toBeUndefined();
+    expect(() => $(plainObject)).toThrow();
   });
 });

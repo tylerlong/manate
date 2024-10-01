@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 
 describe('getter', () => {
   test('getter', () => {
@@ -11,7 +11,7 @@ describe('getter', () => {
       },
     });
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    managed.$e.on((event: ManateEvent) => {
+    $(managed).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     if (managed.visibleTodos) {
@@ -30,7 +30,7 @@ describe('getter', () => {
       },
     });
     const events: { name: string; paths: PropertyKey[] }[] = [];
-    managed.$e.on((event: ManateEvent) => {
+    $(managed).on((event: ManateEvent) => {
       events.push({ name: event.name, paths: event.paths });
     });
     if (managed.visibleTodos()) {

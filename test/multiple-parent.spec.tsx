@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 
-import { manage, type ManateEvent } from '../src';
+import { manage, type ManateEvent, $ } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {
@@ -13,11 +13,11 @@ describe('multiple parent', () => {
     const d = { b: ma.b };
     const md = manage(d);
     const eventsA: string[] = [];
-    ma.$e.on((event: ManateEvent) => {
+    $(ma).on((event: ManateEvent) => {
       eventsA.push(event.name + '+' + event.pathString);
     });
     const eventsD: string[] = [];
-    md.$e.on((event: ManateEvent) => {
+    $(md).on((event: ManateEvent) => {
       eventsD.push(event.name + '+' + event.pathString);
     });
     d.b.c = 1;
@@ -59,7 +59,7 @@ describe('multiple parent', () => {
     store.bullets[0] = new Bullet();
     const events: string[] = [];
     const props = manage({ bullet: store.bullets[0] });
-    store.$e.on((event: ManateEvent) => {
+    $(store).on((event: ManateEvent) => {
       events.push(event.name + '+' + event.pathString);
     });
     expect(props.bullet.speed).toBe(10); // trigger get

@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, type ManateEvent } from '../src';
+import { autoRun, manage, type ManateEvent, $ } from '../src';
 
 describe('array splice', () => {
   test('default', () => {
     const arr = manage([1, 2, 3, 4, 5]);
     const events: string[] = [];
-    arr.$e.on((event: ManateEvent) => {
+    $(arr).on((event: ManateEvent) => {
       events.push(event.toString());
     });
     arr.splice(2, 1);
@@ -33,9 +33,9 @@ describe('array splice', () => {
       count++;
     });
     start(); // trigger the first run
-    arr.$e.begin();
+    $(arr).begin();
     arr.splice(2, 1); // trigger the second run
-    arr.$e.commit();
+    $(arr).commit();
     stop();
     expect(count).toBe(2);
   });
