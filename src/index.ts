@@ -53,12 +53,7 @@ export function manage<T extends object>(target: T): Managed<T> {
         };
       }
       const value = Reflect.get(target, path, receiver);
-      if (
-        typeof path !== 'symbol' &&
-        typeof value !== 'function' &&
-        !excludeSet.has(target) &&
-        !excludeSet.has(managed)
-      ) {
+      if (typeof value !== 'function' && !excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent({ name: 'get', paths: [path] }));
       }
       return value;
@@ -73,7 +68,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       Reflect.set(target, path, manageChild(path, value), receiver);
-      if (typeof path !== 'symbol' && !excludeSet.has(target) && !excludeSet.has(managed)) {
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(
           new ManateEvent({
             name: 'set',
@@ -88,7 +83,7 @@ export function manage<T extends object>(target: T): Managed<T> {
       // remove old child in case there is one
       children.releaseChild(path);
       delete target[path];
-      if (typeof path !== 'symbol' && !excludeSet.has(target) && !excludeSet.has(managed)) {
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent({ name: 'delete', paths: [path] }));
       }
       return true;
@@ -102,7 +97,7 @@ export function manage<T extends object>(target: T): Managed<T> {
     },
     has: (target: T, path: PropertyKey) => {
       const value = path in target;
-      if (typeof path !== 'symbol' && !excludeSet.has(target) && !excludeSet.has(managed)) {
+      if (!excludeSet.has(target) && !excludeSet.has(managed)) {
         emitter.emit(new ManateEvent({ name: 'has', paths: [path] }));
       }
       return value;
