@@ -11,11 +11,11 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$t.begin();
+    mo.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$t.commit();
+    mo.$e.commit();
     stop();
     expect(count).toBe(2);
   });
@@ -28,11 +28,11 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.a1.b1.c1.$t.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a2.b2.c2.d2 = 1; // changes not covered by transaction
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    mo.a1.b1.c1.$t.commit();
+    mo.a1.b1.c1.$e.commit();
     stop();
     expect(count).toBe(4);
   });
@@ -45,13 +45,13 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$t.begin();
-    mo.a1.b1.c1.$t.begin();
+    mo.$e.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$t.commit();
-    // we didn't invoke mo.a1.b1.c1.$t.commit();
+    mo.$e.commit();
+    // we didn't invoke mo.a1.b1.c1.$e.commit();
     stop();
     expect(count).toBe(1);
   });
@@ -64,13 +64,13 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$t.begin();
-    mo.a1.b1.c1.$t.begin();
+    mo.$e.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.a1.b1.c1.$t.commit();
-    mo.$t.commit();
+    mo.a1.b1.c1.$e.commit();
+    mo.$e.commit();
     stop();
     expect(count).toBe(2);
   });
@@ -83,13 +83,13 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$t.begin();
-    mo.a1.b1.c1.$t.begin();
+    mo.$e.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.$t.commit();
-    mo.a1.b1.c1.$t.commit();
+    mo.$e.commit();
+    mo.a1.b1.c1.$e.commit();
     stop();
     expect(count).toBe(2);
   });
@@ -102,14 +102,14 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.$t.begin();
-    mo.a1.b1.c1.$t.begin();
+    mo.$e.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.a1.b1.c1.$t.commit();
+    mo.a1.b1.c1.$e.commit();
     mo.a2.b2.c2.d2 = 1; // will not trigger more since there is a global transaction
-    mo.$t.commit();
+    mo.$e.commit();
     stop();
     expect(count).toBe(2);
   });
@@ -122,16 +122,16 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.a1.b1.c1.$t.begin();
+    mo.a1.b1.c1.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
-    mo.a1.b1.c1.$t.commit();
-    mo.a2.b2.c2.$t.begin();
+    mo.a1.b1.c1.$e.commit();
+    mo.a2.b2.c2.$e.begin();
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    mo.a2.b2.c2.$t.commit();
+    mo.a2.b2.c2.$e.commit();
     stop();
     expect(count).toBe(3);
   });
@@ -144,16 +144,16 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    mo.a1.b1.c1.$t.begin();
-    mo.a2.b2.c2.$t.begin();
+    mo.a1.b1.c1.$e.begin();
+    mo.a2.b2.c2.$e.begin();
     mo.a1.b1.c1.d1 = 1;
     mo.a1.b1.c1.d1 = 2;
     mo.a1.b1.c1.d1 = 3;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 2;
     mo.a2.b2.c2.d2 = 3;
-    mo.a1.b1.c1.$t.commit();
-    mo.a2.b2.c2.$t.commit();
+    mo.a1.b1.c1.$e.commit();
+    mo.a2.b2.c2.$e.commit();
     stop();
     expect(count).toBe(2);
   });

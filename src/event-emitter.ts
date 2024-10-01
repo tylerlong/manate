@@ -1,4 +1,4 @@
-import type { ManateEvent } from '.';
+import { ManateEvent } from '.';
 
 class EventEmitter {
   private listeners: Function[] = [];
@@ -25,6 +25,13 @@ class EventEmitter {
 
   public listenerCount() {
     return this.listeners.length;
+  }
+
+  public begin() {
+    this.emit(new ManateEvent({ name: 'transaction', paths: [], value: true }));
+  }
+  public commit() {
+    this.emit(new ManateEvent({ name: 'transaction', paths: [], value: false }));
   }
 }
 

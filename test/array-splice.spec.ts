@@ -33,9 +33,9 @@ describe('array splice', () => {
       count++;
     });
     start(); // trigger the first run
-    arr.$t.begin();
+    arr.$e.begin();
     arr.splice(2, 1); // trigger the second run
-    arr.$t.commit();
+    arr.$e.commit();
     stop();
     expect(count).toBe(2);
   });

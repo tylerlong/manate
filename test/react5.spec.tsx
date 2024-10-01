@@ -32,7 +32,7 @@ describe('React', () => {
     store.count = 0;
     renderHistory.length = 0;
     render(<App store={store} />);
-    store.$t.begin(); // transaction start
+    store.$e.begin(); // transaction start
     act(() => {
       store.count += 1;
     });
@@ -41,7 +41,7 @@ describe('React', () => {
     });
     act(() => {
       store.count += 1;
-      store.$t.commit(); // transaction end
+      store.$e.commit(); // transaction end
     });
     const span = screen.getByRole('count');
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);

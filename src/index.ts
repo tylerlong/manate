@@ -8,7 +8,6 @@ export type Managed<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? T[K] : T[K] extends object ? Managed<T[K]> : T[K];
 } & {
   $e: EventEmitter;
-  $t: { begin: () => void; commit: () => void };
 };
 
 export const disposeSymbol = Symbol('dispose');
@@ -46,12 +45,6 @@ export function manage<T extends object>(target: T): Managed<T> {
     get: (target: T, path: PropertyKey, receiver?: T) => {
       if (path === '$e') {
         return emitter;
-      }
-      if (path === '$t') {
-        return {
-          begin: () => emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: true })),
-          commit: () => emitter.emit(new ManateEvent({ name: 'transaction', paths: [], value: false })),
-        };
       }
       if (path === disposeSymbol) {
         return () => {
