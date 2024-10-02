@@ -8,7 +8,7 @@ const emitterSymbol = Symbol('emitter');
 
 export const $ = <T>(t: T): EventEmitter => {
   if (!t[emitterSymbol]) {
-    throw new Error('Not managed object');
+    throw new Error('Not a manate managed object.');
   }
   return t[emitterSymbol];
 };

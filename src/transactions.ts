@@ -2,7 +2,7 @@ import type { ManateEvent } from './models';
 
 class TransactionsManager {
   public isTrigger: (event: ManateEvent) => boolean;
-  public transactions = new Map<string, boolean>();
+  private transactions = new Map<string, boolean>();
 
   public constructor(isTrigger: (event: ManateEvent) => boolean = () => false) {
     this.isTrigger = isTrigger;
