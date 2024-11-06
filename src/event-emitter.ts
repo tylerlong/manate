@@ -1,15 +1,15 @@
-import { Children } from './models';
 import { ManateEvent } from '.';
+import { Children } from './models';
 
 class EventEmitter {
   private children = new Children();
-  private listeners: Function[] = [];
+  private listeners: ((me: ManateEvent) => void)[] = [];
 
-  public on(listener: Function) {
+  public on(listener: (me: ManateEvent) => void) {
     this.listeners.push(listener);
   }
 
-  public off(listener: Function) {
+  public off(listener: (me: ManateEvent) => void) {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
@@ -35,8 +35,11 @@ class EventEmitter {
   public begin() {
     this.emit(new ManateEvent({ name: 'transaction', paths: [], value: true }));
   }
+
   public commit() {
-    this.emit(new ManateEvent({ name: 'transaction', paths: [], value: false }));
+    this.emit(
+      new ManateEvent({ name: 'transaction', paths: [], value: false }),
+    );
   }
 
   public dispose() {
@@ -50,6 +53,7 @@ class EventEmitter {
   public releaseChild(path: PropertyKey) {
     this.children.releaseChild(path);
   }
+
   /**
    * @internal
    */

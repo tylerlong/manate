@@ -17,7 +17,9 @@ class TransactionsManager {
         this.transactions.set(event.pathString, false);
       } else {
         // end transaction
-        const parentKeys = Array.from(this.transactions.keys()).filter((key) => event.pathString.startsWith(key));
+        const parentKeys = Array.from(this.transactions.keys()).filter((key) =>
+          event.pathString.startsWith(key),
+        );
         if (parentKeys.length === 1) {
           r = this.transactions.get(parentKeys[0]) || false;
         } else {
@@ -25,7 +27,9 @@ class TransactionsManager {
           parentKeys.sort((k1, k2) => k2.length - k1.length);
           this.transactions.set(
             parentKeys[1],
-            this.transactions.get(parentKeys[1]) || this.transactions.get(parentKeys[0]) || false,
+            this.transactions.get(parentKeys[1]) ||
+              this.transactions.get(parentKeys[0]) ||
+              false,
           );
         }
         this.transactions.delete(parentKeys[0]);
@@ -35,7 +39,9 @@ class TransactionsManager {
       if (!triggered) {
         return;
       }
-      const transactionKeys = Array.from(this.transactions.keys()).filter((key) => event.pathString.startsWith(key));
+      const transactionKeys = Array.from(this.transactions.keys()).filter(
+        (key) => event.pathString.startsWith(key),
+      );
       if (transactionKeys.length === 0) {
         r = true;
       } else {

@@ -57,7 +57,7 @@ It's fully compatible with React hooks.
 ## Event Emitter
 
 ```ts
-import { manage, $, type ManateEvent } from 'manate';
+import { $, manage, type ManateEvent } from 'manate';
 
 class Store {}
 const store = manage(new Store());
@@ -137,7 +137,10 @@ For more details, please refer to the test cases in [./test/exclude.spec.ts](./t
 The signature of `run` is
 
 ```ts
-function run<T>(managed: T, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean];
+function run<T>(
+  managed: T,
+  func: Function,
+): [result: any, isTrigger: (event: ManateEvent) => boolean];
 ```
 
 - `managed` is generated from `manage` method: `const managed = manage(store)`.
@@ -253,9 +256,15 @@ Same applies to `set-has` and `delete-has`.
 I tried to use `autoRun` to implement `auto`. The code is short and it passes most tests:
 
 ```ts
-import { useState, useEffect, memo, type FunctionComponent, type ReactNode } from 'react';
+import {
+  memo,
+  useEffect,
+  useState,
+  type FunctionComponent,
+  type ReactNode,
+} from 'react';
 
-import { manage, autoRun } from '.';
+import { autoRun, manage } from '.';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo((props: P) => {

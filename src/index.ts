@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import EventEmitter from './event-emitter';
 import { ManateEvent } from './models';
 import TransactionsManager from './transactions';
@@ -15,7 +16,9 @@ export const $ = <T>(t: T): EventEmitter => {
 
 const excludeSet = new WeakSet<object>();
 const canManage = (obj: object) =>
-  obj && (Array.isArray(obj) || obj.toString() === '[object Object]') && !excludeSet.has(obj);
+  obj &&
+  (Array.isArray(obj) || obj.toString() === '[object Object]') &&
+  !excludeSet.has(obj);
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
   return obj;
@@ -46,12 +49,16 @@ export function manage<T extends object>(target: T): T {
         return emitter;
       }
       const value = Reflect.get(target, path, receiver);
-      if (typeof value !== 'function' && !excludeSet.has(target) && !excludeSet.has(managed)) {
+      if (
+        typeof value !== 'function' &&
+        !excludeSet.has(target) &&
+        !excludeSet.has(managed)
+      ) {
         emitter.emit(new ManateEvent({ name: 'get', paths: [path] }));
       }
       return value;
     },
-    // eslint-disable-next-line max-params
+
     set: (target: T, path: PropertyKey, value: any, receiver?: T): boolean => {
       // do not trigger if assign the same value
       // array length is a special case, it is always the same value
@@ -66,7 +73,10 @@ export function manage<T extends object>(target: T): T {
           new ManateEvent({
             name: 'set',
             paths: [path],
-            value: typeof value === 'number' || typeof value === 'boolean' ? value : undefined,
+            value:
+              typeof value === 'number' || typeof value === 'boolean'
+                ? value
+                : undefined,
           }),
         );
       }
@@ -106,8 +116,15 @@ export function manage<T extends object>(target: T): T {
   return managed;
 }
 
-export function run<T>(managed: T, func: Function): [result: any, isTrigger: (event: ManateEvent) => boolean] {
-  const caches = { get: new Set<string>(), keys: new Set<string>(), has: new Set<string>() };
+export function run<T, K>(
+  managed: T,
+  func: () => K,
+): [result: K, isTrigger: (event: ManateEvent) => boolean] {
+  const caches = {
+    get: new Set<string>(),
+    keys: new Set<string>(),
+    has: new Set<string>(),
+  };
   const listener = (event: ManateEvent) => {
     if (event.name in caches) {
       caches[event.name].add(event.pathString);

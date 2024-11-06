@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, type ManateEvent, $ } from '../src';
+import { $, autoRun, manage, type ManateEvent } from '../src';
 
 describe('array splice', () => {
   test('default', () => {

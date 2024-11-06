@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('array', () => {
   test('managed set length', () => {
     const a: number[] = [];
     const keys: string[] = [];
     const managed = new Proxy<number[]>(a, {
-      // eslint-disable-next-line max-params
-      set: (target: object, propertyKey: string, value: any, receiver?: any) => {
+      set: (
+        target: object,
+        propertyKey: string,
+        value: any,
+        receiver?: any,
+      ) => {
         keys.push(propertyKey);
         Reflect.set(target, propertyKey, value, receiver);
         return true;
@@ -30,6 +35,9 @@ describe('array', () => {
       }
     });
     managed.todos.push('hello');
-    expect(events.map((e) => e.pathString)).toEqual(['todos+0', 'todos+length']);
+    expect(events.map((e) => e.pathString)).toEqual([
+      'todos+0',
+      'todos+length',
+    ]);
   });
 });

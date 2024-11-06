@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
@@ -27,6 +27,7 @@ class Store {
 
 class Hanzi {
   public hanzi: string;
+
   public constructor(hanzi: string) {
     this.hanzi = hanzi;
   }

@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import React from 'react';
-import { render, screen, cleanup } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { auto } from '../src/react';
 import { manage } from '../src';
+import { auto } from '../src/react';
 
 class Store {
   public hanzi: Hanzi;
@@ -27,6 +27,7 @@ class Store {
 
 class Hanzi {
   public hanzi: string;
+
   public constructor(hanzi: string) {
     this.hanzi = hanzi;
   }

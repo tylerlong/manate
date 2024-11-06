@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('index', () => {
   test('default', () => {

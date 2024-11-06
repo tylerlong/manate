@@ -1,14 +1,15 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 
-import { manage, $ } from '../src';
+import { $, manage } from '../src';
 import { auto } from '../src/react';
 
 class Store {
   public count = 0;
+
   public increase() {
     this.count += 1;
   }

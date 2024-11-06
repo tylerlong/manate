@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('getter', () => {
   test('getter', () => {
@@ -41,6 +42,7 @@ describe('getter', () => {
   test('JS managed normal method', () => {
     class Store {
       public hidden = false;
+
       public visible() {
         return !this.hidden;
       }
@@ -59,6 +61,7 @@ describe('getter', () => {
   test('JS managed getter method', () => {
     class Store {
       public hidden = false;
+
       public get visible() {
         return !this.hidden;
       }

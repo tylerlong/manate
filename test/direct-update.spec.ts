@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('direct update', () => {
   test('default', () => {
@@ -14,6 +14,7 @@ What does this test case tell us?
       public status = 'idle';
       public callSessions: CallSession[] = [];
     }
+
     class CallSession {
       public status = 'idle';
     }
@@ -28,6 +29,9 @@ What does this test case tell us?
     });
     original.callSessions[0].status = 'calling'; // trigger event
     original.status = 'calling'; // do not trigger event
-    expect(events).toEqual(['get: callSessions+0', 'set: callSessions+0+status']);
+    expect(events).toEqual([
+      'get: callSessions+0',
+      'set: callSessions+0+status',
+    ]);
   });
 });

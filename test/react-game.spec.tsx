@@ -1,28 +1,33 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
-import { render, cleanup, act } from '@testing-library/react';
+import { act, cleanup, render } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 
-import { auto } from '../src/react';
 import { manage } from '../src';
+import { auto } from '../src/react';
 
 let id = 0;
+
 class Bullet {
   public id: number;
+
   public constructor() {
     this.id = id++;
   }
 }
+
 class Store {
   public bullets: { [key: number]: Bullet } = {};
 }
 
 let count = 0;
-const BulletComponent = auto((props: { bullet: Bullet; position: [number, number, number] }) => {
-  count += 1;
-  const { bullet, position } = props;
-  return String(bullet.id) + position.join('-');
-});
+const BulletComponent = auto(
+  (props: { bullet: Bullet; position: [number, number, number] }) => {
+    count += 1;
+    const { bullet, position } = props;
+    return String(bullet.id) + position.join('-');
+  },
+);
 
 const position: [number, number, number] = [0, 0, 0];
 const App = auto((props: { store: Store }) => {

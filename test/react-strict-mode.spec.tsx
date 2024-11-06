@@ -1,21 +1,24 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
-import { render, cleanup, act } from '@testing-library/react';
+import { act, cleanup, render } from '@testing-library/react';
 import React, { StrictMode } from 'react';
+import { describe, expect, test } from 'vitest';
 
-import { auto } from '../src/react';
 import { manage } from '../src';
+import { auto } from '../src/react';
 
 describe('React strict mode', () => {
   test('Update children props', async () => {
     let id = 0;
+
     class Bullet {
       public id: number;
       public speed = 10;
+
       public constructor() {
         this.id = id++;
       }
     }
+
     class Store {
       public bullets: { [key: number]: Bullet } = {};
     }
@@ -31,7 +34,9 @@ describe('React strict mode', () => {
     const App = auto((props: { store: Store }) => {
       appCount += 1;
       const { store } = props;
-      return Object.values(store.bullets).map((bullet) => <BulletComponent key={bullet.id} bullet={bullet} />);
+      return Object.values(store.bullets).map((bullet) => (
+        <BulletComponent key={bullet.id} bullet={bullet} />
+      ));
     });
 
     const store = manage(new Store());

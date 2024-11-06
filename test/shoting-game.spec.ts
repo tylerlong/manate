@@ -1,18 +1,21 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('shot gaming', () => {
   test('default', () => {
     class Game {
       public gun = new Gun();
     }
+
     class Gun {
       public bullets: Bullet[] = [];
     }
     let id = 0;
+
     class Bullet {
       public id;
+
       public constructor() {
         this.id = id++;
       }

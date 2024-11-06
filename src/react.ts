@@ -1,10 +1,16 @@
-import { useState, useRef, useEffect, memo, type FunctionComponent } from 'react';
+import {
+  memo,
+  useEffect,
+  useRef,
+  useState,
+  type FunctionComponent,
+} from 'react';
 
-import { manage, run, $, type ManateEvent } from '.';
+import { $, manage, run, type ManateEvent } from '.';
 import TransactionsManager from './transactions';
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
-  return memo((props: P) => {
+  return memo(function MyComponent(props: P) {
     // dispose
     const disposeFunction = useRef<() => void>();
     disposeFunction.current?.();
@@ -16,6 +22,7 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
     useEffect(() => {
       if (!managed) {
         // <StrictMode /> will run useEffect, dispose and re-run useEffect
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         managed = manage(props);
         $(managed).on(listener);
       }

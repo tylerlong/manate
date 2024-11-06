@@ -6,6 +6,7 @@ describe('typings', () => {
   test('default 1', async () => {
     class Store {
       public count = 0;
+
       public increase() {
         this.count += 1;
       }

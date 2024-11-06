@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { exclude, manage, type ManateEvent, $ } from '../src';
+import { $, exclude, manage, type ManateEvent } from '../src';
 
 describe('exclude', () => {
   test('exclude beforewards', () => {
@@ -51,6 +51,7 @@ describe('exclude', () => {
     class A {
       public b: B;
     }
+
     class B {
       public c = 1;
     }
@@ -71,6 +72,7 @@ describe('exclude', () => {
     class B {
       public c = 1;
     }
+
     class A {
       public b = exclude(new B());
     }

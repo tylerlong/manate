@@ -1,21 +1,24 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
-import { render, cleanup, act } from '@testing-library/react';
+import { act, cleanup, render } from '@testing-library/react';
 import React, { useRef } from 'react';
+import { describe, expect, test } from 'vitest';
 
-import { auto } from '../src/react';
 import { manage } from '../src';
+import { auto } from '../src/react';
 
 describe('React hooks', () => {
   test('default', async () => {
     let id = 0;
+
     class Bullet {
       public id: number;
       public speed = 10;
+
       public constructor() {
         this.id = id++;
       }
     }
+
     class Store {
       public bullets: { [key: number]: Bullet } = {};
     }

@@ -1,12 +1,13 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('before proxy', () => {
   test("Update an object before it's proxied", () => {
     class A {
       public b: B;
     }
+
     class B {
       public c = 0;
     }
@@ -27,6 +28,7 @@ describe('before proxy', () => {
     class A {
       public b: B;
     }
+
     class B {
       public c = 0;
     }
@@ -47,6 +49,7 @@ describe('before proxy', () => {
     class A {
       public b: B;
     }
+
     class B {
       public c = 0;
     }

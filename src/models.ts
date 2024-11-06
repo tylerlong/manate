@@ -37,7 +37,11 @@ export class ManateEvent {
 export class Children {
   public children: { [path: PropertyKey]: Child } = {};
 
-  public addChild(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
+  public addChild(
+    path: PropertyKey,
+    emitter: EventEmitter,
+    parentEmitter: EventEmitter,
+  ) {
     this.releaseChild(path);
     const child = new Child(path, emitter, parentEmitter);
     this.children[path] = child;
@@ -62,10 +66,16 @@ class Child {
   public emitter: EventEmitter;
   public listener: (event: ManateEvent) => void;
 
-  public constructor(path: PropertyKey, emitter: EventEmitter, parentEmitter: EventEmitter) {
+  public constructor(
+    path: PropertyKey,
+    emitter: EventEmitter,
+    parentEmitter: EventEmitter,
+  ) {
     this.emitter = emitter;
     this.listener = (event: ManateEvent) => {
-      parentEmitter.emit(new ManateEvent({ ...event, paths: [path, ...event.paths] }));
+      parentEmitter.emit(
+        new ManateEvent({ ...event, paths: [path, ...event.paths] }),
+      );
     };
     this.emitter.on(this.listener);
   }

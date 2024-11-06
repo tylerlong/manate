@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import EventEmitter from '../src/event-emitter';
 import { ManateEvent } from '../src';
+import EventEmitter from '../src/event-emitter';
 
 describe('emitter sync', () => {
   test('default', async () => {

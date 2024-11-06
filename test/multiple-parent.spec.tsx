@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
+import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {
@@ -45,13 +45,16 @@ describe('multiple parent', () => {
 
   test('game', () => {
     let id = 0;
+
     class Bullet {
       public id: number;
       public speed = 10;
+
       public constructor() {
         this.id = id++;
       }
     }
+
     class Store {
       public bullets: { [key: number]: Bullet } = {};
     }
@@ -68,13 +71,16 @@ describe('multiple parent', () => {
 
   test('game with React', () => {
     let id = 0;
+
     class Bullet {
       public id: number;
       public speed = 10;
+
       public constructor() {
         this.id = id++;
       }
     }
+
     class Store {
       public bullets: { [key: number]: Bullet } = {};
     }
@@ -90,7 +96,9 @@ describe('multiple parent', () => {
     const App = auto((props: { store: Store }) => {
       events.push('App start');
       const { store } = props;
-      const temp = Object.values(store.bullets).map((bullet) => <BulletComponent key={bullet.id} bullet={bullet} />);
+      const temp = Object.values(store.bullets).map((bullet) => (
+        <BulletComponent key={bullet.id} bullet={bullet} />
+      ));
       events.push('App end');
       return temp;
     });
@@ -115,13 +123,16 @@ describe('multiple parent', () => {
 
   test('plain React', () => {
     let id = 0;
+
     class Bullet {
       public id: number;
       public speed = 10;
+
       public constructor() {
         this.id = id++;
       }
     }
+
     class Store {
       public bullets: { [key: number]: Bullet } = {};
     }
@@ -137,7 +148,9 @@ describe('multiple parent', () => {
     const App = (props: { store: Store }) => {
       events.push('App start');
       const { store } = props;
-      const temp = Object.values(store.bullets).map((bullet) => <BulletComponent key={bullet.id} bullet={bullet} />);
+      const temp = Object.values(store.bullets).map((bullet) => (
+        <BulletComponent key={bullet.id} bullet={bullet} />
+      ));
       events.push('App end');
       return temp;
     };

@@ -1,10 +1,13 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, $ } from '../src';
+import { $, autoRun, manage } from '../src';
 
 describe('transaction', () => {
   test('default', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -21,7 +24,10 @@ describe('transaction', () => {
   });
 
   test('transaction not cover', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -39,7 +45,10 @@ describe('transaction', () => {
   });
 
   test('two transactions', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -58,7 +67,10 @@ describe('transaction', () => {
   });
 
   test('two transactions 2', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -78,7 +90,10 @@ describe('transaction', () => {
   });
 
   test('two transactions 3', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -98,7 +113,10 @@ describe('transaction', () => {
   });
 
   test('two transactions 4', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -119,7 +137,10 @@ describe('transaction', () => {
   });
 
   test('two transactions 5', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);
@@ -143,7 +164,10 @@ describe('transaction', () => {
   });
 
   test('two transactions 6', () => {
-    const mo = manage({ a1: { b1: { c1: { d1: 0 } } }, a2: { b2: { c2: { d2: 0 } } } });
+    const mo = manage({
+      a1: { b1: { c1: { d1: 0 } } },
+      a2: { b2: { c2: { d2: 0 } } },
+    });
     let count = 0;
     const { start, stop } = autoRun(mo, () => {
       JSON.stringify(mo);

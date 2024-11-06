@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { debounce } from 'lodash';
-import waitFor from 'wait-for-async';
 import { describe, expect, test } from 'vitest';
+import waitFor from 'wait-for-async';
 
-import { manage, autoRun } from '../src';
+import { autoRun, manage } from '../src';
 
 describe('autoRun', () => {
   test('default', () => {
@@ -30,7 +31,8 @@ describe('autoRun', () => {
     const autoRunner = autoRun(
       store,
       () => numbers.push(store.number),
-      (func: () => void) => debounce(func, 10, { leading: true, trailing: true }),
+      (func: () => void) =>
+        debounce(func, 10, { leading: true, trailing: true }),
     );
     autoRunner.start();
     store.number = 1;

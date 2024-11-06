@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, type ManateEvent, $ } from '../src';
+import { $, manage, type ManateEvent } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -11,6 +11,7 @@ describe('OOP', () => {
     class TodoList {
       public name: string;
       public todoItems: TodoItem[] = [];
+
       public constructor(name: string) {
         this.name = name;
       }
@@ -19,6 +20,7 @@ describe('OOP', () => {
     class TodoItem {
       public description: string;
       public complete = false;
+
       public constructor(description: string) {
         this.description = description;
       }

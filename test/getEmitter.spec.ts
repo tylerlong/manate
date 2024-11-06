@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
+import { $, manage } from '../src';
 import EventEmitter from '../src/event-emitter';
-import { manage, $ } from '../src';
 
 describe('getter', () => {
   test('getter', () => {

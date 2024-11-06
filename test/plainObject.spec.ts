@@ -1,11 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, $ } from '../src';
+import { $, manage } from '../src';
 
 describe('plain objects', () => {
   test('default', () => {
     class Store {
       public _config = '{}';
+
       public get config() {
         return JSON.parse(store._config || '{}');
       }
