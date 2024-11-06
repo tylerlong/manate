@@ -7,8 +7,8 @@ describe('manage React element', () => {
   test('default', async () => {
     const Ele = <i></i>;
     expect(Ele).toBeDefined();
-    const m = manage(Ele);
-    expect(m).toBeDefined();
+    // cannot manage React element
+    expect(() => manage(Ele)).toThrowError();
   });
   test('default 2', async () => {
     const o = {
