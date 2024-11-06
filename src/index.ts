@@ -6,6 +6,7 @@ import TransactionsManager from './transactions';
 export { ManateEvent };
 
 const emitterSymbol = Symbol('emitter');
+export const isManaged = (t: any): boolean => !!t?.[emitterSymbol];
 
 export const $ = <T>(t: T): EventEmitter => {
   if (!t[emitterSymbol]) {
