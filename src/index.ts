@@ -27,7 +27,16 @@ export const exclude = <T extends object>(obj: T): T => {
   return obj;
 };
 
-export function manage<T extends object>(target: T): T {
+export function manage<T extends object>(
+  target: T,
+  seenSet = new WeakSet<object>(),
+): T {
+  // circular reference
+  if (seenSet.has(target)) {
+    return target;
+  }
+  seenSet.add(target);
+
   // return if the object can't be managed
   if (!canManage(target)) {
     throw new Error('Not a manate managable object.');
@@ -46,8 +55,11 @@ export function manage<T extends object>(target: T): T {
     if (!canManage(value)) {
       return value;
     }
-    const child = manage(value);
-    emitter.addChild(path, $(child));
+    const child = manage(value, seenSet);
+    if (child[emitterSymbol]) {
+      emitter.addChild(path, $(child));
+      // otherwise there was a circular reference and we didn't manage child
+    }
     return child;
   };
 
