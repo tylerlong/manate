@@ -29,13 +29,12 @@ export const exclude = <T extends object>(obj: T): T => {
 
 export function manage<T extends object>(
   target: T,
-  seenSet = new WeakSet<object>(),
+  seenMap = new WeakMap<T, T>(),
 ): T {
   // circular reference
-  if (seenSet.has(target)) {
-    return target;
+  if (seenMap.has(target)) {
+    return seenMap.get(target)!;
   }
-  seenSet.add(target);
 
   // return if the object can't be managed
   if (!canManage(target)) {
@@ -55,7 +54,7 @@ export function manage<T extends object>(
     if (!canManage(value)) {
       return value;
     }
-    const child = manage(value, seenSet);
+    const child = manage(value, seenMap);
     if (child[emitterSymbol]) {
       emitter.addChild(path, $(child));
       // otherwise there was a circular reference and we didn't manage child
@@ -126,6 +125,7 @@ export function manage<T extends object>(
       return value;
     },
   });
+  seenMap.set(target, managed);
 
   // first time init
   for (const path of Object.keys(target)) {
