@@ -60,11 +60,7 @@ export function manage<T extends object>(
       return value;
     }
     const child = manage(value, maxDepth - 1, seenMap);
-    // todo: child will always be managed, because circular reference will return previously managed object
-    if (child[emitterSymbol]) {
-      emitter.addChild(path, $(child));
-      // otherwise there was a circular reference and we didn't manage child
-    }
+    emitter.addChild(path, $(child));
     return child;
   };
 

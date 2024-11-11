@@ -316,3 +316,5 @@ This is very unexpected. But it may not be a bad thing at all. Since we don't wa
   - we could support `Set` and `Map`, to be done.
 - React, only monitor already managed props
   - already implemented, by why it still monitors `toolbarItems`?
+- React `useManate`?
+  - refer to https://jotai.org/
