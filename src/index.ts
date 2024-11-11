@@ -7,6 +7,7 @@ export { ManateEvent };
 
 const emitterSymbol = Symbol('emitter');
 export const isManaged = (t: any): boolean => !!t?.[emitterSymbol];
+const reactElementSymbol = Symbol.for('react.element');
 
 export const $ = <T>(t: T): EventEmitter => {
   if (!t[emitterSymbol]) {
@@ -19,6 +20,7 @@ const excludeSet = new WeakSet<object>();
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
+  obj?.['$$typeof'] !== reactElementSymbol &&
   !excludeSet.has(obj);
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
