@@ -39,4 +39,19 @@ describe('circular', () => {
     mb.parent = mc;
     mc.parent = ma;
   });
+  test('manage after circular', () => {
+    class A {
+      constructor(public b?: B) {}
+    }
+
+    class B {
+      constructor(public a: A) {}
+    }
+
+    const a = new A();
+    const b = new B(a);
+    a.b = b;
+
+    const ma = manage(a);
+  });
 });
