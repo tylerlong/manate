@@ -20,7 +20,7 @@ const excludeSet = new WeakSet<object>();
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
-  obj?.['$$typeof'] !== reactElementSymbol &&
+  obj?.['$$typeof'] !== reactElementSymbol && // todo: maxDepth will detect it, so remove this
   !excludeSet.has(obj);
 export const exclude = <T extends object>(obj: T): T => {
   excludeSet.add(obj);
@@ -33,7 +33,7 @@ export function manage<T extends object>(
   seenMap = new WeakMap<T, T>(),
 ): T {
   if (maxDepth < 0) {
-    throw new Error('Max depth reached.');
+    throw new Error('Max depth exceeded.');
   }
 
   // circular reference

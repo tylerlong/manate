@@ -235,6 +235,17 @@ $(managed).commit();
 // `console.log` will be triggered if there were changes
 ```
 
+## Max Depth
+
+For human-created plain objects, a reasonable maximum depth for recursive processing, ignoring circular references, typically ranges between 5 to 10 levels.
+
+So this library by set the max depth to 10, if max depeth exceeded, an error will be thrown.
+In such case, you need to review the data to be managed, why is it so deeply nested, is it reasonable?
+Think about it: is the deelpy nested structure relevant to your business logic? should you manage it at all?
+
+A real example is you try to manage a `ReactElement`. React component instances contain deep, complex internal structures that reference other objects, functions, and potentially even themselves.
+And you should not manage it at all. Instead, you should mange the state data used by the React component.
+
 ## Development Notes
 
 - every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
