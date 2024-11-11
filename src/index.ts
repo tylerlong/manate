@@ -29,8 +29,13 @@ export const exclude = <T extends object>(obj: T): T => {
 
 export function manage<T extends object>(
   target: T,
+  maxDepth = 10,
   seenMap = new WeakMap<T, T>(),
 ): T {
+  if (maxDepth < 0) {
+    throw new Error('Max depth reached.');
+  }
+
   // circular reference
   if (seenMap.has(target)) {
     return seenMap.get(target)!;
@@ -54,7 +59,7 @@ export function manage<T extends object>(
     if (!canManage(value)) {
       return value;
     }
-    const child = manage(value, seenMap);
+    const child = manage(value, maxDepth - 1, seenMap);
     if (child[emitterSymbol]) {
       emitter.addChild(path, $(child));
       // otherwise there was a circular reference and we didn't manage child
