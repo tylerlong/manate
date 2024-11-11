@@ -10,7 +10,7 @@ export const isManaged = (t: any): boolean => !!t?.[emitterSymbol];
 const reactElementSymbol = Symbol.for('react.element');
 
 export const $ = <T>(t: T): EventEmitter => {
-  if (!t[emitterSymbol]) {
+  if (!isManaged(t)) {
     throw new Error('Not a manate managed object.');
   }
   return t[emitterSymbol];
@@ -41,14 +41,14 @@ export function manage<T extends object>(
     return seenMap.get(target)!;
   }
 
-  // return if the object can't be managed
-  if (!canManage(target)) {
-    throw new Error('Not a manate managable object.');
+  // return if the object is already managed
+  if (isManaged(target)) {
+    return target;
   }
 
-  // return if the object is already managed
-  if (target[emitterSymbol]) {
-    return target;
+  // throw if the object can't be managed
+  if (!canManage(target)) {
+    throw new Error('Not a manate managable object.');
   }
 
   // this variable belongs to the scope of the managed
@@ -60,6 +60,7 @@ export function manage<T extends object>(
       return value;
     }
     const child = manage(value, maxDepth - 1, seenMap);
+    // todo: child will always be managed, because circular reference will return previously managed object
     if (child[emitterSymbol]) {
       emitter.addChild(path, $(child));
       // otherwise there was a circular reference and we didn't manage child
