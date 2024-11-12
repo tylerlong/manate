@@ -1,17 +1,16 @@
 # manate
 
-manate is short for "manage state". (pronunciation is close to "many-it")
-It is the most straightforward way to manage global state in React.
+manate is a lightweight, intuitive state management library that keeps things simple. Pronounced like "many-it" and short for "manage state," manate lets you handle state with ease across both frontend and backend.
 
-## What's the value of manate?
+## Why choose manate?
 
-It allows you to maintain your app state in OOP style, although OOP is optional to use this library.
+- Effortless to use: No complex syntax – your state is just a JavaScript object.
+- Zero dependencies: Clean and minimal, without any baggage.
+- Universal: Works seamlessly on both frontend and backend environments.
+- Lightweight: Only 300 lines of code. Simplicity without sacrificing power.
+- TypeScript-ready: First-class TypeScript support for robust, type-safe development.
 
-It supports TypeScript very well.
-
-It is very straightforward to use. You don't need to learn any new concepts.
-
-Merely 300 lines of code. There is no rocket science in this library.
+Start using manate and manage your state effortlessly!
 
 ## Installation
 
@@ -35,6 +34,20 @@ class Store {
 const store = manage(new Store());
 ```
 
+### Without class/function
+
+You don't need to declare a class if you don't want to.
+
+You don't need to create a function if you don't want to.
+
+```ts
+import { manage } from 'manate';
+
+const store = manage({ count: 0 });
+
+store.count += 1; // change data directly without a function
+```
+
 ### React
 
 ```tsx
@@ -54,7 +67,9 @@ const App = auto((props: { store: Store }) => {
 
 It's fully compatible with React hooks.
 
-## Event Emitter
+## Without React
+
+You may use it without React.
 
 ```ts
 import { $, manage, type ManateEvent } from 'manate';
@@ -179,28 +194,6 @@ Invoke `stop` to stop `autoRun`.
 
 For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
 
-## `useState(boolean)` to re-render
-
-It's a bad idea. Because boolean has only two values.
-If you want to trigger even number of re-render, the result is no re-render at all.
-Because `b === !!b`.
-
-So we use `useState(integer)` to re-render.
-
-## Best Practices
-
-Avoid using non-managed React props. Because it may cause lots of re-renders.
-
-For example:
-
-```tsx
-<Monster monster={monster} position={[0,0,0]}>
-```
-
-Above will re-render every time its parent re-renders. Because `[0,0,0]` is a new array every time.
-
-Instead, we could make `position` a property of `monster`.
-
 ## Transactions
 
 Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
@@ -246,86 +239,8 @@ Think about it: is the deelpy nested structure relevant to your business logic? 
 A real example is you try to manage a `ReactElement`. React component instances contain deep, complex internal structures that reference other objects, functions, and potentially even themselves.
 And you should not manage it at all. Instead, you should mange the state data used by the React component.
 
-## Development Notes
-
-- every `emitter.on()` must have a corresponding `emitter.off()`. Otherwise there will be memory leak.
-  - you also don't have to `on` and `off` again and again. Sometimes you just `on` and let it on until user explicit it request it to be off.
-- `run` and `autoRun` only support sync methods. for async methods, make sure that the async part is irrelevant because it won't be monitored.
-
-### No complex logic for `isTrigger`
-
-Most events will be triggered by `set-get` and `delete-get` pairs.
-In real apps, we will have `get` events for all parent paths. So we don't need to check parent paths for events triggering at all.
-
-`set-keys` is just a complementary to `set-get`. No need to check parent paths since `set-get` will be tiggered anyway.
-`delete-keys` is just a complementary to `delete-get`. No need to check parent paths since `delete-get` will be tiggered anyway.
-
-Same applies to `set-has` and `delete-has`.
-
-## React support details
-
-I tried to use `autoRun` to implement `auto`. The code is short and it passes most tests:
+You may override the max depth by specify the second argument of the `manage` function:
 
 ```ts
-import {
-  memo,
-  useEffect,
-  useState,
-  type FunctionComponent,
-  type ReactNode,
-} from 'react';
-
-import { autoRun, manage } from '.';
-
-export const auto = <P extends object>(Component: FunctionComponent<P>) => {
-  return memo((props: P) => {
-    const [r, setR] = useState<ReactNode>(null);
-    useEffect(() => {
-      const managed = manage(props);
-      const { start, stop } = autoRun(managed, () => {
-        setR(Component(managed));
-      });
-      start();
-      return () => {
-        stop();
-        $(managed).dispose();
-      };
-    }, [props]);
-    return r;
-  });
-};
+const store = manage(new Store(), 20); // explicitly set max depth to 20, if `Store` is by design a deeply nested data structure
 ```
-
-However, there are two major issues:
-
-1. React components are considered synchronous. We use `useEffect` to invoke `autoRun` to invoke `render` function, which is asynchronous.
-
-- It will cause all kinds of issues if we change from sync to async.
-
-2. We cannot use hooks at all. For example, `useRef` will cause "Error: Invalid hook call. Hooks can only be called inside of the body of a function component."
-
-- I think it is because we run the render method in `useEffect`, which is not "the body of a function component".
-
-Since `autoRun` is not a pure function, it has to be in `useEffect`. So we cannot use `autoRun`. We need to use `run` instead.
-And we must have the render function run in the body of the function component. And we use `useRef` and `useEffect` to dispose.
-For more information, please refer to [./src/react.ts](./src/react.ts).
-
-## React async
-
-As I tested, if a react component has several children components. The react component will render first, then the children components will render.
-Which means, the render function will finish before children render functions start.
-Which means, component will not get those "get" events triggered by children components.
-Which means, change in children components will not trigger the parent component to re-render.
-
-This is very unexpected. But it may not be a bad thing at all. Since we don't want to re-render the parent component if the change in children components doesn't affect the parent component.
-
-## Todo
-
-- Reference https://github.com/pmndrs/valtio
-  - This one is very similar to manate
-- It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
-  - we could support `Set` and `Map`, to be done.
-- React, only monitor already managed props
-  - already implemented, by why it still monitors `toolbarItems`?
-- React `useManate`?
-  - refer to https://jotai.org/
