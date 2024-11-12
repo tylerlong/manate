@@ -99,7 +99,5 @@ Instead, we could make `position` a property of `monster`.
   - This one is very similar to manate
 - It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
   - we could support `Set` and `Map`, to be done.
-- React, only monitor already managed props
-  - already implemented, by why it still monitors `toolbarItems`?
 - React `useManate`?
   - refer to https://jotai.org/
