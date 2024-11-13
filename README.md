@@ -248,3 +248,14 @@ const store = manage(new Store(), 20); // explicitly set max depth to 20, if `St
 ## Limitations
 
 - It doesn't manage built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
+
+## Similarity to MobX
+
+Recently I find manate is very similar to mobx:
+
+- `import { manage } from 'manate'` is like `import { observable } from 'mobx`
+- `import { auto } from 'manate/react` is like `import { observer } from 'mobx-react-lite'`
+
+If I could realize the similarity 3 years ago, I may just use mobx instead.
+
+For now, since manate is well developed and I am very happy with it, I will continue to use and maintain manate.
