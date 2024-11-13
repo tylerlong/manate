@@ -9,7 +9,7 @@ manate lets you handle state with ease across both frontend and backend.
 - Effortless to use: No complex syntax – your state is just a JavaScript object.
 - Zero dependencies: Clean and minimal, without any baggage.
 - Universal: Works seamlessly on both frontend and backend environments.
-- Lightweight: Only 300 lines of code. Simplicity without sacrificing power.
+- Lightweight: Around 500 lines of code. Simplicity without sacrificing power.
 - TypeScript-ready: First-class TypeScript support for robust, type-safe development.
 
 Start using manate and manage your state effortlessly!

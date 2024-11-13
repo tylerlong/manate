@@ -40,4 +40,12 @@ describe('array', () => {
       'todos+length',
     ]);
   });
+
+  test('isArray', () => {
+    const ma = manage([]);
+    expect(Array.isArray(ma)).toBe(true);
+    const mb = new Proxy([], {});
+    expect(Array.isArray(mb)).toBe(true);
+    console.log('======');
+  });
 });

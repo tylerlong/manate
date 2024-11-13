@@ -98,3 +98,4 @@ Instead, we could make `position` a property of `monster`.
 - https://mobx.js.org/react-integration.html
   - mobx doesn't require you to pass the managed object through props, which is amazing!
 - support computed values
+  - Long ago I supported this feature in the SubX project.
