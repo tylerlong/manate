@@ -1,4 +1,4 @@
-import type { ManateEvent } from './models';
+import type { ManateEvent } from './manate-event';
 
 class TransactionsManager {
   public isTrigger: (event: ManateEvent) => boolean;

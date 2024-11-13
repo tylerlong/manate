@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import EventEmitter from './event-emitter';
-import { ManateEvent } from './models';
+import { ManateEvent } from './manate-event';
 import TransactionsManager from './transactions';
 
 export { ManateEvent };

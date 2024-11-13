@@ -1,5 +1,4 @@
 import { ManateEvent } from '.';
-import { Children } from './models';
 
 class EventEmitter {
   private children = new Children();
@@ -63,3 +62,54 @@ class EventEmitter {
 }
 
 export default EventEmitter;
+
+export class Children {
+  public children: { [path: PropertyKey]: Child } = {};
+
+  public addChild(
+    path: PropertyKey,
+    emitter: EventEmitter,
+    parentEmitter: EventEmitter,
+  ) {
+    this.releaseChild(path);
+    const child = new Child(path, emitter, parentEmitter);
+    this.children[path] = child;
+  }
+
+  public releaseChild(path: PropertyKey) {
+    const child = this.children[path];
+    if (child) {
+      child.release();
+      delete this.children[path];
+    }
+  }
+
+  public releaseAll() {
+    for (const path of Object.keys(this.children)) {
+      this.releaseChild(path);
+    }
+  }
+}
+
+class Child {
+  public emitter: EventEmitter;
+  public listener: (event: ManateEvent) => void;
+
+  public constructor(
+    path: PropertyKey,
+    emitter: EventEmitter,
+    parentEmitter: EventEmitter,
+  ) {
+    this.emitter = emitter;
+    this.listener = (event: ManateEvent) => {
+      parentEmitter.emit(
+        new ManateEvent({ ...event, paths: [path, ...event.paths] }),
+      );
+    };
+    this.emitter.on(this.listener);
+  }
+
+  public release() {
+    this.emitter.off(this.listener);
+  }
+}
