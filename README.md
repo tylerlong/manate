@@ -244,3 +244,7 @@ You may override the max depth by specify the second argument of the `manage` fu
 ```ts
 const store = manage(new Store(), 20); // explicitly set max depth to 20, if `Store` is by design a deeply nested data structure
 ```
+
+## Limitations
+
+- It doesn't manage built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.

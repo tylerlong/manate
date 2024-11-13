@@ -95,9 +95,5 @@ Instead, we could make `position` a property of `monster`.
 
 ## Todo
 
-- Reference https://github.com/pmndrs/valtio
-  - This one is very similar to manate
-- It doesn't monitor built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
-  - we could support `Set` and `Map`, to be done.
-- React `useManate`?
-  - refer to https://jotai.org/
+- https://mobx.js.org/react-integration.html
+  - mobx doesn't require you to pass the managed object through props, which is amazing!
