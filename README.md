@@ -1,6 +1,8 @@
 # manate
 
-manate is a lightweight, intuitive state management library that keeps things simple. Pronounced like "many-it" and short for "manage state," manate lets you handle state with ease across both frontend and backend.
+manate is a lightweight, intuitive state management library that keeps things simple.
+Pronounced like "many-it" and short for "manage state".
+manate lets you handle state with ease across both frontend and backend.
 
 ## Why choose manate?
 
@@ -57,7 +59,13 @@ const App = auto((props: { store: Store }) => {
   const { store } = props;
   return (
     <Space>
-      <Button onClick={() => store.decrease()}>-</Button>
+      <Button
+        onClick={() => {
+          store.count -= 1;
+        }}
+      >
+        -
+      </Button>
       {store.count}
       <Button onClick={() => store.increase()}>+</Button>
     </Space>
@@ -65,7 +73,12 @@ const App = auto((props: { store: Store }) => {
 });
 ```
 
-It's fully compatible with React hooks.
+In the sample above I showed you two ways to update data:
+
+- update it directly: `store.count -= 1`
+- update it through a member function: `store.increase()`
+
+So basically there is no restrictions. Just read/update as how you read/update a plain object.
 
 ## Without React
 
@@ -109,40 +122,8 @@ const ma = manage(a);
 ma.b.c = 4; // will not trigger a set event because `ma.b` is excluded.
 ```
 
-You may invoke the `exclude` method at any time:
-
-```ts
-class B {
-  public c = 1;
-}
-class A {
-  public b;
-}
-
-const a = new A();
-const b = new B();
-exclude(b);
-a.b = b;
-const ma = manage(a);
-```
-
+You may invoke the `exclude` method at any time.
 You may invoke the exlcude method before or after you manage the object:
-
-```ts
-class B {
-  public c = 1;
-}
-class A {
-  public b;
-}
-
-const a = new A();
-const b = new B();
-a.b = b;
-const ma = manage(a);
-exclude(ma.b);
-```
-
 For more details, please refer to the test cases in [./test/exclude.spec.ts](./test/exclude.spec.ts).
 
 ## Utility methods
@@ -196,7 +177,8 @@ For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/aut
 
 ## Transactions
 
-Transactions are used together with `autoRun`. When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
+Transactions are used together with `autoRun`.
+When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
 
 ```ts
 import { $ } from 'manate';
@@ -213,7 +195,7 @@ $(managed).commit(); // end transaction
 ```
 
 There could be multiple transactions at the same time.
-Transactions could be nested. An change will not trigger run until all enclosing transactions end.
+Transactions could be nested. A change will not trigger run until all enclosing transactions end.
 
 ```ts
 const { start } = autoRun(managed, () => {
@@ -237,7 +219,7 @@ In such case, you need to review the data to be managed, why is it so deeply nes
 Think about it: is the deelpy nested structure relevant to your business logic? should you manage it at all?
 
 A real example is you try to manage a `ReactElement`. React component instances contain deep, complex internal structures that reference other objects, functions, and potentially even themselves.
-And you should not manage it at all. Instead, you should mange the state data used by the React component.
+And you should not manage it at all. Instead, you should manage the state data used by the React component.
 
 You may override the max depth by specify the second argument of the `manage` function:
 
@@ -256,6 +238,6 @@ Recently I find manate is very similar to mobx:
 - `import { manage } from 'manate'` is like `import { observable } from 'mobx`
 - `import { auto } from 'manate/react` is like `import { observer } from 'mobx-react-lite'`
 
-If I could realize the similarity 3 years ago, I may just use mobx instead.
+If I could realize the similarity 3 years ago, I might just use mobx instead.
 
 For now, since manate is well developed and I am very happy with it, I will continue to use and maintain manate.
