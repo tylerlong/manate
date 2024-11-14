@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { manage, writeEmitter } from '../src';
 
 describe('autoRun double', () => {
   test('default', () => {
@@ -10,10 +10,8 @@ describe('autoRun double', () => {
     }
     const store = manage(new Store());
     let count = 0;
-    $(store).on((event) => {
-      if (event.name === 'set') {
-        count++;
-      }
+    writeEmitter.on(() => {
+      count++;
     });
     let id = 1;
     store.canvasSize.width = 0; // assign the same value doesn't trigger

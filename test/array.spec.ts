@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from 'vitest';
 
-import { $, manage, type ManateEvent } from '../src';
+import { manage, writeEmitter } from '../src';
+import { ProxyTrapEvent } from '../src/events';
 
 describe('array', () => {
   test('managed set length', () => {
@@ -28,17 +29,12 @@ describe('array', () => {
       public todos: string[] = [];
     }
     const managed = manage(new Store());
-    const events: ManateEvent[] = [];
-    $(managed).on((event: ManateEvent) => {
-      if (event.name === 'set') {
-        events.push(event);
-      }
+    const events: ProxyTrapEvent[] = [];
+    writeEmitter.on((ptes: ProxyTrapEvent[]) => {
+      events.push(...ptes);
     });
     managed.todos.push('hello');
-    expect(events.map((e) => e.pathString)).toEqual([
-      'todos+0',
-      'todos+length',
-    ]);
+    expect(events.map((e) => e.prop)).toEqual(['0', 'length']);
   });
 
   test('isArray', () => {
@@ -46,6 +42,5 @@ describe('array', () => {
     expect(Array.isArray(ma)).toBe(true);
     const mb = new Proxy([], {});
     expect(Array.isArray(mb)).toBe(true);
-    console.log('======');
   });
 });
