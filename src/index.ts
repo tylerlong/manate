@@ -1,50 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface ManateEvent {
-  type: 'get' | 'set' | 'delete' | 'has' | 'keys';
-  target: object;
-  prop: PropertyKey;
-}
-
-class EventEmitter {
-  private _batch = false;
-
-  private cache: ManateEvent[] = [];
-
-  public set batch(value: boolean) {
-    this._batch = value;
-    if (!value && this.cache.length > 0) {
-      this.listeners.forEach((listener) => listener(this.cache));
-      this.cache = [];
-    }
-  }
-
-  /**
-   * @internal
-   */
-  listeners = new Set<(mes: ManateEvent[]) => void>();
-
-  on(listener: (mes: ManateEvent[]) => void) {
-    this.listeners.add(listener);
-  }
-
-  off(listener: (mes: ManateEvent[]) => void) {
-    this.listeners.delete(listener);
-  }
-
-  /**
-   * @internal
-   */
-  emit(me: ManateEvent) {
-    if (this._batch) {
-      this.cache.push(me);
-    } else {
-      this.listeners.forEach((listener) => listener([me]));
-    }
-  }
-}
+import { EventEmitter, ProxyTrapEvent } from './events';
 
 // todo: create a class to hold the code below
-
 export const readEmitter = new EventEmitter();
 export const writeEmitter = new EventEmitter();
 
@@ -108,9 +65,9 @@ export const manage = <T extends object>(target: T): T => {
 
 export const run = <T>(
   fn: () => T,
-): [r: T, isTrigger: (event: ManateEvent) => boolean] => {
+): [r: T, isTrigger: (event: ProxyTrapEvent) => boolean] => {
   const reads = new Map<object, Set<PropertyKey>>();
-  const listener = (mes: ManateEvent[]) => {
+  const listener = (mes: ProxyTrapEvent[]) => {
     for (const me of mes) {
       if (!reads.has(me.target)) {
         reads.set(me.target, new Set());
@@ -121,7 +78,7 @@ export const run = <T>(
   readEmitter.on(listener);
   const r = fn();
   readEmitter.off(listener);
-  const isTrigger = (me: ManateEvent) => {
+  const isTrigger = (me: ProxyTrapEvent) => {
     if (!reads.has(me.target)) {
       return false;
     }
@@ -132,8 +89,8 @@ export const run = <T>(
 };
 
 export const autoRun = (fn: () => void) => {
-  let isTrigger: (event: ManateEvent) => boolean;
-  const listener = (mes: ManateEvent[]): void => {
+  let isTrigger: (event: ProxyTrapEvent) => boolean;
+  const listener = (mes: ProxyTrapEvent[]): void => {
     for (const me of mes) {
       if (isTrigger(me)) {
         [, isTrigger] = run(fn);
