@@ -6,16 +6,28 @@ export interface ManateEvent {
 }
 
 class EventEmitter {
+  private _batch = false;
+
+  private cache: ManateEvent[] = [];
+
+  public set batch(value: boolean) {
+    this._batch = value;
+    if (!value && this.cache.length > 0) {
+      this.listeners.forEach((listener) => listener(this.cache));
+      this.cache = [];
+    }
+  }
+
   /**
    * @internal
    */
-  listeners = new Set<(me: ManateEvent) => void>();
+  listeners = new Set<(mes: ManateEvent[]) => void>();
 
-  on(listener: (me: ManateEvent) => void) {
+  on(listener: (mes: ManateEvent[]) => void) {
     this.listeners.add(listener);
   }
 
-  off(listener: (me: ManateEvent) => void) {
+  off(listener: (mes: ManateEvent[]) => void) {
     this.listeners.delete(listener);
   }
 
@@ -23,8 +35,10 @@ class EventEmitter {
    * @internal
    */
   emit(me: ManateEvent) {
-    for (const listener of this.listeners) {
-      listener(me);
+    if (this._batch) {
+      this.cache.push(me);
+    } else {
+      this.listeners.forEach((listener) => listener([me]));
     }
   }
 }
@@ -66,11 +80,13 @@ export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: ManateEvent) => boolean] => {
   const reads = new Map<object, Set<PropertyKey>>();
-  const listener = (me: ManateEvent) => {
-    if (!reads.has(me.target)) {
-      reads.set(me.target, new Set());
+  const listener = (mes: ManateEvent[]) => {
+    for (const me of mes) {
+      if (!reads.has(me.target)) {
+        reads.set(me.target, new Set());
+      }
+      reads.get(me.target)!.add(me.prop);
     }
-    reads.get(me.target)!.add(me.prop);
   };
   readEmitter.on(listener);
   const r = fn();
@@ -83,9 +99,12 @@ export const run = <T>(
 
 export const autoRun = (fn: () => void) => {
   let isTrigger: (event: ManateEvent) => boolean;
-  const listener = (me: ManateEvent) => {
-    if (isTrigger(me)) {
-      [, isTrigger] = run(fn);
+  const listener = (mes: ManateEvent[]): void => {
+    for (const me of mes) {
+      if (isTrigger(me)) {
+        [, isTrigger] = run(fn);
+        return;
+      }
     }
   };
   const start = () => {

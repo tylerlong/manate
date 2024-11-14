@@ -12,8 +12,8 @@ describe('array splice', () => {
   test('default', () => {
     const arr = manage([1, 2, 3, 4, 5]);
     const events: string[] = [];
-    const listener = (event: ManateEvent) => {
-      events.push(`${event.type}: ${event.prop.toString()}`);
+    const listener = (mes: ManateEvent[]) => {
+      events.push(...mes.map((me) => `${me.type}: ${me.prop.toString()}`));
     };
     readEmitter.on(listener);
     writeEmitter.on(listener);
@@ -41,9 +41,9 @@ describe('array splice', () => {
       count++;
     });
     start(); // trigger the first run
-    // $(arr).begin();
+    writeEmitter.batch = true;
     arr.splice(2, 1); // trigger the second run
-    // $(arr).commit();
+    writeEmitter.batch = false;
     stop();
     expect(count).toBe(2);
   });
