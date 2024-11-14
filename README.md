@@ -4,9 +4,11 @@ manate is a lightweight, intuitive state management library that keeps things si
 Pronounced like "many-it" and short for "manage state".
 manate lets you handle state with ease across both frontend and backend.
 
-## Version 1.x
+## Version 2.x
 
-Please go to [1.x branch](https://github.com/tylerlong/manate/tree/1.x).
+This is the branch for version 2.x. It is current in heavy development.
+
+For a stable version, please check [1.x branch](https://github.com/tylerlong/manate/tree/1.x).
 
 ## Why choose manate?
 
@@ -89,21 +91,19 @@ So basically there is no restrictions. Just read/update as how you read/update a
 You may use it without React.
 
 ```ts
-import { $, manage, type ManateEvent } from 'manate';
+import { manage, setEmitter, type ManateEvent } from 'manate';
 
 class Store {}
 const store = manage(new Store());
 ```
 
-`$(store)` is an [EventEmitter](./src/events.ts) which will emit events about read/write to store. You can subscribe to events:
+`setEmitter` is an event emitter which will emit "set" events to store. You can subscribe to events:
 
 ```ts
-$(store).on((event: ManateEvent) => {
-  // do something with event
+setEmitter.on((event: ManateEvent) => {
+  // something changed, because we got a "set" event
 });
 ```
-
-Please note that, this `EventEmitter` is not the same as `EventEmitter` in Node.js. It's a custom implementation.
 
 ## Reference but do not track
 
