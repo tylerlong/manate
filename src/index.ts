@@ -52,7 +52,9 @@ const proxyMap = new WeakMap<object, object>();
 // todo: exludeSet
 
 const canManage = (obj: object) =>
-  obj && (Array.isArray(obj) || obj.toString() === '[object Object]');
+  obj &&
+  (Array.isArray(obj) || obj.toString() === '[object Object]') &&
+  obj['$$typeof'] !== Symbol.for('react.element');
 
 export const manage = <T extends object>(target: T): T => {
   // return managed if it's already managed

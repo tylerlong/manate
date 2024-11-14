@@ -7,8 +7,8 @@ describe('manage React element', () => {
   test('default', async () => {
     const Ele = <i></i>;
     expect(Ele).toBeDefined();
-    // React element is not an exception
-    expect(() => manage(Ele)).toThrowError();
+    // React element is not an exception, but will not be managed
+    expect(() => manage(Ele)).not.toThrowError();
   });
   test('default 2', async () => {
     const o = {

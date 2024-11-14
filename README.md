@@ -84,7 +84,7 @@ In the sample above I showed you two ways to update data:
 - update it directly: `store.count -= 1`
 - update it through a member function: `store.increase()`
 
-So basically there is no restrictions. Just read/update as how you read/update a plain object.
+So basically there is no restrictions. Just read/update as how you read/update a JavaScript object.
 
 ## Without React
 
@@ -216,7 +216,7 @@ $(managed).commit();
 
 ## Max Depth
 
-For human-created plain objects, a reasonable maximum depth for recursive processing, ignoring circular references, typically ranges between 5 to 10 levels.
+For human-created JavaScript objects, a reasonable maximum depth for recursive processing, ignoring circular references, typically ranges between 5 to 10 levels.
 
 So this library by set the max depth to 10, if max depeth exceeded, an error will be thrown.
 In such case, you need to review the data to be managed, why is it so deeply nested, is it reasonable?
