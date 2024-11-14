@@ -76,7 +76,7 @@ export const manage = <T extends object>(target: T): T => {
       return value;
     },
     set: (target: T, prop: PropertyKey, value: any, receiver?: T): boolean => {
-      Reflect.set(target, prop, value, receiver);
+      Reflect.set(target, prop, manage(value), receiver);
       writeEmitter.emit({ type: 'set', target, prop });
       return true;
     },
