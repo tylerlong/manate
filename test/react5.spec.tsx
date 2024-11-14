@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { manage, writeEmitter } from '../src';
 import { auto } from '../src/react';
 
 class Store {
@@ -33,7 +33,7 @@ describe('React', () => {
     store.count = 0;
     renderHistory.length = 0;
     render(<App store={store} />);
-    $(store).begin(); // transaction start
+    writeEmitter.batch = true; // transaction start
     act(() => {
       store.count += 1;
     });
@@ -42,7 +42,7 @@ describe('React', () => {
     });
     act(() => {
       store.count += 1;
-      $(store).commit(); // transaction end
+      writeEmitter.batch = false; // transaction end
     });
     const span = screen.getByRole('count');
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
