@@ -43,10 +43,27 @@ class EventEmitter {
   }
 }
 
+// todo: create a class to hold the code below
+
 export const readEmitter = new EventEmitter();
 export const writeEmitter = new EventEmitter();
 
+const proxyMap = new WeakMap<object, object>();
+// todo: exludeSet
+
+const canManage = (obj: object) =>
+  obj && (Array.isArray(obj) || obj.toString() === '[object Object]');
+
 export const manage = <T extends object>(target: T): T => {
+  // return managed if it's already managed
+  if (proxyMap.has(target)) {
+    return proxyMap.get(target) as T;
+  }
+  // return target if it cannot be managed
+  if (!canManage(target)) {
+    return target;
+  }
+
   const managed = new Proxy(target, {
     get: (target: T, prop: PropertyKey, receiver?: T) => {
       const value = Reflect.get(target, prop, receiver);
@@ -72,7 +89,13 @@ export const manage = <T extends object>(target: T): T => {
     },
     // todo: ownKeys: (target: T) => {
   });
-  // todo: recursively manage
+  proxyMap.set(target, managed);
+
+  for (const prop of Reflect.ownKeys(target)) {
+    const value = Reflect.get(target, prop);
+    Reflect.set(target, prop, manage(value as T), target);
+  }
+
   return managed;
 };
 
