@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ManateEvent {
+  type: 'get' | 'set' | 'delete' | 'has';
   target: object;
   prop: PropertyKey;
-  value: any;
 }
 
 class EventEmitter {
@@ -29,42 +29,54 @@ class EventEmitter {
   }
 }
 
-const getEmitter = new EventEmitter();
-export const setEmitter = new EventEmitter();
+export const readEmitter = new EventEmitter();
+export const writeEmitter = new EventEmitter();
 
 export const manage = <T extends object>(target: T): T => {
-  const proxy = new Proxy(target, {
+  const managed = new Proxy(target, {
     get: (target: T, prop: PropertyKey, receiver?: T) => {
       const value = Reflect.get(target, prop, receiver);
       if (typeof value !== 'function') {
-        getEmitter.emit({ target, prop, value });
+        readEmitter.emit({ type: 'get', target, prop });
       }
       return value;
     },
     set: (target: T, prop: PropertyKey, value: any, receiver?: T): boolean => {
       Reflect.set(target, prop, value, receiver);
-      setEmitter.emit({ target, prop, value });
+      writeEmitter.emit({ type: 'set', target, prop });
       return true;
     },
+    deleteProperty: (target: T, prop: PropertyKey) => {
+      delete target[prop];
+      writeEmitter.emit({ type: 'delete', target, prop });
+      return true;
+    },
+    has: (target: T, prop: PropertyKey) => {
+      const value = prop in target;
+      readEmitter.emit({ type: 'has', target, prop });
+      return value;
+    },
+    // todo: ownKeys: (target: T) => {
   });
-  return proxy;
+  // todo: recursively manage
+  return managed;
 };
 
 export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: ManateEvent) => boolean] => {
-  const gets = new Map<object, Set<PropertyKey>>();
+  const reads = new Map<object, Set<PropertyKey>>();
   const listener = (me: ManateEvent) => {
-    if (!gets.has(me.target)) {
-      gets.set(me.target, new Set());
+    if (!reads.has(me.target)) {
+      reads.set(me.target, new Set());
     }
-    gets.get(me.target)!.add(me.prop);
+    reads.get(me.target)!.add(me.prop);
   };
-  getEmitter.on(listener);
+  readEmitter.on(listener);
   const r = fn();
-  getEmitter.off(listener);
+  readEmitter.off(listener);
   const isTrigger = (me: ManateEvent) => {
-    return gets.get(me.target)?.has(me.prop) ?? false;
+    return reads.get(me.target)?.has(me.prop) ?? false;
   };
   return [r, isTrigger];
 };
@@ -78,10 +90,10 @@ export const autoRun = (fn: () => void) => {
   };
   const start = () => {
     [, isTrigger] = run(fn);
-    setEmitter.on(listener);
+    writeEmitter.on(listener);
   };
   const stop = () => {
-    setEmitter.off(listener);
+    writeEmitter.off(listener);
   };
   return { start, stop };
 };
