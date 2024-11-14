@@ -4,6 +4,10 @@ manate is a lightweight, intuitive state management library that keeps things si
 Pronounced like "many-it" and short for "manage state".
 manate lets you handle state with ease across both frontend and backend.
 
+## Version 1.x
+
+Please go to [1.x branch](https://github.com/tylerlong/manate/tree/1.x).
+
 ## Why choose manate?
 
 - Effortless to use: No complex syntax – your state is just a JavaScript object.
