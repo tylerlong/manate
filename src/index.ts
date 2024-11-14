@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EventEmitter, ProxyTrapEvent } from './events';
 
 // todo: create a class to hold the code below
@@ -25,39 +24,52 @@ export const manage = <T extends object>(target: T): T => {
   }
 
   const managed = new Proxy(target, {
+    // read traps
     get: (target: T, prop: PropertyKey, receiver?: T) => {
-      const value = Reflect.get(target, prop, receiver);
-      if (typeof value !== 'function') {
-        readEmitter.emit({ type: 'get', target, prop });
-      }
-      return value;
-    },
-    set: (target: T, prop: PropertyKey, value: any, receiver?: T): boolean => {
-      Reflect.set(target, prop, manage(value), receiver);
-      writeEmitter.emit({ type: 'set', target, prop });
-      return true;
-    },
-    deleteProperty: (target: T, prop: PropertyKey) => {
-      delete target[prop];
-      writeEmitter.emit({ type: 'delete', target, prop });
-      return true;
+      const r = Reflect.get(target, prop, receiver);
+      readEmitter.emit({ target, prop });
+      return r;
     },
     has: (target: T, prop: PropertyKey) => {
-      const value = prop in target;
-      readEmitter.emit({ type: 'has', target, prop });
-      return value;
+      const r = Reflect.has(target, prop);
+      readEmitter.emit({ target, prop });
+      return r;
     },
     ownKeys: (target: T) => {
-      const value = Reflect.ownKeys(target);
-      readEmitter.emit({ type: 'keys', target, prop: allPropsSymbol });
-      return value;
+      const r = Reflect.ownKeys(target);
+      readEmitter.emit({ target, prop: allPropsSymbol });
+      return r;
     },
+
+    // write traps
+    defineProperty: (
+      target: T,
+      prop: PropertyKey,
+      descriptor: PropertyDescriptor,
+    ): boolean => {
+      const r = Reflect.defineProperty(target, prop, {
+        ...descriptor,
+        value: manage(descriptor.value),
+      });
+      writeEmitter.emit({ target, prop });
+      return r;
+    },
+    deleteProperty: (target: T, prop: PropertyKey) => {
+      const r = Reflect.deleteProperty(target, prop);
+      writeEmitter.emit({ target, prop });
+      return r;
+    },
+
+    // todo: use apply to make all functions actions?
   });
   proxyMap.set(target, managed);
 
   for (const prop of Reflect.ownKeys(target)) {
-    const value = Reflect.get(target, prop);
-    Reflect.set(target, prop, manage(value as T), target);
+    const descriptor = Reflect.getOwnPropertyDescriptor(target, prop)!;
+    Reflect.defineProperty(target, prop, {
+      ...descriptor,
+      value: manage(descriptor.value as T),
+    });
   }
 
   return managed;

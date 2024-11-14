@@ -1,5 +1,4 @@
 export interface ProxyTrapEvent {
-  type: 'get' | 'set' | 'delete' | 'has' | 'keys';
   target: object;
   prop: PropertyKey;
 }
