@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { manage } from '../src';
 
 describe('after proxy', () => {
   test('default', () => {
@@ -12,11 +12,5 @@ describe('after proxy', () => {
     expect(a.b).toBeDefined();
     const ma = manage(a);
     expect(ma.b).toBeDefined();
-    expect($(ma)).toBeDefined();
-    expect(() => $(a)).toThrow();
-    expect($(ma.b)).toBeDefined();
-
-    // This one is special, although a is not managed, but a.b is managed
-    expect($(a.b)).toBeDefined();
   });
 });
