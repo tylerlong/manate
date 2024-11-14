@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ManateEvent {
-  type: 'get' | 'set' | 'delete' | 'has';
+  type: 'get' | 'set' | 'delete' | 'has' | 'keys';
   target: object;
   prop: PropertyKey;
 }
@@ -51,6 +51,7 @@ export const writeEmitter = new EventEmitter();
 const proxyMap = new WeakMap<object, object>();
 // todo: exludeSet
 
+const allPropsSymbol = Symbol('allProps');
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
@@ -89,7 +90,11 @@ export const manage = <T extends object>(target: T): T => {
       readEmitter.emit({ type: 'has', target, prop });
       return value;
     },
-    // todo: ownKeys: (target: T) => {
+    ownKeys: (target: T) => {
+      const value = Reflect.ownKeys(target);
+      readEmitter.emit({ type: 'keys', target, prop: allPropsSymbol });
+      return value;
+    },
   });
   proxyMap.set(target, managed);
 
@@ -117,7 +122,11 @@ export const run = <T>(
   const r = fn();
   readEmitter.off(listener);
   const isTrigger = (me: ManateEvent) => {
-    return reads.get(me.target)?.has(me.prop) ?? false;
+    if (!reads.has(me.target)) {
+      return false;
+    }
+    const read = reads.get(me.target)!;
+    return read.has(me.prop) || read.has(allPropsSymbol);
   };
   return [r, isTrigger];
 };
