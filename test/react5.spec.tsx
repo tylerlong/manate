@@ -33,7 +33,21 @@ describe('React', () => {
     store.count = 0;
     renderHistory.length = 0;
     render(<App store={store} />);
-    writeEmitter.batch = true; // transaction start
+
+    // only one re-render for batch
+    writeEmitter.batch(() => {
+      act(() => {
+        store.count += 1;
+      });
+      act(() => {
+        store.count += 1;
+      });
+      act(() => {
+        store.count += 1;
+      });
+    });
+
+    // 3 re-renders without batch
     act(() => {
       store.count += 1;
     });
@@ -42,12 +56,12 @@ describe('React', () => {
     });
     act(() => {
       store.count += 1;
-      writeEmitter.batch = false; // transaction end
     });
+
     const span = screen.getByRole('count');
     expect(parseInt(span.textContent!.trim(), 10)).toBe(store.count);
-    expect(store.count).toBe(3);
-    expect(renderHistory).toEqual([0, 3]);
+    expect(store.count).toBe(6);
+    expect(renderHistory).toEqual([0, 3, 4, 5, 6]);
     cleanup();
   });
 });

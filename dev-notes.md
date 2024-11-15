@@ -104,6 +104,7 @@ Instead, we could make `position` a property of `monster`.
 
 for readEmitter, it is always batched. because we know when to start/stop listener for events.
 We provide a `run` method with a `fn` callback. The run method will return the result of `fn` and the `readCache`. `readCache` records all the read operations happened during the execution of `fn`.
+And in this `run` method, you are not supposed to change any data. It's mainly for (React) render.
 
 for writeEmitter, by default it is not batched. and we also don't know when to stop listening, it depends on the events and isTrigger.
 We provide a `batch` method with a `fun` callback. During the execution of `fn`, all events are batched/cached. When `fn` finished, all events will be issued.

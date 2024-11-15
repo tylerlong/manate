@@ -1,13 +1,17 @@
-import { EventEmitter, ProxyTrapEvent } from './events';
+import {
+  ReadEventEmitter,
+  WriteCache,
+  WriteEvent,
+  WriteEventEmitter,
+} from './events';
 
 // todo: create a class to hold the code below
-export const readEmitter = new EventEmitter();
-export const writeEmitter = new EventEmitter();
+export const readEmitter = new ReadEventEmitter();
+export const writeEmitter = new WriteEventEmitter();
 
 const proxyMap = new WeakMap<object, object>();
 // todo: exludeSet
 
-const allPropsSymbol = Symbol('allProps');
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
@@ -27,17 +31,17 @@ export const manage = <T extends object>(target: T): T => {
     // read traps
     get: (target: T, prop: PropertyKey, receiver?: T) => {
       const r = Reflect.get(target, prop, receiver);
-      readEmitter.emit({ target, prop });
+      readEmitter.emitGet({ target, prop, value: r });
       return r;
     },
     has: (target: T, prop: PropertyKey) => {
       const r = Reflect.has(target, prop);
-      readEmitter.emit({ target, prop });
+      readEmitter.emitHas({ target, prop, value: r });
       return r;
     },
     ownKeys: (target: T) => {
       const r = Reflect.ownKeys(target);
-      readEmitter.emit({ target, prop: allPropsSymbol });
+      readEmitter.emitKeys({ target, value: r });
       return r;
     },
 
@@ -77,45 +81,59 @@ export const manage = <T extends object>(target: T): T => {
 
 export const run = <T>(
   fn: () => T,
-): [r: T, isTrigger: (event: ProxyTrapEvent) => boolean] => {
-  const reads = new Map<object, Set<PropertyKey>>();
-  const listener = (mes: ProxyTrapEvent[]) => {
-    for (const me of mes) {
-      if (!reads.has(me.target)) {
-        reads.set(me.target, new Set());
+): [r: T, isTrigger: (event: WriteEvent | WriteCache) => boolean] => {
+  const [r, readCache] = readEmitter.run(fn);
+  const isTrigger = (event: WriteEvent | WriteCache) => {
+    let writeCache: WriteCache = event as WriteCache;
+    if (!(event instanceof Map)) {
+      writeCache = new Map([[event.target, new Set([event.prop])]]);
+    }
+    for (const [target, props] of writeCache) {
+      if (readCache.has(target)) {
+        const objectCache = readCache.get(target)!;
+        for (const prop of props) {
+          if (
+            prop in objectCache.get &&
+            objectCache.get[prop] !== Reflect.get(target, prop)
+          ) {
+            return true;
+          }
+          if (
+            prop in objectCache.has &&
+            objectCache.has[prop] !== Reflect.has(target, prop)
+          ) {
+            return true;
+          }
+        }
+        if (
+          'keys' in objectCache &&
+          objectCache.keys !== Reflect.ownKeys(target)
+        ) {
+          return true;
+        }
       }
-      reads.get(me.target)!.add(me.prop);
     }
-  };
-  readEmitter.on(listener);
-  const r = fn();
-  readEmitter.off(listener);
-  const isTrigger = (me: ProxyTrapEvent) => {
-    if (!reads.has(me.target)) {
-      return false;
-    }
-    const read = reads.get(me.target)!;
-    return read.has(me.prop) || read.has(allPropsSymbol);
+    return false;
   };
   return [r, isTrigger];
 };
 
-export const autoRun = (fn: () => void) => {
-  let isTrigger: (event: ProxyTrapEvent) => boolean;
-  const listener = (mes: ProxyTrapEvent[]): void => {
-    for (const me of mes) {
-      if (isTrigger(me)) {
-        [, isTrigger] = run(fn);
-        return;
-      }
-    }
-  };
-  const start = () => {
-    [, isTrigger] = run(fn);
-    writeEmitter.on(listener);
-  };
-  const stop = () => {
-    writeEmitter.off(listener);
-  };
-  return { start, stop };
-};
+// export const autoRun = (fn: () => void) => {
+//   let isTrigger: (event: ProxyTrapEvent) => boolean;
+//   const listener = (mes: ProxyTrapEvent[]): void => {
+//     for (const me of mes) {
+//       if (isTrigger(me)) {
+//         [, isTrigger] = run(fn);
+//         return;
+//       }
+//     }
+//   };
+//   const start = () => {
+//     [, isTrigger] = run(fn);
+//     writeEmitter.on(listener);
+//   };
+//   const stop = () => {
+//     writeEmitter.off(listener);
+//   };
+//   return { start, stop };
+// };

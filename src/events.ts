@@ -14,7 +14,7 @@ export type KeysEvent = {
   value: PropertyKey[];
 };
 
-type WriteCache = Map<object, Set<PropertyKey>>;
+export type WriteCache = Map<object, Set<PropertyKey>>;
 export class WriteEventEmitter {
   private cache: WriteCache = new Map();
   private batchCounter = 0;
@@ -26,6 +26,7 @@ export class WriteEventEmitter {
     } finally {
       this.batchCounter--;
       if (this.batchCounter === 0 && this.cache.size > 0) {
+        console.log('emit cache', this.cache);
         this.listeners.forEach((listener) => listener(this.cache));
         this.cache.clear();
       }
