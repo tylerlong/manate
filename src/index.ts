@@ -64,7 +64,7 @@ export const manage = <T extends object>(target: T): T => {
       return r;
     },
 
-    // todo: use apply to make all functions actions?
+    // todo: use apply to make all functions batch?
   });
   proxyMap.set(target, managed);
 
@@ -118,22 +118,22 @@ export const run = <T>(
   return [r, isTrigger];
 };
 
-// export const autoRun = (fn: () => void) => {
-//   let isTrigger: (event: ProxyTrapEvent) => boolean;
-//   const listener = (mes: ProxyTrapEvent[]): void => {
-//     for (const me of mes) {
-//       if (isTrigger(me)) {
-//         [, isTrigger] = run(fn);
-//         return;
-//       }
-//     }
-//   };
-//   const start = () => {
-//     [, isTrigger] = run(fn);
-//     writeEmitter.on(listener);
-//   };
-//   const stop = () => {
-//     writeEmitter.off(listener);
-//   };
-//   return { start, stop };
-// };
+export const autoRun = <T>(fn: () => T) => {
+  let isTrigger: (event: WriteEvent | WriteCache) => boolean;
+  const listener = (e: WriteEvent | WriteCache): void => {
+    if (isTrigger(e)) {
+      [runner.r, isTrigger] = run(fn);
+    }
+  };
+  const runner = {
+    start: () => {
+      [runner.r, isTrigger] = run(fn);
+      writeEmitter.on(listener);
+    },
+    stop: () => {
+      writeEmitter.off(listener);
+    },
+    r: undefined as T | undefined,
+  };
+  return runner;
+};
