@@ -48,6 +48,7 @@ describe('React', () => {
         });
       });
     });
+    // note: this cannot be tested precisely, because React may batch re-renders
 
     // 3 re-renders without batch
     act(() => {

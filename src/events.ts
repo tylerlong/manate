@@ -27,7 +27,7 @@ export class WriteEventEmitter {
       this.batchCounter--;
       if (this.batchCounter === 0 && this.cache.size > 0) {
         this.listeners.forEach((listener) => listener(this.cache));
-        this.cache.clear();
+        this.cache = new Map();
       }
     }
   }
