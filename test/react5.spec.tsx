@@ -35,15 +35,17 @@ describe('React', () => {
     render(<App store={store} />);
 
     // only one re-render for batch
-    writeEmitter.batch(() => {
-      act(() => {
-        store.count += 1;
-      });
-      act(() => {
-        store.count += 1;
-      });
-      act(() => {
-        store.count += 1;
+    act(() => {
+      writeEmitter.batch(() => {
+        act(() => {
+          store.count += 1;
+        });
+        act(() => {
+          store.count += 1;
+        });
+        act(() => {
+          store.count += 1;
+        });
       });
     });
 

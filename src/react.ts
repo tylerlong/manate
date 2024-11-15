@@ -9,7 +9,6 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
     const [r, isTrigger] = run(() => Component(props)); // todo: <Component {...props} /> ?
     useEffect(() => {
       const listener = (event: WriteEvent | WriteCache) => {
-        console.log('listener', event, 'isTrigger', isTrigger(event));
         if (isTrigger(event)) {
           reRender((n) => n + 1);
         }
