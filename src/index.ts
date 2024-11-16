@@ -105,11 +105,15 @@ export const run = <T>(
             return true;
           }
         }
-        if (
-          'keys' in objectCache &&
-          objectCache.keys !== Reflect.ownKeys(target)
-        ) {
-          return true;
+        if ('keys' in objectCache) {
+          const lastKeys = objectCache.keys!;
+          const currentKeys = Reflect.ownKeys(target);
+          if (lastKeys.length !== currentKeys.length) {
+            return true;
+          }
+          if (!lastKeys.every((key, i) => key === currentKeys[i])) {
+            return true;
+          }
         }
       }
     }
