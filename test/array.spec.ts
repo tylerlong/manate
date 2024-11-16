@@ -2,7 +2,7 @@
 import { describe, expect, test } from 'vitest';
 
 import { manage, writeEmitter } from '../src';
-import { ProxyTrapEvent } from '../src/events';
+import { WriteEvent } from '../src/events';
 
 describe('array', () => {
   test('managed set length', () => {
@@ -29,9 +29,9 @@ describe('array', () => {
       public todos: string[] = [];
     }
     const managed = manage(new Store());
-    const events: ProxyTrapEvent[] = [];
-    writeEmitter.on((ptes: ProxyTrapEvent[]) => {
-      events.push(...ptes);
+    const events: WriteEvent[] = [];
+    writeEmitter.on((we) => {
+      events.push(we as WriteEvent);
     });
     managed.todos.push('hello');
     expect(events.map((e) => e.prop)).toEqual(['0', 'length']);
