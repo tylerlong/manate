@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type WriteEvent = {
+type WriteEvent = {
   target: object;
   prop: PropertyKey;
 };
-export type GetEvent = WriteEvent & {
+type GetEvent = WriteEvent & {
   value: any;
 };
-export type HasEvent = WriteEvent & {
+type HasEvent = WriteEvent & {
   value: boolean;
 };
-export type KeysEvent = {
+type KeysEvent = {
   target: object;
   value: PropertyKey[];
 };
 
-export type WriteCache = Map<object, Set<PropertyKey>>;
+export type WriteLog = Map<object, Set<PropertyKey>>;
 export class WriteEventEmitter {
-  private cache: WriteCache = new Map();
+  private writeLog: WriteLog = new Map();
   private batchCounter = 0;
 
   public batch<T>(f: () => T): T {
@@ -25,36 +25,38 @@ export class WriteEventEmitter {
       return f();
     } finally {
       this.batchCounter--;
-      if (this.batchCounter === 0 && this.cache.size > 0) {
-        this.listeners.forEach((listener) => listener(this.cache));
-        this.cache = new Map();
+      if (this.batchCounter === 0 && this.writeLog.size > 0) {
+        this.listeners.forEach((listener) => listener(this.writeLog));
+        this.writeLog = new Map();
       }
     }
   }
 
-  listeners = new Set<(e: WriteEvent | WriteCache) => void>();
+  listeners = new Set<(e: WriteLog) => void>();
 
-  on(listener: (e: WriteEvent | WriteCache) => void) {
+  on(listener: (e: WriteLog) => void) {
     this.listeners.add(listener);
   }
 
-  off(listener: (e: WriteEvent | WriteCache) => void) {
+  off(listener: (e: WriteLog) => void) {
     this.listeners.delete(listener);
   }
 
   emit(me: WriteEvent) {
     if (this.batchCounter === 0) {
-      this.listeners.forEach((listener) => listener(me));
+      this.listeners.forEach((listener) =>
+        listener(new Map([[me.target, new Set([me.prop])]])),
+      );
     } else {
-      if (!this.cache.has(me.target)) {
-        this.cache.set(me.target, new Set());
+      if (!this.writeLog.has(me.target)) {
+        this.writeLog.set(me.target, new Set());
       }
-      this.cache.get(me.target)!.add(me.prop);
+      this.writeLog.get(me.target)!.add(me.prop);
     }
   }
 }
 
-type ReadCache = Map<
+type ReadLog = Map<
   object,
   {
     get: { [prop: PropertyKey]: any };
@@ -63,43 +65,43 @@ type ReadCache = Map<
   }
 >;
 export class ReadEventEmitter {
-  private caches = new Set<ReadCache>();
+  private readLogs = new Set<ReadLog>();
 
-  run<T>(f: () => T): [T, ReadCache] {
-    const readCache = new Map();
-    this.caches.add(readCache);
+  run<T>(f: () => T): [T, ReadLog] {
+    const readLog = new Map();
+    this.readLogs.add(readLog);
     try {
       const r = f();
-      return [r, readCache];
+      return [r, readLog];
     } finally {
-      this.caches.delete(readCache);
+      this.readLogs.delete(readLog);
     }
   }
 
   emitGet(ge: GetEvent) {
-    for (const cache of this.caches.values()) {
-      if (!cache.has(ge.target)) {
-        cache.set(ge.target, { get: {}, has: {} });
+    for (const readLog of this.readLogs.values()) {
+      if (!readLog.has(ge.target)) {
+        readLog.set(ge.target, { get: {}, has: {} });
       }
-      cache.get(ge.target)!.get[ge.prop] = ge.value;
+      readLog.get(ge.target)!.get[ge.prop] = ge.value;
     }
   }
 
   emitHas(he: HasEvent) {
-    for (const cache of this.caches.values()) {
-      if (!cache.has(he.target)) {
-        cache.set(he.target, { get: {}, has: {} });
+    for (const readLog of this.readLogs.values()) {
+      if (!readLog.has(he.target)) {
+        readLog.set(he.target, { get: {}, has: {} });
       }
-      cache.get(he.target)!.has[he.prop] = he.value;
+      readLog.get(he.target)!.has[he.prop] = he.value;
     }
   }
 
   emitKeys(ke: KeysEvent) {
-    for (const cache of this.caches.values()) {
-      if (!cache.has(ke.target)) {
-        cache.set(ke.target, { get: {}, has: {} });
+    for (const readLog of this.readLogs.values()) {
+      if (!readLog.has(ke.target)) {
+        readLog.set(ke.target, { get: {}, has: {} });
       }
-      cache.get(ke.target)!.keys = ke.value;
+      readLog.get(ke.target)!.keys = ke.value;
     }
   }
 }

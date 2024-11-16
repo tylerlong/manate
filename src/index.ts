@@ -1,9 +1,4 @@
-import {
-  ReadEventEmitter,
-  WriteCache,
-  WriteEvent,
-  WriteEventEmitter,
-} from './events';
+import { ReadEventEmitter, WriteEventEmitter, WriteLog } from './events';
 
 // todo: create a class to hold the code below
 export const readEmitter = new ReadEventEmitter();
@@ -17,6 +12,7 @@ const canManage = (obj: object) =>
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
   obj['$$typeof'] !== Symbol.for('react.element');
 
+// todo: max depth
 export const manage = <T extends object>(target: T): T => {
   // return managed if it's already managed
   if (proxyMap.has(target)) {
@@ -81,32 +77,30 @@ export const manage = <T extends object>(target: T): T => {
 
 export const run = <T>(
   fn: () => T,
-): [r: T, isTrigger: (event: WriteEvent | WriteCache) => boolean] => {
-  const [r, readCache] = readEmitter.run(fn);
-  const isTrigger = (event: WriteEvent | WriteCache) => {
-    let writeCache: WriteCache = event as WriteCache;
-    if (!(event instanceof Map)) {
-      writeCache = new Map([[event.target, new Set([event.prop])]]);
-    }
-    for (const [target, props] of writeCache) {
-      if (readCache.has(target)) {
-        const objectCache = readCache.get(target)!;
+): [r: T, isTrigger: (event: WriteLog) => boolean] => {
+  const [r, readLog] = readEmitter.run(fn);
+  const isTrigger = (writeLog: WriteLog) => {
+    for (const [target, props] of writeLog) {
+      if (readLog.has(target)) {
+        const objectLog = readLog.get(target)!;
         for (const prop of props) {
           if (
-            prop in objectCache.get &&
-            objectCache.get[prop] !== Reflect.get(target, prop)
+            prop in objectLog.get &&
+            objectLog.get[prop] !== Reflect.get(target, prop)
           ) {
             return true;
           }
           if (
-            prop in objectCache.has &&
-            objectCache.has[prop] !== Reflect.has(target, prop)
+            prop in objectLog.has &&
+            objectLog.has[prop] !== Reflect.has(target, prop)
           ) {
             return true;
           }
         }
-        if ('keys' in objectCache) {
-          const lastKeys = objectCache.keys!;
+
+        // todo: optimize
+        if ('keys' in objectLog) {
+          const lastKeys = objectLog.keys!;
           const currentKeys = Reflect.ownKeys(target);
           if (lastKeys.length !== currentKeys.length) {
             return true;
@@ -123,8 +117,8 @@ export const run = <T>(
 };
 
 export const autoRun = <T>(fn: () => T) => {
-  let isTrigger: (event: WriteEvent | WriteCache) => boolean;
-  const listener = (e: WriteEvent | WriteCache): void => {
+  let isTrigger: (event: WriteLog) => boolean;
+  const listener = (e: WriteLog): void => {
     if (isTrigger(e)) {
       [runner.r, isTrigger] = run(fn);
     }
