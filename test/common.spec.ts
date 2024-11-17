@@ -1,16 +1,15 @@
 import { describe, test } from 'vitest';
 
-import { ManateEvent } from '../src';
-import EventEmitter from '../src/event-emitter';
+import { writeEmitter } from '../src';
 
 describe('index', () => {
   test('event emitter on and off', () => {
-    const eventEmitter = new EventEmitter();
-    const callback = (me: ManateEvent) => {
+    const eventEmitter = writeEmitter;
+    const callback = (me) => {
       console.log(me);
     };
     eventEmitter.on(callback);
-    eventEmitter.removeAllListeners();
-    eventEmitter.emit(new ManateEvent({ name: 'set', paths: [] }));
+    eventEmitter.off(callback);
+    eventEmitter.emit({ target: { a: 1 }, prop: 'a' });
   });
 });

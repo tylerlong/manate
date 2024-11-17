@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { manage } from '../src';
 
 describe('circular', () => {
   test('direct', () => {
@@ -53,9 +53,9 @@ describe('circular', () => {
     a.b = b;
 
     const ma = manage(a); // will not trigger "RangeError: Maximum call stack size exceeded"
-    expect($(ma)).toBeDefined();
-    expect($(ma.b)).toBeDefined();
-    expect($(ma.b?.a)).toBeDefined();
-    expect($(ma.b?.a.b)).toBeDefined();
+    expect(ma).toBeDefined();
+    expect(ma.b).toBeDefined();
+    expect(ma.b?.a).toBeDefined();
+    expect(ma.b?.a.b).toBeDefined();
   });
 });
