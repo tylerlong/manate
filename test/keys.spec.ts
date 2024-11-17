@@ -1,6 +1,9 @@
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
-import { $, autoRun, manage, type ManateEvent } from '../src';
+import { manage, readEmitter } from '../src';
+import { autoRun } from '../src/utils';
 
 describe('keys', () => {
   test('default', () => {
@@ -9,7 +12,7 @@ describe('keys', () => {
     }
     const store = manage(new Store());
     let count = 0;
-    const { start } = autoRun(store, () => {
+    const { start } = autoRun(() => {
       expect(Object.keys(store.monsters).length).toBe(count);
       count += 1;
     });
@@ -25,8 +28,8 @@ describe('keys', () => {
     }
     const store = manage(new Store());
     let count = 0;
-    const { start } = autoRun(store, () => {
-      expect(Object.values(store.monsters).length).toBe(count);
+    const { start } = autoRun(() => {
+      expect(Object.values(store.monsters).length).toBe(count); // this line is different from previous test
       count += 1;
     });
     start();
@@ -40,14 +43,13 @@ describe('keys', () => {
       public monsters: { [key: string]: number } = {};
     }
     const store = manage(new Store());
-    const events: { name: string; paths: PropertyKey[] }[] = [];
-    $(store).on((event: ManateEvent) => {
-      events.push({ name: event.name, paths: event.paths });
+    const [r, readLogs] = readEmitter.run(() => {
+      return Object.values(store.monsters);
     });
-    expect(Object.values(store.monsters)).toEqual([]); // trigger events
-    expect(events).toEqual([
-      { name: 'get', paths: ['monsters'] },
-      { name: 'keys', paths: ['monsters'] },
-    ]);
+    expect(r).toEqual([]);
+    expect(inspect(readLogs)).toBe(`Map(2) {
+  Store { monsters: {} } => { get: { monsters: {} }, has: {} },
+  {} => { get: {}, has: {}, keys: true }
+}`);
   });
 });

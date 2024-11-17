@@ -100,7 +100,6 @@ describe('index', () => {
     expect(inspect(readLogs)).toBe(
       `Map(1) { { b: { c: 'world' } } => { get: { b: [Object] }, has: {} } }`,
     );
-    console.log(inspect(writeLogs));
     expect(inspect(writeLogs)).toBe(`[
   Map(2) {
     { b: [Object] } => Map(1) { 'b' => 1 },
