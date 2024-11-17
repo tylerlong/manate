@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { $, exclude, manage, type ManateEvent } from '../src';
+import { exclude, manage, writeEmitter } from '../src';
 
 describe('exclude', () => {
   test('exclude beforewards', () => {
@@ -14,37 +14,53 @@ describe('exclude', () => {
     exclude(b);
     ma.parent = b;
 
-    const eventsCache: string[] = [];
-    $(ma).on((event: ManateEvent) => {
-      eventsCache.push(`${event.name} ${event.pathString}`);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
     });
-
     ma.parent.b = 4;
-    expect(eventsCache).toEqual(['get parent']);
+    expect(r).toBeFalsy();
   });
 
-  test('exclude afterwards', () => {
-    class A {
-      public b = 1;
-      public parent: A | null = null;
+  test('exclude in class constructor', () => {
+    class B {
+      constructor() {
+        exclude(this);
+      }
+      public c = 1;
     }
+
+    class A {
+      public b = new B();
+    }
+
     const a = new A();
     const ma = manage(a);
-    const b = new A();
-    ma.parent = b;
-
-    const eventsCache: string[] = [];
-    $(ma).on((event: ManateEvent) => {
-      eventsCache.push(`${event.name} ${event.pathString}`);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
     });
+    ma.b.c = 4;
+    expect(r).toBeFalsy();
+  });
 
-    ma.parent.b = 4;
-    expect(eventsCache).toEqual(['get parent', 'set parent+b']);
+  test('without exclude', () => {
+    class B {
+      public c = 1;
+    }
 
-    eventsCache.length = 0;
-    exclude(ma.parent);
-    ma.parent.b = 4;
-    expect(eventsCache).toEqual(['get parent', 'get parent']);
+    class A {
+      public b = new B();
+    }
+
+    const a = new A();
+    const ma = manage(a);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
+    });
+    ma.b.c = 4;
+    expect(r).toBeTruthy();
   });
 
   test('default-1', () => {
@@ -60,12 +76,12 @@ describe('exclude', () => {
     const b = new B();
     a.b = exclude(b);
     const ma = manage(a);
-    const eventsCache: string[] = [];
-    $(ma).on((event: ManateEvent) => {
-      eventsCache.push(`${event.name} ${event.pathString}`);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
     });
     ma.b.c = 4;
-    expect(eventsCache).toEqual(['get b']);
+    expect(r).toBeFalsy();
   });
 
   test('default-2', () => {
@@ -79,11 +95,11 @@ describe('exclude', () => {
 
     const a = new A();
     const ma = manage(a);
-    const eventsCache: string[] = [];
-    $(ma).on((event: ManateEvent) => {
-      eventsCache.push(`${event.name} ${event.pathString}`);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
     });
     ma.b.c = 4;
-    expect(eventsCache).toEqual(['get b']);
+    expect(r).toBeFalsy();
   });
 });

@@ -6,12 +6,18 @@ export const readEmitter = new ReadEventEmitter();
 export const writeEmitter = new WriteEventEmitter();
 
 const proxyMap = new WeakMap<object, object>();
-// todo: exludeSet
+const excludeSet = new WeakSet<object>();
+
+export const exclude = <T extends object>(target: T): T => {
+  excludeSet.add(target);
+  return target;
+};
 
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
-  obj['$$typeof'] !== Symbol.for('react.element');
+  obj['$$typeof'] !== Symbol.for('react.element') &&
+  !excludeSet.has(obj);
 
 // todo: max depth
 export const manage = <T extends object>(target: T): T => {
