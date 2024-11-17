@@ -10,7 +10,7 @@ describe('autoRunDirty', () => {
     const store = manage(new Store());
     const greetings: string[] = [];
     let count = 0;
-    const autoRunner = autoRun(store, () => {
+    const autoRunner = autoRun(() => {
       // this method auto runs when `store.greeting` changes
       greetings.push(store.greeting);
       // change data in the monitored function

@@ -18,6 +18,7 @@ export type WriteLog = Map<object, Set<PropertyKey>>;
 export class WriteEventEmitter {
   private writeLog: WriteLog = new Map();
   private batchCounter = 0;
+  private ignoreCounter = 0;
 
   public batch<T>(f: () => T): T {
     this.batchCounter++;
@@ -32,6 +33,15 @@ export class WriteEventEmitter {
     }
   }
 
+  public ignore<T>(f: () => T): T {
+    this.ignoreCounter++;
+    try {
+      return f();
+    } finally {
+      this.ignoreCounter--;
+    }
+  }
+
   listeners = new Set<(e: WriteLog) => void>();
 
   on(listener: (e: WriteLog) => void) {
@@ -43,6 +53,9 @@ export class WriteEventEmitter {
   }
 
   emit(me: WriteEvent) {
+    if (this.ignoreCounter > 0) {
+      return;
+    }
     if (this.batchCounter === 0) {
       this.listeners.forEach((listener) =>
         listener(new Map([[me.target, new Set([me.prop])]])),

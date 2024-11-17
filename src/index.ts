@@ -120,7 +120,7 @@ export const run = <T>(
 export const autoRun = <T>(fn: () => T, wrapper?: Wrapper) => {
   let isTrigger: (event: WriteLog) => boolean;
   let decoratedRun = () => {
-    [runner.r, isTrigger] = run(fn);
+    [runner.r, isTrigger] = writeEmitter.ignore(() => run(fn)); // ignore to avoid infinite loop
   };
   if (wrapper) {
     decoratedRun = wrapper(decoratedRun);
