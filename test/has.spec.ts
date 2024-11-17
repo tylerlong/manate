@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage } from '../src';
+import { manage } from '../src';
+import { autoRun } from '../src/utils';
 
 describe('has', () => {
   test('default', () => {
@@ -10,14 +11,15 @@ describe('has', () => {
     const store = manage(new Store());
     let count = 0;
     let result = false;
-    const { start } = autoRun(store, () => {
+    const runner = autoRun(() => {
       result = 'a' in store.monsters;
       count += 1;
     });
-    start();
-    store.monsters['a'] = 1;
-    delete store.monsters['a'];
-    store.monsters['a'] = 2;
+    runner.start(); // 1
+    store.monsters['a'] = 1; // 2
+    delete store.monsters['a']; // 3
+    store.monsters['a'] = 2; // 4
+    runner.stop();
     expect(count).toBe(4);
     expect(result).toBeTruthy();
   });
