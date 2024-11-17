@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
 import { manage, writeEmitter } from '../src';
@@ -21,8 +23,10 @@ describe('array splice', () => {
     const writeCache = writeLogs[0];
     expect(writeCache.size).toBe(1);
     expect(writeCache.has(arr)).toBeTruthy();
-    const props = writeCache.get(arr)!;
-    expect(Array.from(props).sort()).toEqual(['2', '3', '4', 'length']);
+    const map = writeCache.get(arr)!;
+    expect(inspect(map)).toEqual(
+      `Map(4) { '2' => 0, '3' => 0, '4' => -1, 'length' => 0 }`,
+    );
   });
 
   test('autoRun without batch', () => {

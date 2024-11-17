@@ -25,7 +25,7 @@ describe('before proxy', () => {
     ma.b = b;
     b.c = 1;
     expect(inspect(writeLogs)).toEqual(
-      "[ Map(1) { A { b: [B] } => Set(1) { 'b' } } ]",
+      "[ Map(1) { A { b: [B] } => Map(1) { 'b' => 1 } } ]",
     );
   });
 
@@ -50,8 +50,8 @@ describe('before proxy', () => {
     expect(inspect(writeLogs)).toEqual(
       `
 [
-  Map(1) { A { b: [B] } => Set(1) { 'b' } },
-  Map(1) { B { c: 1 } => Set(1) { 'c' } }
+  Map(1) { A { b: [B] } => Map(1) { 'b' => 1 } },
+  Map(1) { B { c: 1 } => Map(1) { 'c' => 0 } }
 ]
 `.trim(),
     );
@@ -76,11 +76,12 @@ describe('before proxy', () => {
     ma.b = b;
     const mb = ma.b;
     mb.c = 1;
+    console.log(inspect(writeLogs));
     expect(inspect(writeLogs)).toEqual(
       `
 [
-  Map(1) { A { b: [B] } => Set(1) { 'b' } },
-  Map(1) { B { c: 1 } => Set(1) { 'c' } }
+  Map(1) { A { b: [B] } => Map(1) { 'b' => 1 } },
+  Map(1) { B { c: 1 } => Map(1) { 'c' => 0 } }
 ]
       `.trim(),
     );

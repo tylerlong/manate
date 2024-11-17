@@ -13,16 +13,28 @@ describe('emitter sync', () => {
       writeLogs.push(writeLog);
     });
     writeEmitter.batch(() => {
-      writeEmitter.emit({ target: obj, prop: '0' });
-      writeEmitter.emit({ target: obj, prop: '1' });
-      writeEmitter.emit({ target: obj, prop: '2' });
-      writeEmitter.emit({ target: obj, prop: '100' });
-      writeEmitter.emit({ target: obj, prop: '3' });
-      writeEmitter.emit({ target: obj, prop: '4' });
-      writeEmitter.emit({ target: obj, prop: '5' });
+      writeEmitter.emit({ target: obj, prop: '0', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '1', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '2', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '100', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '3', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '4', value: 1 });
+      writeEmitter.emit({ target: obj, prop: '5', value: 1 });
     });
     expect(inspect(writeLogs)).toBe(
-      "[ Map(1) { {} => Set(7) { '0', '1', '2', '100', '3', '4', '5' } } ]",
+      `[
+  Map(1) {
+    {} => Map(7) {
+      '0' => 1,
+      '1' => 1,
+      '2' => 1,
+      '100' => 1,
+      '3' => 1,
+      '4' => 1,
+      '5' => 1
+    }
+  }
+]`,
     );
   });
 });

@@ -7,10 +7,10 @@ export const run = <T>(
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = readEmitter.run(fn);
   const isTrigger = (writeLog: WriteLog) => {
-    for (const [target, props] of writeLog) {
+    for (const [target, map] of writeLog) {
       if (readLog.has(target)) {
         const objectLog = readLog.get(target)!;
-        for (const prop of props) {
+        for (const prop of map.keys()) {
           if (
             prop in objectLog.get &&
             objectLog.get[prop] !== Reflect.get(target, prop)
@@ -25,15 +25,11 @@ export const run = <T>(
           }
         }
 
-        // todo: optimize: writeLog object[prop] = -1/0/1 means delete/change/add prop
         if ('keys' in objectLog) {
-          const lastKeys = objectLog.keys!;
-          const currentKeys = Reflect.ownKeys(target);
-          if (lastKeys.length !== currentKeys.length) {
-            return true;
-          }
-          if (!lastKeys.every((key, i) => key === currentKeys[i])) {
-            return true;
+          for (const i of map.values()) {
+            if (i !== 0) {
+              return true;
+            }
           }
         }
       }

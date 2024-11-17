@@ -39,7 +39,7 @@ describe('array', () => {
       managed.todos.push('hello');
     });
     expect(inspect(writeLogs)).toBe(
-      "[ Map(1) { [ 'hello' ] => Set(2) { '0', 'length' } } ]",
+      "[ Map(1) { [ 'hello' ] => Map(2) { '0' => 1, 'length' => 0 } } ]",
     );
   });
 

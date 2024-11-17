@@ -2,25 +2,29 @@
 export type WriteEvent = {
   target: object;
   prop: PropertyKey;
+  value: number;
 };
-export type GetEvent = WriteEvent & {
+export type GetEvent = {
+  target: object;
+  prop: PropertyKey;
   value: any;
 };
-export type HasEvent = WriteEvent & {
+export type HasEvent = {
+  target: object;
+  prop: PropertyKey;
   value: boolean;
 };
 export type KeysEvent = {
   target: object;
-  value: PropertyKey[];
 };
 
-export type WriteLog = Map<object, Set<PropertyKey>>;
+export type WriteLog = Map<object, Map<PropertyKey, number>>;
 
 export type ReadLog = Map<
   object,
   {
     get: { [prop: PropertyKey]: any };
     has: { [prop: PropertyKey]: boolean };
-    keys?: PropertyKey[];
+    keys?: boolean;
   }
 >;

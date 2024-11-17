@@ -37,7 +37,7 @@ class ReadEmitter {
       if (!readLog.has(ke.target)) {
         readLog.set(ke.target, { get: {}, has: {} });
       }
-      readLog.get(ke.target)!.keys = ke.value;
+      readLog.get(ke.target)!.keys = true;
     }
   }
 }

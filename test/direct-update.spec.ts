@@ -32,9 +32,12 @@ What does this test case tell us?
     });
     original.callSessions[0].status = 'calling'; // trigger event
     original.status = 'calling'; // do not trigger event
-    console.log(inspect(writeLogs));
     expect(inspect(writeLogs)).toBe(
-      "[ Map(1) { CallSession { status: 'calling' } => Set(1) { 'status' } } ]",
+      `[
+  Map(1) {
+    CallSession { status: 'calling' } => Map(1) { 'status' => 0 }
+  }
+]`,
     );
   });
 });

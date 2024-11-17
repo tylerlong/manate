@@ -45,9 +45,8 @@ export const manage = <T extends object>(target: T): T => {
       return r;
     },
     ownKeys: (target: T) => {
-      const r = Reflect.ownKeys(target);
-      readEmitter.emitKeys({ target, value: r });
-      return r;
+      readEmitter.emitKeys({ target });
+      return Reflect.ownKeys(target);
     },
 
     // write traps
@@ -56,16 +55,18 @@ export const manage = <T extends object>(target: T): T => {
       prop: PropertyKey,
       descriptor: PropertyDescriptor,
     ): boolean => {
+      const has = Reflect.has(target, prop);
       const r = Reflect.defineProperty(target, prop, {
         ...descriptor,
         value: manage(descriptor.value),
       });
-      writeEmitter.emit({ target, prop });
+      writeEmitter.emit({ target, prop, value: !has && r ? 1 : 0 });
       return r;
     },
     deleteProperty: (target: T, prop: PropertyKey) => {
+      const has = Reflect.has(target, prop);
       const r = Reflect.deleteProperty(target, prop);
-      writeEmitter.emit({ target, prop });
+      writeEmitter.emit({ target, prop, value: has && r ? -1 : 0 });
       return r;
     },
 
