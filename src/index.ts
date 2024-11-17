@@ -73,6 +73,7 @@ export const manage = <T extends object>(target: T): T => {
     // todo: use apply to make all functions batch?
   });
   proxyMap.set(target, managed);
+  proxyMap.set(managed, managed);
 
   // recursively manage all properties
   for (const prop of Reflect.ownKeys(target)) {
