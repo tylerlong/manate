@@ -1,13 +1,12 @@
 import { describe, expect, test } from 'vitest';
 
-import EventEmitter from '../src/event-emitter';
+import { writeEmitter } from '../src';
 
 describe('EventEmitter Limit', () => {
   test('default', () => {
-    const eventEmitter = new EventEmitter();
     for (let i = 0; i < 10; i++) {
-      eventEmitter.on(() => {});
+      writeEmitter.on(() => {});
     }
-    expect(eventEmitter.listenerCount()).toBe(10);
+    expect(writeEmitter['listeners'].size).toBe(10);
   });
 });

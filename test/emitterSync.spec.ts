@@ -1,22 +1,28 @@
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
-import { ManateEvent } from '../src';
-import EventEmitter from '../src/event-emitter';
+import { writeEmitter } from '../src';
+import { WriteLog } from '../src/events';
 
 describe('emitter sync', () => {
   test('default', async () => {
-    const emitter = new EventEmitter();
-    const list: ManateEvent[] = [];
-    emitter.on((me: ManateEvent) => {
-      list.push(me);
+    const obj = {};
+    const writeLogs: WriteLog[] = [];
+    writeEmitter.on((writeLog: WriteLog) => {
+      writeLogs.push(writeLog);
     });
-    emitter.emit(new ManateEvent({ name: 'set', paths: [0] }));
-    emitter.emit(new ManateEvent({ name: 'set', paths: [1] }));
-    emitter.emit(new ManateEvent({ name: 'set', paths: [2] }));
-    list.push(new ManateEvent({ name: 'set', paths: [100] }));
-    emitter.emit(new ManateEvent({ name: 'set', paths: [3] }));
-    emitter.emit(new ManateEvent({ name: 'set', paths: [4] }));
-    emitter.emit(new ManateEvent({ name: 'set', paths: [5] }));
-    expect(list.map((me) => me.paths[0])).toEqual([0, 1, 2, 100, 3, 4, 5]);
+    writeEmitter.batch(() => {
+      writeEmitter.emit({ target: obj, prop: '0' });
+      writeEmitter.emit({ target: obj, prop: '1' });
+      writeEmitter.emit({ target: obj, prop: '2' });
+      writeEmitter.emit({ target: obj, prop: '100' });
+      writeEmitter.emit({ target: obj, prop: '3' });
+      writeEmitter.emit({ target: obj, prop: '4' });
+      writeEmitter.emit({ target: obj, prop: '5' });
+    });
+    expect(inspect(writeLogs)).toBe(
+      "[ Map(1) { {} => Set(7) { '0', '1', '2', '100', '3', '4', '5' } } ]",
+    );
   });
 });

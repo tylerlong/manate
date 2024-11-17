@@ -20,7 +20,7 @@ export class WriteEventEmitter {
   private batchCounter = 0;
   private ignoreCounter = 0;
 
-  public batch<T>(f: () => T): T {
+  batch<T>(f: () => T): T {
     this.batchCounter++;
     try {
       return f();
@@ -33,7 +33,7 @@ export class WriteEventEmitter {
     }
   }
 
-  public ignore<T>(f: () => T): T {
+  ignore<T>(f: () => T): T {
     this.ignoreCounter++;
     try {
       return f();
@@ -42,7 +42,7 @@ export class WriteEventEmitter {
     }
   }
 
-  listeners = new Set<(e: WriteLog) => void>();
+  private listeners = new Set<(e: WriteLog) => void>();
 
   on(listener: (e: WriteLog) => void) {
     this.listeners.add(listener);
