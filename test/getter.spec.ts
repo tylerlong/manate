@@ -32,7 +32,6 @@ describe('getter', () => {
       return managed.visibleTodos();
     });
     expect(r).toBe(true);
-    console.log(readLogs);
     expect(inspect(readLogs)).toBe(`Map(1) {
   { visibility: false, visibleTodos: [Function: visibleTodos] } => { get: { visibility: false }, has: {} }
 }`);

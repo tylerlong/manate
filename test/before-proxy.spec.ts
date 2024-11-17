@@ -76,7 +76,6 @@ describe('before proxy', () => {
     ma.b = b;
     const mb = ma.b;
     mb.c = 1;
-    console.log(inspect(writeLogs));
     expect(inspect(writeLogs)).toEqual(
       `
 [
