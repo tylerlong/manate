@@ -1,4 +1,5 @@
 import { ReadEventEmitter, WriteEventEmitter, WriteLog } from './events';
+import { Wrapper } from './wrappers';
 
 // todo: create a class to hold the code below
 export const readEmitter = new ReadEventEmitter();
@@ -98,7 +99,7 @@ export const run = <T>(
           }
         }
 
-        // todo: optimize
+        // todo: optimize: writeLog object[prop] = -1/0/1 means delete/change/add prop
         if ('keys' in objectLog) {
           const lastKeys = objectLog.keys!;
           const currentKeys = Reflect.ownKeys(target);
@@ -116,11 +117,17 @@ export const run = <T>(
   return [r, isTrigger];
 };
 
-export const autoRun = <T>(fn: () => T) => {
+export const autoRun = <T>(fn: () => T, wrapper?: Wrapper) => {
   let isTrigger: (event: WriteLog) => boolean;
+  let decoratedRun = () => {
+    [runner.r, isTrigger] = run(fn);
+  };
+  if (wrapper) {
+    decoratedRun = wrapper(decoratedRun);
+  }
   const listener = (e: WriteLog): void => {
     if (isTrigger(e)) {
-      [runner.r, isTrigger] = run(fn);
+      decoratedRun();
     }
   };
   const runner = {

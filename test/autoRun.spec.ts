@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { debounce } from 'lodash';
 import { describe, expect, test } from 'vitest';
 import waitFor from 'wait-for-async';
 
 import { autoRun, manage } from '../src';
+import { debounce } from '../src/wrappers';
 
 describe('autoRun', () => {
   test('default', () => {
@@ -12,7 +12,7 @@ describe('autoRun', () => {
     }
     const store = manage(new Store());
     const greetings: string[] = [];
-    const autoRunner = autoRun(store, () => {
+    const autoRunner = autoRun(() => {
       // this method auto runs when `store.greeting` changes
       greetings.push(store.greeting);
     });
@@ -28,12 +28,7 @@ describe('autoRun', () => {
     }
     const store = manage(new Store());
     const numbers: number[] = [];
-    const autoRunner = autoRun(
-      store,
-      () => numbers.push(store.number),
-      (func: () => void) =>
-        debounce(func, 10, { leading: true, trailing: true }),
-    );
+    const autoRunner = autoRun(() => numbers.push(store.number), debounce(10));
     autoRunner.start();
     store.number = 1;
     store.number = 2;
@@ -50,7 +45,7 @@ describe('autoRun', () => {
     }
     const store = manage(new Store());
     const numbers: number[] = [];
-    const { start, stop } = autoRun(store, () => {
+    const { start, stop } = autoRun(() => {
       numbers.push((store as any).number2); // number2 is an unknown property
     });
     start();

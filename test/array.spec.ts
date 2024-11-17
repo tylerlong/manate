@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
 import { manage, writeEmitter } from '../src';
-import { WriteEvent } from '../src/events';
+import { WriteLog } from '../src/events';
 
 describe('array', () => {
   test('managed set length', () => {
@@ -29,12 +31,16 @@ describe('array', () => {
       public todos: string[] = [];
     }
     const managed = manage(new Store());
-    const events: WriteEvent[] = [];
+    const writeLogs: WriteLog[] = [];
     writeEmitter.on((we) => {
-      events.push(we as WriteEvent);
+      writeLogs.push(we);
     });
-    managed.todos.push('hello');
-    expect(events.map((e) => e.prop)).toEqual(['0', 'length']);
+    writeEmitter.batch(() => {
+      managed.todos.push('hello');
+    });
+    expect(inspect(writeLogs)).toBe(
+      "[ Map(1) { [ 'hello' ] => Set(2) { '0', 'length' } } ]",
+    );
   });
 
   test('isArray', () => {
