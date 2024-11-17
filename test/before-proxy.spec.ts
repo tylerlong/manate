@@ -3,7 +3,7 @@ import { inspect } from 'util';
 import { describe, expect, test } from 'vitest';
 
 import { manage, writeEmitter } from '../src';
-import { WriteLog } from '../src/events';
+import { WriteLog } from '../src/events/types';
 
 describe('before proxy', () => {
   test("Update an object before it's proxied", () => {

@@ -3,7 +3,7 @@ import { inspect } from 'util';
 import { describe, expect, test } from 'vitest';
 
 import { writeEmitter } from '../src';
-import { WriteLog } from '../src/events';
+import { WriteLog } from '../src/events/types';
 
 describe('emitter sync', () => {
   test('default', async () => {

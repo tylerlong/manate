@@ -1,23 +1,24 @@
 import { describe, expect, test } from 'vitest';
 
-import { autoRun, manage, writeEmitter } from '../src';
-import { WriteCache } from '../src/events';
+import { manage, writeEmitter } from '../src';
+import { WriteLog } from '../src/events/types';
+import { autoRun } from '../src/utils';
 
 describe('array splice', () => {
   test('default', () => {
     const arr = [1, 2, 3, 4, 5];
     const ma = manage(arr);
-    const writeCaches: WriteCache[] = [];
+    const writeLogs: WriteLog[] = [];
     const listener = (e) => {
-      writeCaches.push(e);
+      writeLogs.push(e);
     };
     writeEmitter.on(listener);
     writeEmitter.batch(() => {
       ma.splice(2, 1);
     });
     writeEmitter.off(listener);
-    expect(writeCaches.length).toBe(1);
-    const writeCache = writeCaches[0];
+    expect(writeLogs.length).toBe(1);
+    const writeCache = writeLogs[0];
     expect(writeCache.size).toBe(1);
     expect(writeCache.has(arr)).toBeTruthy();
     const props = writeCache.get(arr)!;
