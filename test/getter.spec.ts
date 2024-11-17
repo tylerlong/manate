@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
-import { $, manage, type ManateEvent } from '../src';
+import { manage, readEmitter } from '../src';
 
 describe('getter', () => {
   test('getter', () => {
@@ -11,16 +12,13 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const events: { name: string; paths: PropertyKey[] }[] = [];
-    $(managed).on((event: ManateEvent) => {
-      events.push({ name: event.name, paths: event.paths });
+    const [r, readLogs] = readEmitter.run(() => {
+      return managed.visibleTodos;
     });
-    if (managed.visibleTodos) {
-      expect(events).toEqual([
-        { name: 'get', paths: ['visibility'] },
-        { name: 'get', paths: ['visibleTodos'] },
-      ]);
-    }
+    expect(r).toBe(true);
+    expect(inspect(readLogs)).toBe(`Map(1) {
+  { visibility: false, visibleTodos: [Getter] } => { get: { visibility: false, visibleTodos: true }, has: {} }
+}`);
   });
 
   test('normal method', () => {
@@ -30,13 +28,14 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const events: { name: string; paths: PropertyKey[] }[] = [];
-    $(managed).on((event: ManateEvent) => {
-      events.push({ name: event.name, paths: event.paths });
+    const [r, readLogs] = readEmitter.run(() => {
+      return managed.visibleTodos();
     });
-    if (managed.visibleTodos()) {
-      expect(events).toEqual([{ name: 'get', paths: ['visibility'] }]);
-    }
+    expect(r).toBe(true);
+    console.log(readLogs);
+    expect(inspect(readLogs)).toBe(`Map(1) {
+  { visibility: false, visibleTodos: [Function: visibleTodos] } => { get: { visibility: false }, has: {} }
+}`);
   });
 
   test('JS managed normal method', () => {
@@ -49,7 +48,7 @@ describe('getter', () => {
     }
     const accessList: PropertyKey[] = [];
     const managed = new Proxy<Store>(new Store(), {
-      get: (target: any, propertyKey: PropertyKey, receiver: any) => {
+      get: (target: object, propertyKey: PropertyKey, receiver: object) => {
         accessList.push(propertyKey);
         return Reflect.get(target, propertyKey, receiver);
       },
@@ -68,7 +67,7 @@ describe('getter', () => {
     }
     const accessList: PropertyKey[] = [];
     const managed = new Proxy<Store>(new Store(), {
-      get: (target: any, propertyKey: PropertyKey, receiver: any) => {
+      get: (target: object, propertyKey: PropertyKey, receiver: object) => {
         accessList.push(propertyKey);
         return Reflect.get(target, propertyKey, receiver);
       },

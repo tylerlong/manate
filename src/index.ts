@@ -34,7 +34,9 @@ export const manage = <T extends object>(target: T): T => {
     // read traps
     get: (target: T, prop: PropertyKey, receiver?: T) => {
       const r = Reflect.get(target, prop, receiver);
-      readEmitter.emitGet({ target, prop, value: r });
+      if (typeof r !== 'function') {
+        readEmitter.emitGet({ target, prop, value: r });
+      }
       return r;
     },
     has: (target: T, prop: PropertyKey) => {
@@ -71,12 +73,15 @@ export const manage = <T extends object>(target: T): T => {
   });
   proxyMap.set(target, managed);
 
+  // recursively manage all properties
   for (const prop of Reflect.ownKeys(target)) {
     const descriptor = Reflect.getOwnPropertyDescriptor(target, prop)!;
-    Reflect.defineProperty(target, prop, {
-      ...descriptor,
-      value: manage(descriptor.value as T),
-    });
+    if (descriptor.value && canManage(descriptor.value)) {
+      Reflect.defineProperty(target, prop, {
+        ...descriptor,
+        value: manage(descriptor.value as T),
+      });
+    }
   }
 
   return managed;
