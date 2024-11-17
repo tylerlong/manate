@@ -1,9 +1,11 @@
-import { ReadEventEmitter, WriteEventEmitter, WriteLog } from './events';
+import ReadEmitter from './events/read-emitter';
+import { WriteLog } from './events/types';
+import WriteEmitter from './events/write-emitter';
 import { Wrapper } from './wrappers';
 
 // todo: create a class to hold the code below
-export const readEmitter = new ReadEventEmitter();
-export const writeEmitter = new WriteEventEmitter();
+export const readEmitter = new ReadEmitter();
+export const writeEmitter = new WriteEmitter();
 
 const proxyMap = new WeakMap<object, object>();
 const excludeSet = new WeakSet<object>();
