@@ -71,6 +71,9 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
       }
     }
   }
+  if (prop === 'size') {
+    readEmitter.emitKeys({ target });
+  }
   return r;
 };
 
@@ -123,6 +126,9 @@ export const setGet = (target: Set<PropertyKey>, prop: PropertyKey) => {
         return r.bind(target);
       }
     }
+  }
+  if (prop === 'size') {
+    readEmitter.emitKeys({ target });
   }
   return r;
 };
