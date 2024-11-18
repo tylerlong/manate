@@ -66,6 +66,9 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
           return r;
         };
       }
+      default: {
+        return r.bind(target);
+      }
     }
   }
   return r;
@@ -115,6 +118,9 @@ export const setGet = (target: Set<PropertyKey>, prop: PropertyKey) => {
           readEmitter.emitKeys({ target });
           return r;
         };
+      }
+      default: {
+        return r.bind(target);
       }
     }
   }
