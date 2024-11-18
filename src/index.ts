@@ -1,6 +1,6 @@
 import ReadEmitter from './events/read-emitter';
 import WriteEmitter from './events/write-emitter';
-import { mapGet } from './map';
+import { mapGet } from './map-and-set';
 
 // todo: create a class to hold the code below
 export const readEmitter = new ReadEmitter();
