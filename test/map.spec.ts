@@ -1,0 +1,40 @@
+import { describe, expect, test } from 'vitest';
+
+import { manage } from '../src';
+import { autoRun } from '../src/utils';
+
+describe('map', () => {
+  test('autoRun', () => {
+    class A {
+      public m = new Map<string, number>();
+    }
+    const a = new A();
+    const ma = manage(a);
+    ma.m.set('a', 1);
+    let count = 0;
+    const runner = autoRun(() => {
+      expect(ma.m.get('a')).toBeDefined();
+      count += 1;
+    });
+    runner.start();
+    ma.m.set('a', 2);
+    expect(count).toBe(2);
+  });
+
+  test('autoRun-set to same value', () => {
+    class A {
+      public m = new Map<string, number>();
+    }
+    const a = new A();
+    const ma = manage(a);
+    ma.m.set('a', 1);
+    let count = 0;
+    const runner = autoRun(() => {
+      expect(ma.m.get('a')).toBeDefined();
+      count += 1;
+    });
+    runner.start();
+    ma.m.set('a', 1); // save value should not trigger autoRun
+    expect(count).toBe(1);
+  });
+});

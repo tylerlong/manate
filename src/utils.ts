@@ -2,6 +2,20 @@ import { readEmitter, writeEmitter } from '.';
 import { WriteLog } from './events/types';
 import { Wrapper } from './wrappers';
 
+const getValue = (target: object, prop: PropertyKey) => {
+  if (target instanceof Map) {
+    return target.get(prop);
+  }
+  return Reflect.get(target, prop);
+};
+
+const hasValue = (target: object, prop: PropertyKey) => {
+  if (target instanceof Map) {
+    return target.has(prop);
+  }
+  return Reflect.has(target, prop);
+};
+
 export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
@@ -13,20 +27,20 @@ export const run = <T>(
         for (const prop of Object.keys(obj)) {
           if (
             prop in objectLog.get &&
-            objectLog.get[prop] !== Reflect.get(target, prop)
+            objectLog.get[prop] !== getValue(target, prop)
           ) {
             return true;
           }
           if (
             prop in objectLog.has &&
-            objectLog.has[prop] !== Reflect.has(target, prop)
+            objectLog.has[prop] !== hasValue(target, prop)
           ) {
             return true;
           }
         }
 
-        if ('keys' in objectLog) {
-          return Object.values(obj).some((i) => i !== 0);
+        if ('keys' in objectLog && Object.values(obj).some((i) => i !== 0)) {
+          return true;
         }
       }
     }
