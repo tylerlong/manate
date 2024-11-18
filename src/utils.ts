@@ -21,24 +21,29 @@ export const run = <T>(
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = readEmitter.run(fn);
   const isTrigger = (writeLog: WriteLog) => {
-    for (const [target, writeObj] of writeLog) {
+    for (const [target, writeMap] of writeLog) {
       if (readLog.has(target)) {
         const readObj = readLog.get(target)!;
-        for (const prop of Object.keys(writeObj)) {
+        for (const prop of writeMap.keys()) {
           if (
-            prop in readObj.get &&
-            readObj.get[prop] !== getValue(target, prop)
+            readObj.get &&
+            readObj.get.has(prop) &&
+            readObj.get.get(prop) !== getValue(target, prop)
           ) {
             return true;
           }
           if (
-            prop in readObj.has &&
-            readObj.has[prop] !== hasValue(target, prop)
+            readObj.has &&
+            readObj.has.has(prop) &&
+            readObj.has.get(prop) !== hasValue(target, prop)
           ) {
             return true;
           }
         }
-        if ('keys' in readObj && Object.values(writeObj).some((i) => i !== 0)) {
+        if (
+          'keys' in readObj &&
+          Array.from(writeMap.values()).some((i) => i !== 0)
+        ) {
           return true;
         }
       }

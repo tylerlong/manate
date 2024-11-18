@@ -18,13 +18,14 @@ export type KeysEvent = {
   target: object;
 };
 
-export type WriteLog = Map<object, { [prop: PropertyKey]: number }>;
+// Why Map key any? Because we want to support Map/Set whose key can be any type
+export type WriteLog = Map<object, Map<any, number>>;
 
 export type ReadLog = Map<
   object,
   {
-    get: { [prop: PropertyKey]: any };
-    has: { [prop: PropertyKey]: boolean };
+    get?: Map<any, any>;
+    has?: Map<any, boolean>;
     keys?: boolean;
   }
 >;
