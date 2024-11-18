@@ -33,11 +33,7 @@ What does this test case tell us?
     original.callSessions[0].status = 'calling'; // trigger event
     original.status = 'calling'; // do not trigger event
     expect(inspect(writeLogs)).toBe(
-      `[
-  Map(1) {
-    CallSession { status: 'calling' } => Map(1) { 'status' => 0 }
-  }
-]`,
+      `[ Map(1) { CallSession { status: 'calling' } => { status: 0 } } ]`,
     );
   });
 });

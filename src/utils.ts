@@ -7,10 +7,10 @@ export const run = <T>(
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = readEmitter.run(fn);
   const isTrigger = (writeLog: WriteLog) => {
-    for (const [target, map] of writeLog) {
+    for (const [target, obj] of writeLog) {
       if (readLog.has(target)) {
         const objectLog = readLog.get(target)!;
-        for (const prop of map.keys()) {
+        for (const prop of Object.keys(obj)) {
           if (
             prop in objectLog.get &&
             objectLog.get[prop] !== Reflect.get(target, prop)
@@ -26,11 +26,7 @@ export const run = <T>(
         }
 
         if ('keys' in objectLog) {
-          for (const i of map.values()) {
-            if (i !== 0) {
-              return true;
-            }
-          }
+          return Object.values(obj).some((i) => i !== 0);
         }
       }
     }

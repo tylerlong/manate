@@ -20,8 +20,8 @@ describe('index', () => {
   { a: 'world', b: { c: 'yes!' } } => { get: { b: [Object] }, has: {} }
 }`);
     expect(inspect(writeLogs)).toBe(`[
-  Map(1) { { a: 'world', b: [Object] } => Map(1) { 'a' => 0 } },
-  Map(1) { { c: 'yes!' } => Map(1) { 'c' => 0 } }
+  Map(1) { { a: 'world', b: [Object] } => { a: 0 } },
+  Map(1) { { c: 'yes!' } => { c: 0 } }
 ]`);
   });
 
@@ -35,14 +35,12 @@ describe('index', () => {
     const [, readLogs] = readEmitter.run(() => {
       writeEmitter.batch(() => {
         managed.b.c = 'yes!';
-        console.log(managed.b.c);
+        expect(managed.b.c).toBe('yes!');
       });
     });
     expect(writeLogs.length).toBe(1);
     const writeLog = writeLogs[0];
-    expect(inspect(writeLog)).toBe(
-      `Map(1) { { c: 'yes!' } => Map(1) { 'c' => 0 } }`,
-    );
+    expect(inspect(writeLog)).toBe(`Map(1) { { c: 'yes!' } => { c: 0 } }`);
     expect(inspect(readLogs)).toBe(`Map(2) {
   { a: 'hello', b: { c: 'yes!' } } => { get: { b: [Object] }, has: {} },
   { c: 'yes!' } => { get: { c: 'yes!' }, has: {} }
@@ -70,12 +68,9 @@ describe('index', () => {
     expect(inspect(readLogs)).toBe(
       `Map(1) { { b: { c: 'world' } } => { get: { b: [Object] }, has: {} } }`,
     );
-    expect(inspect(writeLogs)).toBe(`[
-  Map(2) {
-    { b: [Object] } => Map(1) { 'b' => 1 },
-    { c: 'world' } => Map(1) { 'c' => 0 }
-  }
-]`);
+    expect(inspect(writeLogs)).toBe(
+      `[ Map(2) { { b: [Object] } => { b: 1 }, { c: 'world' } => { c: 0 } } ]`,
+    );
   });
 
   test('set same obj multiple times', () => {
@@ -100,12 +95,9 @@ describe('index', () => {
     expect(inspect(readLogs)).toBe(
       `Map(1) { { b: { c: 'world' } } => { get: { b: [Object] }, has: {} } }`,
     );
-    expect(inspect(writeLogs)).toBe(`[
-  Map(2) {
-    { b: [Object] } => Map(1) { 'b' => 1 },
-    { c: 'world' } => Map(1) { 'c' => 0 }
-  }
-]`);
+    expect(inspect(writeLogs)).toBe(
+      `[ Map(2) { { b: [Object] } => { b: 1 }, { c: 'world' } => { c: 0 } } ]`,
+    );
   });
 
   test('to JSON', () => {

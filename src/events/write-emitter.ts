@@ -42,14 +42,14 @@ class WriteEmitter {
     }
     if (this.batchCounter === 0) {
       this.listeners.forEach((listener) =>
-        listener(new Map([[me.target, new Map([[me.prop, me.value]])]])),
+        listener(new Map([[me.target, { [me.prop]: me.value }]])),
       );
     } else {
       if (!this.writeLog.has(me.target)) {
-        this.writeLog.set(me.target, new Map());
+        this.writeLog.set(me.target, {});
       }
-      const map = this.writeLog.get(me.target)!;
-      map.set(me.prop, me.value + (map.get(me.prop) ?? 0));
+      const obj = this.writeLog.get(me.target)!;
+      obj[me.prop] = me.value + (obj[me.prop] ?? 0);
     }
   }
 }

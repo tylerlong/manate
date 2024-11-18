@@ -23,10 +23,8 @@ describe('array splice', () => {
     const writeCache = writeLogs[0];
     expect(writeCache.size).toBe(1);
     expect(writeCache.has(arr)).toBeTruthy();
-    const map = writeCache.get(arr)!;
-    expect(inspect(map)).toEqual(
-      `Map(4) { '2' => 0, '3' => 0, '4' => -1, 'length' => 0 }`,
-    );
+    const obj = writeCache.get(arr)!;
+    expect(inspect(obj)).toEqual(`{ '2': 0, '3': 0, '4': -1, length: 0 }`);
   });
 
   test('autoRun without batch', () => {

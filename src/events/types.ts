@@ -18,7 +18,7 @@ export type KeysEvent = {
   target: object;
 };
 
-export type WriteLog = Map<object, Map<PropertyKey, number>>;
+export type WriteLog = Map<object, { [prop: PropertyKey]: number }>;
 
 export type ReadLog = Map<
   object,
