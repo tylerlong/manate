@@ -10,7 +10,7 @@ const getValue = (target: object, prop: PropertyKey) => {
 };
 
 const hasValue = (target: object, prop: PropertyKey) => {
-  if (target instanceof Map) {
+  if (target instanceof Map || target instanceof Set) {
     return target.has(prop);
   }
   return Reflect.has(target, prop);
@@ -21,25 +21,24 @@ export const run = <T>(
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = readEmitter.run(fn);
   const isTrigger = (writeLog: WriteLog) => {
-    for (const [target, obj] of writeLog) {
+    for (const [target, writeObj] of writeLog) {
       if (readLog.has(target)) {
-        const objectLog = readLog.get(target)!;
-        for (const prop of Object.keys(obj)) {
+        const readObj = readLog.get(target)!;
+        for (const prop of Object.keys(writeObj)) {
           if (
-            prop in objectLog.get &&
-            objectLog.get[prop] !== getValue(target, prop)
+            prop in readObj.get &&
+            readObj.get[prop] !== getValue(target, prop)
           ) {
             return true;
           }
           if (
-            prop in objectLog.has &&
-            objectLog.has[prop] !== hasValue(target, prop)
+            prop in readObj.has &&
+            readObj.has[prop] !== hasValue(target, prop)
           ) {
             return true;
           }
         }
-
-        if ('keys' in objectLog && Object.values(obj).some((i) => i !== 0)) {
+        if ('keys' in readObj && Object.values(writeObj).some((i) => i !== 0)) {
           return true;
         }
       }

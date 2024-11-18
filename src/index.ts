@@ -1,6 +1,6 @@
 import ReadEmitter from './events/read-emitter';
 import WriteEmitter from './events/write-emitter';
-import { mapGet } from './map-and-set';
+import { mapGet, setGet } from './map-and-set';
 
 // todo: create a class to hold the code below
 export const readEmitter = new ReadEmitter();
@@ -18,7 +18,8 @@ const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) ||
     obj.toString() === '[object Object]' ||
-    obj.toString() === '[object Map]') &&
+    obj.toString() === '[object Map]' ||
+    obj.toString() === '[object Set]') &&
   !excludeSet.has(obj);
 
 // todo: max depth
@@ -37,6 +38,8 @@ export const manage = <T extends object>(target: T): T => {
     get: (target: T, prop: PropertyKey, receiver?: T) => {
       if (target instanceof Map) {
         return mapGet(target, prop);
+      } else if (target instanceof Set) {
+        return setGet(target, prop);
       }
       const r = Reflect.get(target, prop, receiver);
       if (typeof r !== 'function') {

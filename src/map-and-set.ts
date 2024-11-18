@@ -15,8 +15,9 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
       case 'set': {
         return (key: PropertyKey, value: any) => {
           const has = target.has(key);
-          target.set(key, value);
+          const r = target.set(key, value);
           writeEmitter.emit({ target, prop: key, value: has ? 0 : 1 });
+          return r;
         };
       }
       case 'has': {
@@ -28,9 +29,9 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
       }
       case 'delete': {
         return (key: PropertyKey) => {
-          const has = target.has(key);
-          target.delete(key);
-          writeEmitter.emit({ target, prop: key, value: has ? -1 : 0 });
+          const r = target.delete(key);
+          writeEmitter.emit({ target, prop: key, value: r ? -1 : 0 });
+          return r;
         };
       }
       case 'keys': {
@@ -38,6 +39,14 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
           const r = target.keys();
           readEmitter.emitKeys({ target });
           return r;
+        };
+      }
+      case 'clear': {
+        return () => {
+          for (const key of target.keys()) {
+            writeEmitter.emit({ target, prop: key, value: -1 });
+          }
+          target.clear();
         };
       }
       case 'values':
@@ -57,12 +66,54 @@ export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
           return r;
         };
       }
+    }
+  }
+  return r;
+};
+
+export const setGet = (target: Set<PropertyKey>, prop: PropertyKey) => {
+  const r = Reflect.get(target, prop, target);
+  if (typeof r === 'function') {
+    switch (prop) {
+      case 'add': {
+        return (key: PropertyKey) => {
+          const has = target.has(key);
+          const r = target.add(key);
+          writeEmitter.emit({ target, prop: key, value: has ? 0 : 1 });
+          return r;
+        };
+      }
+      case 'has': {
+        return (key: PropertyKey) => {
+          const r = target.has(key);
+          readEmitter.emitHas({ target, prop: key, value: r });
+          return r;
+        };
+      }
+      case 'delete': {
+        return (key: PropertyKey) => {
+          const r = target.delete(key);
+          writeEmitter.emit({ target, prop: key, value: r ? -1 : 0 });
+          return r;
+        };
+      }
       case 'clear': {
         return () => {
           for (const key of target.keys()) {
             writeEmitter.emit({ target, prop: key, value: -1 });
           }
           target.clear();
+        };
+      }
+      case 'keys':
+      case 'values':
+      case 'entries':
+      case Symbol.iterator:
+      case 'forEach': {
+        return (...args) => {
+          const r = target[prop](...args);
+          readEmitter.emitKeys({ target });
+          return r;
         };
       }
     }
