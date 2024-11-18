@@ -16,7 +16,6 @@ export const exclude = <T extends object>(target: T): T => {
 const canManage = (obj: object) =>
   obj &&
   (Array.isArray(obj) || obj.toString() === '[object Object]') &&
-  obj['$$typeof'] !== Symbol.for('react.element') &&
   !excludeSet.has(obj);
 
 // todo: max depth
