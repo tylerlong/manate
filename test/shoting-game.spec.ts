@@ -1,6 +1,8 @@
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
-import { $, manage, type ManateEvent } from '../src';
+import { batch, manage, readEmitter } from '../src';
 
 describe('shot gaming', () => {
   test('default', () => {
@@ -21,26 +23,34 @@ describe('shot gaming', () => {
       }
     }
     const game = new Game();
-    const mg = manage(game);
-    const events: string[] = [];
-    $(mg).on((event: ManateEvent) => {
-      events.push(event.toString());
+    manage(game);
+
+    let [, writeLog] = batch(() => {
+      const [, readLog] = readEmitter.run(() => {
+        game.gun.bullets.push(new Bullet());
+      });
+      expect(inspect(readLog)).toBe(`Map(2) {
+  Gun { bullets: [ [Bullet] ] } => { get: Map(1) { 'bullets' => [Array] } },
+  [ Bullet { id: 0 } ] => { get: Map(1) { 'length' => 0 } }
+}`);
     });
-    game.gun.bullets.push(new Bullet());
-    expect(events).toEqual([
-      'get: gun+bullets',
-      'get: gun+bullets+length',
-      'set: gun+bullets+0',
-      'set: gun+bullets+length',
-    ]);
-    events.length = 0;
-    expect(game.gun.bullets.map((b) => b.id)).toEqual([0]); // also trigger gets
-    expect(events).toEqual([
-      'get: gun+bullets',
-      'get: gun+bullets+length',
-      'has: gun+bullets+0',
-      'get: gun+bullets+0',
-      'get: gun+bullets+0+id',
-    ]);
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { [ Bullet { id: 0 } ] => Map(2) { '0' => 1, 'length' => 0 } }`,
+    );
+
+    [, writeLog] = batch(() => {
+      const [, readLog] = readEmitter.run(() => {
+        expect(game.gun.bullets.map((b) => b.id)).toEqual([0]); // also trigger gets
+      });
+      expect(inspect(readLog)).toBe(`Map(3) {
+  Gun { bullets: [ [Bullet] ] } => { get: Map(1) { 'bullets' => [Array] } },
+  [ Bullet { id: 0 } ] => {
+    get: Map(2) { 'length' => 1, '0' => [Bullet] },
+    has: Map(1) { '0' => true }
+  },
+  Bullet { id: 0 } => { get: Map(1) { 'id' => 0 } }
+}`);
+    });
+    expect(inspect(writeLog)).toBe(`Map(0) {}`); // because no write operation
   });
 });
