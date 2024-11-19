@@ -1,6 +1,6 @@
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { manage, writeEmitter } from '../src';
 
 describe('typings', () => {
   test('default 1', async () => {
@@ -19,18 +19,18 @@ describe('typings', () => {
 
   test('default 2', async () => {
     const mo = manage({ a: { b: 1 } });
-    $(mo.a).on(() => {
+    writeEmitter.on(() => {
       // does nothing
     });
     mo.a = { b: 2 };
   });
 
-  // test('extend', async () => {
-  //   class A {
-  //     private p1 = 1;
-  //   }
-  //   const mo = manage(new A());
-  //   const a: A = mo; // doesn't compile.
-  //   expect(a).toBeDefined();
-  // });
+  test('extend', async () => {
+    class A {
+      private p1 = 1;
+    }
+    const mo = manage(new A());
+    const a: A = mo; // compiles
+    expect(a).toBeDefined();
+  });
 });
