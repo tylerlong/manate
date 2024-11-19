@@ -32,7 +32,7 @@ const App = auto((props: { store: Store }) => {
 
 describe('React', () => {
   test('default', async () => {
-    const listenerCount = () => writeEmitter.listeners.size;
+    const listenerCount = () => writeEmitter['listeners'].size;
     expect(listenerCount()).toBe(0);
     render(<App store={store} />);
     expect(listenerCount()).toBe(1);

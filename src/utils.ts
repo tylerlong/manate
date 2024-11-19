@@ -1,4 +1,4 @@
-import { readEmitter, writeEmitter } from '.';
+import { captureReads, writeEmitter } from '.';
 import { WriteLog } from './events/types';
 import { Wrapper } from './wrappers';
 
@@ -19,7 +19,7 @@ const hasValue = (target: object, prop: PropertyKey) => {
 export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
-  const [r, readLog] = readEmitter.run(fn);
+  const [r, readLog] = captureReads(fn);
   const isTrigger = (writeLog: WriteLog) => {
     for (const [target, writeMap] of writeLog) {
       if (readLog.has(target)) {

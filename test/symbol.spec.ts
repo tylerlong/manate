@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batch, manage } from '../src';
+import { batchWrites, manage } from '../src';
 
 describe('symbol', () => {
   test('default', () => {
@@ -10,7 +10,7 @@ describe('symbol', () => {
     mo['a'] = {};
     mo['a']['b'] = {};
     const mySymbol = Symbol('mySymbol');
-    const [, writeLog] = batch(() => {
+    const [, writeLog] = batchWrites(() => {
       mo['a']['b'][mySymbol] = 'myValue';
     });
     expect(mo['a']['b'][mySymbol]).toBe('myValue');

@@ -6,7 +6,7 @@ class WriteEmitter {
   private ignoreCounter = 0;
   private listeners = new Set<(e: WriteLog) => void>();
 
-  batch<T>(f: () => T): [T, WriteLog] {
+  batchWrites<T>(f: () => T): [T, WriteLog] {
     this.batchCounter++;
     try {
       const writeLog = this.writeLog;

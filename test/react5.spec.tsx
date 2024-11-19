@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { manage, writeEmitter } from '../src';
+import { batchWrites, manage } from '../src';
 import { auto } from '../src/react';
 
 class Store {
@@ -36,7 +36,7 @@ describe('React', () => {
 
     // only one re-render for batch
     act(() => {
-      writeEmitter.batch(() => {
+      batchWrites(() => {
         act(() => {
           store.count += 1;
         });

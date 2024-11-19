@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { batch, manage } from '../src';
+import { batchWrites, manage } from '../src';
 import { autoRun } from '../src/utils';
 
 describe('transaction', () => {
@@ -15,7 +15,7 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    batch(() => {
+    batchWrites(() => {
       mo.a1.b1.c1.d1 = 1;
       mo.a1.b1.c1.d1 = 2;
       mo.a1.b1.c1.d1 = 3;
@@ -35,8 +35,8 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    batch(() => {
-      batch(() => {
+    batchWrites(() => {
+      batchWrites(() => {
         mo.a1.b1.c1.d1 = 1;
         mo.a1.b1.c1.d1 = 2;
         mo.a1.b1.c1.d1 = 3;
@@ -57,8 +57,8 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    batch(() => {
-      batch(() => {
+    batchWrites(() => {
+      batchWrites(() => {
         mo.a1.b1.c1.d1 = 1;
         mo.a1.b1.c1.d1 = 2;
         mo.a1.b1.c1.d1 = 3;
@@ -79,8 +79,8 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    batch(() => {
-      batch(() => {
+    batchWrites(() => {
+      batchWrites(() => {
         mo.a1.b1.c1.d1 = 1;
         mo.a1.b1.c1.d1 = 2;
         mo.a1.b1.c1.d1 = 3;
@@ -102,12 +102,12 @@ describe('transaction', () => {
       count++;
     });
     start(); // trigger the first run
-    batch(() => {
+    batchWrites(() => {
       mo.a1.b1.c1.d1 = 1;
       mo.a1.b1.c1.d1 = 2;
       mo.a1.b1.c1.d1 = 3;
     });
-    batch(() => {
+    batchWrites(() => {
       mo.a2.b2.c2.d2 = 1;
       mo.a2.b2.c2.d2 = 2;
       mo.a2.b2.c2.d2 = 3;
@@ -129,8 +129,8 @@ describe('transaction', () => {
     start(); // trigger the first run
     const mc1 = mo.a1.b1.c1;
     const mc2 = mo.a2.b2.c2;
-    batch(() => {
-      batch(() => {
+    batchWrites(() => {
+      batchWrites(() => {
         mc1.d1 = 1;
         mc1.d1 = 2;
         mc1.d1 = 3;

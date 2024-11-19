@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batch, manage, readEmitter } from '../src';
+import { batchWrites, captureReads, manage } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -36,8 +36,8 @@ describe('OOP', () => {
 
     const managed = manage(store);
 
-    const [, writeLog] = batch(() => {
-      const [, readLog] = readEmitter.run(() => {
+    const [, writeLog] = batchWrites(() => {
+      const [, readLog] = captureReads(() => {
         managed.todoLists[0].todoItems[0].complete = true;
       });
       expect(inspect(readLog)).toEqual(`Map(4) {
