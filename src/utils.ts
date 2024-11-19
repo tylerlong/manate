@@ -1,5 +1,5 @@
 import { captureReads, writeEmitter } from '.';
-import { WriteLog } from './events/types';
+import { ReadLog, WriteLog } from './events/types';
 import { Wrapper } from './wrappers';
 
 const getValue = (target: object, prop: PropertyKey) => {
@@ -16,55 +16,60 @@ const hasValue = (target: object, prop: PropertyKey) => {
   return Reflect.has(target, prop);
 };
 
-// todo: create a util method to check if WriteLog triggers ReadLog
-export const run = <T>(
-  fn: () => T,
-): [r: T, isTrigger: (event: WriteLog) => boolean] => {
-  const [r, readLog] = captureReads(fn);
-  const isTrigger = (writeLog: WriteLog) => {
-    for (const [target, writeMap] of writeLog) {
-      if (readLog.has(target)) {
-        const readObj = readLog.get(target)!;
-        for (const prop of writeMap.keys()) {
-          if (
-            readObj.get &&
-            readObj.get.has(prop) &&
-            readObj.get.get(prop) !== getValue(target, prop)
-          ) {
-            return true;
-          }
-          if (
-            readObj.has &&
-            readObj.has.has(prop) &&
-            readObj.has.get(prop) !== hasValue(target, prop)
-          ) {
-            return true;
-          }
+export const doesWriteTriggerRead = (
+  writeLog: WriteLog,
+  readLog: ReadLog,
+): boolean => {
+  for (const [target, writeMap] of writeLog) {
+    if (readLog.has(target)) {
+      const readObj = readLog.get(target)!;
+      for (const prop of writeMap.keys()) {
+        if (
+          readObj.get &&
+          readObj.get.has(prop) &&
+          readObj.get.get(prop) !== getValue(target, prop)
+        ) {
+          return true;
         }
         if (
-          'keys' in readObj &&
-          Array.from(writeMap.values()).some((i) => i !== 0)
+          readObj.has &&
+          readObj.has.has(prop) &&
+          readObj.has.get(prop) !== hasValue(target, prop)
         ) {
           return true;
         }
       }
+      if (
+        'keys' in readObj &&
+        Array.from(writeMap.values()).some((i) => i !== 0)
+      ) {
+        return true;
+      }
     }
-    return false;
-  };
+  }
+  return false;
+};
+
+export const run = <T>(
+  fn: () => T,
+): [r: T, isTrigger: (event: WriteLog) => boolean] => {
+  const [r, readLog] = captureReads(fn);
+  const isTrigger = (writeLog: WriteLog) =>
+    doesWriteTriggerRead(writeLog, readLog);
   return [r, isTrigger];
 };
 
 export const autoRun = <T>(fn: () => T, wrapper?: Wrapper) => {
   let isTrigger: (event: WriteLog) => boolean;
-  let decoratedRun = () => {
+  let wrappedRun = () => {
     [runner.r, isTrigger] = writeEmitter.ignore(() => run(fn)); // ignore to avoid infinite loop
   };
   if (wrapper) {
-    decoratedRun = wrapper(decoratedRun);
+    wrappedRun = wrapper(wrappedRun);
   }
   const listener = (e: WriteLog): void => {
     if (isTrigger(e)) {
-      decoratedRun();
+      wrappedRun();
     }
   };
   const runner = {
