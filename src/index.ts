@@ -25,8 +25,10 @@ const canManage = (obj: object) =>
     obj.toString() === '[object Set]') &&
   !excludeSet.has(obj);
 
-// todo: max depth
-export const manage = <T extends object>(target: T): T => {
+export const manage = <T extends object>(target: T, maxDepth = 10): T => {
+  if (maxDepth < 0) {
+    throw new Error('Max depth exceeded.');
+  }
   // return managed if it's already managed
   if (proxyMap.has(target)) {
     return proxyMap.get(target) as T;
@@ -69,7 +71,7 @@ export const manage = <T extends object>(target: T): T => {
       const has = Reflect.has(target, prop);
       const r = Reflect.defineProperty(target, prop, {
         ...descriptor,
-        value: manage(descriptor.value),
+        value: manage(descriptor.value, maxDepth - 1),
       });
       writeEmitter.emit({ target, prop, value: !has && r ? 1 : 0 });
       return r;
@@ -92,7 +94,7 @@ export const manage = <T extends object>(target: T): T => {
     if (descriptor.value && canManage(descriptor.value)) {
       Reflect.defineProperty(target, prop, {
         ...descriptor,
-        value: manage(descriptor.value as T),
+        value: manage(descriptor.value as T, maxDepth - 1),
       });
     }
   }
