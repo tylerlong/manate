@@ -2,29 +2,20 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, writeEmitter } from '../src';
-import { WriteLog } from '../src/events/types';
+import { batchWrites, manage } from '../src';
 import { autoRun } from '../src/utils';
 
 describe('array splice', () => {
   test('default', () => {
     const arr = [1, 2, 3, 4, 5];
     const ma = manage(arr);
-    const writeLogs: WriteLog[] = [];
-    const listener = (e) => {
-      writeLogs.push(e);
-    };
-    writeEmitter.on(listener);
-    writeEmitter.batch(() => {
+
+    const [, writeLog] = batchWrites(() => {
       ma.splice(2, 1);
     });
-    writeEmitter.off(listener);
-    expect(writeLogs.length).toBe(1);
-    const writeCache = writeLogs[0];
-    expect(writeCache.size).toBe(1);
-    expect(writeCache.has(arr)).toBeTruthy();
-    const obj = writeCache.get(arr)!;
-    expect(inspect(obj)).toEqual(`{ '2': 0, '3': 0, '4': -1, length: 0 }`);
+    expect(inspect(writeLog)).toBe(`Map(1) {
+  [ 1, 2, 4, 5 ] => Map(4) { '2' => 0, '3' => 0, '4' => -1, 'length' => 0 }
+}`);
   });
 
   test('autoRun without batch', () => {
@@ -51,7 +42,9 @@ describe('array splice', () => {
     runner.start(); // trigger the first run
 
     // batch only triggers 1 run
-    writeEmitter.batch(() => {
+    // todo: in the future, make all functions batched by default
+    // todo: so we don't need to call batchWrites here
+    batchWrites(() => {
       arr.splice(2, 1);
     });
 

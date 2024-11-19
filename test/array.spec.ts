@@ -3,8 +3,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, writeEmitter } from '../src';
-import { WriteLog } from '../src/events/types';
+import { batchWrites, manage } from '../src';
 
 describe('array', () => {
   test('managed set length', () => {
@@ -31,15 +30,11 @@ describe('array', () => {
       public todos: string[] = [];
     }
     const managed = manage(new Store());
-    const writeLogs: WriteLog[] = [];
-    writeEmitter.on((we) => {
-      writeLogs.push(we);
-    });
-    writeEmitter.batch(() => {
+    const [, writeLog] = batchWrites(() => {
       managed.todos.push('hello');
     });
-    expect(inspect(writeLogs)).toBe(
-      "[ Map(1) { [ 'hello' ] => { '0': 1, length: 0 } } ]",
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { [ 'hello' ] => Map(2) { '0' => 1, 'length' => 0 } }`,
     );
   });
 
