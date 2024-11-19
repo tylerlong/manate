@@ -11,7 +11,7 @@ describe('Object vs Map', () => {
       expect(Object.keys(o).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(
-      `Map(1) { { a: 1, b: 2, c: 3 } => { get: {}, has: {}, keys: true } }`,
+      `Map(1) { { a: 1, b: 2, c: 3 } => { keys: true } }`,
     );
 
     [, readLogs] = captureReads(() => {
@@ -19,7 +19,7 @@ describe('Object vs Map', () => {
     });
     expect(inspect(readLogs)).toBe(
       `Map(1) {
-  { a: 1, b: 2, c: 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  { a: 1, b: 2, c: 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`,
     );
 
@@ -28,7 +28,7 @@ describe('Object vs Map', () => {
     });
     expect(inspect(readLogs)).toBe(
       `Map(1) {
-  { a: 1, b: 2, c: 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  { a: 1, b: 2, c: 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`,
     );
   });
@@ -45,22 +45,22 @@ describe('Object vs Map', () => {
     let [, readLogs] = captureReads(() => {
       expect(Array.from(o.keys()).length).toBe(3);
     });
-    expect(inspect(readLogs)).toBe(`Map(1) {
-  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { get: {}, has: {}, keys: true }
-}`);
+    expect(inspect(readLogs)).toBe(
+      `Map(1) { Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true } }`,
+    );
 
     [, readLogs] = captureReads(() => {
       expect(Array.from(o.values()).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
-  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
     [, readLogs] = captureReads(() => {
       expect(Array.from(o.entries()).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
-  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
     [, readLogs] = captureReads(() => {
@@ -70,7 +70,7 @@ describe('Object vs Map', () => {
       }
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
-  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
     [, readLogs] = captureReads(() => {
@@ -80,7 +80,7 @@ describe('Object vs Map', () => {
       });
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
-  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { get: { a: 1, b: 2, c: 3 }, has: {}, keys: true }
+  Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
   });
 
@@ -92,8 +92,13 @@ describe('Object vs Map', () => {
         ['c', 3],
       ]),
     );
-
-    expect(o.size).toBe(3);
+    const [, readLogs] = captureReads(() => {
+      expect(o.size).toBe(3);
+    });
+    // size trigger keys
+    expect(inspect(readLogs)).toBe(
+      `Map(1) { Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true } }`,
+    );
   });
 
   test('map proxy', () => {
