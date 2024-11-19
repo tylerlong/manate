@@ -2,8 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, writeEmitter } from '../src';
-import { WriteLog } from '../src/events/types';
+import { batchWrites, manage } from '../src';
 
 describe('direct update', () => {
   test('default', () => {
@@ -26,14 +25,14 @@ What does this test case tell us?
     expect(webPhone.callSessions).toBeDefined();
     original.callSessions.push(new CallSession());
     expect(webPhone.callSessions[0]).toBeDefined();
-    const writeLogs: WriteLog[] = [];
-    writeEmitter.on((writeLog: WriteLog) => {
-      writeLogs.push(writeLog);
+    const [, writeLog] = batchWrites(() => {
+      original.callSessions[0].status = 'calling'; // trigger event
+      original.status = 'calling'; // do not trigger event
     });
-    original.callSessions[0].status = 'calling'; // trigger event
-    original.status = 'calling'; // do not trigger event
-    expect(inspect(writeLogs)).toBe(
-      `[ Map(1) { CallSession { status: 'calling' } => { status: 0 } } ]`,
+    expect(inspect(writeLog)).toBe(
+      `Map(1) {
+  CallSession { status: 'calling' } => Map(1) { 'status' => 0 }
+}`,
     );
   });
 });

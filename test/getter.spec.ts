@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, readEmitter } from '../src';
+import { captureReads, manage } from '../src';
 
 describe('getter', () => {
   test('getter', () => {
@@ -12,12 +12,12 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const [r, readLogs] = readEmitter.run(() => {
+    const [r, readLogs] = captureReads(() => {
       return managed.visibleTodos;
     });
     expect(r).toBe(true);
     expect(inspect(readLogs)).toBe(`Map(1) {
-  { visibility: false, visibleTodos: [Getter] } => { get: { visibility: false, visibleTodos: true }, has: {} }
+  { visibility: false, visibleTodos: [Getter] } => { get: Map(2) { 'visibility' => false, 'visibleTodos' => true } }
 }`);
   });
 
@@ -28,12 +28,12 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const [r, readLogs] = readEmitter.run(() => {
+    const [r, readLogs] = captureReads(() => {
       return managed.visibleTodos();
     });
     expect(r).toBe(true);
     expect(inspect(readLogs)).toBe(`Map(1) {
-  { visibility: false, visibleTodos: [Function: visibleTodos] } => { get: { visibility: false }, has: {} }
+  { visibility: false, visibleTodos: [Function: visibleTodos] } => { get: Map(1) { 'visibility' => false } }
 }`);
   });
 
