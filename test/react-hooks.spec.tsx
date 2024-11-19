@@ -100,5 +100,6 @@ describe('React hooks', () => {
       store.count += 1;
     });
     expect(count).toBe(5);
+    cleanup();
   });
 });

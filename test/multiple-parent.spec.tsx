@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
+import { inspect } from 'util';
+
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { $, manage, type ManateEvent } from '../src';
+import { batchWrites, captureReads, manage } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {
@@ -12,35 +14,44 @@ describe('multiple parent', () => {
     const ma = manage(a);
     const d = { b: ma.b };
     const md = manage(d);
-    const eventsA: string[] = [];
-    $(ma).on((event: ManateEvent) => {
-      eventsA.push(event.name + '+' + event.pathString);
-    });
-    const eventsD: string[] = [];
-    $(md).on((event: ManateEvent) => {
-      eventsD.push(event.name + '+' + event.pathString);
-    });
     d.b.c = 1;
-    expect(eventsA).toEqual(['set+b+c']);
-    expect(eventsD).toEqual(['set+b+c']);
+    let [, writeLog] = batchWrites(() => {
+      d.b.c = 1;
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { { c: 1 } => Map(1) { 'c' => 0 } }`,
+    );
 
-    eventsA.length = 0;
-    eventsD.length = 0;
-    md.b.c = 2;
-    expect(eventsA).toEqual(['set+b+c']);
-    expect(eventsD).toEqual(['get+b', 'set+b+c']);
+    [, writeLog] = batchWrites(() => {
+      const [, readLog] = captureReads(() => {
+        md.b.c = 2;
+      });
+      expect(inspect(readLog)).toBe(
+        `Map(1) { { b: { c: 2 } } => { get: Map(1) { 'b' => [Object] } } }`,
+      );
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { { c: 2 } => Map(1) { 'c' => 0 } }`,
+    );
 
-    eventsA.length = 0;
-    eventsD.length = 0;
-    a.b.c = 3;
-    expect(eventsA).toEqual(['set+b+c']);
-    expect(eventsD).toEqual(['set+b+c']);
+    [, writeLog] = batchWrites(() => {
+      a.b.c = 3;
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { { c: 3 } => Map(1) { 'c' => 0 } }`,
+    );
 
-    eventsA.length = 0;
-    eventsD.length = 0;
-    ma.b.c = 4;
-    expect(eventsA).toEqual(['get+b', 'set+b+c']);
-    expect(eventsD).toEqual(['set+b+c']);
+    [, writeLog] = batchWrites(() => {
+      const [, readLog] = captureReads(() => {
+        ma.b.c = 4;
+      });
+      expect(inspect(readLog)).toBe(
+        `Map(1) { { b: { c: 4 } } => { get: Map(1) { 'b' => [Object] } } }`,
+      );
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(1) { { c: 4 } => Map(1) { 'c' => 0 } }`,
+    );
   });
 
   test('game', () => {
@@ -60,13 +71,14 @@ describe('multiple parent', () => {
     }
     const store = manage(new Store());
     store.bullets[0] = new Bullet();
-    const events: string[] = [];
     const props = manage({ bullet: store.bullets[0] });
-    $(store).on((event: ManateEvent) => {
-      events.push(event.name + '+' + event.pathString);
+    const [, readLog] = captureReads(() => {
+      expect(props.bullet.speed).toBe(10); // trigger get
     });
-    expect(props.bullet.speed).toBe(10); // trigger get
-    expect(events).toEqual(['get+bullets+0+speed']);
+    expect(inspect(readLog)).toBe(`Map(2) {
+  { bullet: Bullet { speed: 10, id: 0 } } => { get: Map(1) { 'bullet' => [Bullet] } },
+  Bullet { speed: 10, id: 0 } => { get: Map(1) { 'speed' => 10 } }
+}`);
   });
 
   test('game with React', () => {
