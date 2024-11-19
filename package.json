@@ -7,8 +7,8 @@
   "types": "index.d.ts",
   "scripts": {
     "lint": "tsc --jsx react --skipLibCheck --noEmit --target ESNext --moduleResolution NodeNext --module NodeNext ./src/*.ts ./test/*.ts ./test/*.tsx && eslint . --fix && prettier --write . && sort-package-json",
-    "prepublishOnly": "yarn lint && yarn test && tsc src/react.ts --skipLibCheck --declaration --sourceMap --target ESNext --moduleResolution NodeNext --module NodeNext",
-    "postpublish": "find ./src -type f \\( -name '*.js' -o -name '*.d.ts' -o -name '*.js.map' \\) -delete",
+    "prepublishOnly": "yarn lint && yarn test && tsc src/react.ts --skipLibCheck --declaration --sourceMap --target ESNext --moduleResolution NodeNext --module NodeNext --outDir .",
+    "postpublish": "rm -rf events && rm *.js *.js.map *.d.ts",
     "test": "vitest run"
   },
   "devDependencies": {
