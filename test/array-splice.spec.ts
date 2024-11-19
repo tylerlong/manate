@@ -43,7 +43,7 @@ describe('array splice', () => {
 
     // batch only triggers 1 run
     // todo: in the future, make all functions batched by default
-    // todo: so we don't need to call batchWrites here
+    // so we don't need to call batchWrites here
     batchWrites(() => {
       arr.splice(2, 1);
     });

@@ -16,6 +16,7 @@ const hasValue = (target: object, prop: PropertyKey) => {
   return Reflect.has(target, prop);
 };
 
+// todo: create a util method to check if WriteLog triggers ReadLog
 export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {

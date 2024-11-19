@@ -57,7 +57,7 @@ describe('pure set', () => {
     expect(methods).toEqual(['add']);
 
     // todo: more methods will be available to Set: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/isSubsetOf
-    // todo: so we may need to handle them just like the `forEach` and `keys` methods in src/map-and-set.ts
+    // so we may need to handle them just like the `forEach` and `keys` methods in src/map-and-set.ts
     // expect(p.isSubsetOf(new Set())).toBe(false);
   });
 });

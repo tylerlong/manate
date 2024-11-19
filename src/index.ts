@@ -2,7 +2,6 @@ import ReadEmitter from './events/read-emitter';
 import WriteEmitter from './events/write-emitter';
 import { mapGet, setGet } from './map-and-set';
 
-// todo: create a class to hold the code below
 export const readEmitter = new ReadEmitter();
 export const writeEmitter = new WriteEmitter();
 export const batchWrites: typeof writeEmitter.batchWrites =
