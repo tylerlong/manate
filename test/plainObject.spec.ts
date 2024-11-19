@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { $, manage } from '../src';
+import { isManaged, manage } from '../src';
 
 describe('plain objects', () => {
   test('default', () => {
@@ -16,7 +16,8 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     });
-    expect(() => $(store.config)).toThrow();
+    expect(isManaged(store.config)).toBeFalsy();
+    expect(isManaged(store)).toBeTruthy();
   });
 
   test('another way', () => {
@@ -28,9 +29,9 @@ describe('plain objects', () => {
       someString: 'sss',
       someArr: [],
     };
-    expect($(store)).toBeDefined();
-    expect($(store.config)).toBeDefined();
+    expect(isManaged(store)).toBeTruthy();
+    expect(isManaged(store.config)).toBeTruthy();
     const plainObject = JSON.parse(JSON.stringify(store.config));
-    expect(() => $(plainObject)).toThrow();
+    expect(isManaged(plainObject)).toBeFalsy();
   });
 });

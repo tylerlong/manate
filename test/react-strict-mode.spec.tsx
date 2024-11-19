@@ -66,7 +66,7 @@ describe('React strict mode', () => {
     expect(bulletCount).toBe(8);
     cleanup();
 
-    // compare to test/react-re-render.spec.tsx
-    // this tese all count are doubled because of strict mode
+    // compares to test/react-re-render.spec.tsx
+    // this test all count are doubled because of strict mode
   });
 });

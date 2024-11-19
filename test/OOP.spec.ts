@@ -1,6 +1,8 @@
+import { inspect } from 'util';
+
 import { describe, expect, test } from 'vitest';
 
-import { $, manage, type ManateEvent } from '../src';
+import { batch, manage, readEmitter } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -33,17 +35,20 @@ describe('OOP', () => {
     todoList.todoItems.push(todoItem);
 
     const managed = manage(store);
-    const events: ManateEvent[] = [];
-    const listener = (event: ManateEvent) => events.push(event);
-    $(managed).on(listener);
-    managed.todoLists[0].todoItems[0].complete = true;
-    $(managed).off(listener);
-    expect(events.map((event) => event.toString())).toEqual([
-      'get: todoLists',
-      'get: todoLists+0',
-      'get: todoLists+0+todoItems',
-      'get: todoLists+0+todoItems+0',
-      'set: todoLists+0+todoItems+0+complete',
-    ]);
+
+    const [, writeLog] = batch(() => {
+      const [, readLog] = readEmitter.run(() => {
+        managed.todoLists[0].todoItems[0].complete = true;
+      });
+      expect(inspect(readLog)).toEqual(`Map(4) {
+  Store { todoLists: [ [TodoList] ] } => { get: Map(1) { 'todoLists' => [Array] } },
+  [ TodoList { todoItems: [Array], name: 'Work' } ] => { get: Map(1) { '0' => [TodoList] } },
+  TodoList { todoItems: [ [TodoItem] ], name: 'Work' } => { get: Map(1) { 'todoItems' => [Array] } },
+  [ TodoItem { complete: true, description: 'Daily meeting' } ] => { get: Map(1) { '0' => [TodoItem] } }
+}`);
+    });
+    expect(inspect(writeLog)).toEqual(`Map(1) {
+  TodoItem { complete: true, description: 'Daily meeting' } => Map(1) { 'complete' => 0 }
+}`);
   });
 });

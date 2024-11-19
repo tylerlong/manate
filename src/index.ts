@@ -8,8 +8,9 @@ export const writeEmitter = new WriteEmitter();
 export const batch = writeEmitter.batch.bind(writeEmitter);
 
 const proxyMap = new WeakMap<object, object>();
-const excludeSet = new WeakSet<object>();
+export const isManaged = (target: object) => proxyMap.has(target);
 
+const excludeSet = new WeakSet<object>();
 export const exclude = <T extends object>(target: T): T => {
   excludeSet.add(target);
   return target;
