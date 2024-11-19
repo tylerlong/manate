@@ -5,8 +5,10 @@ import { mapGet, setGet } from './map-and-set';
 // todo: create a class to hold the code below
 export const readEmitter = new ReadEmitter();
 export const writeEmitter = new WriteEmitter();
-export const batchWrites = writeEmitter.batchWrites.bind(writeEmitter);
-export const captureReads = readEmitter.captureReads.bind(readEmitter);
+export const batchWrites: typeof writeEmitter.batchWrites =
+  writeEmitter.batchWrites.bind(writeEmitter);
+export const captureReads: typeof readEmitter.captureReads =
+  readEmitter.captureReads.bind(readEmitter);
 
 const proxyMap = new WeakMap<object, object>();
 export const isManaged = (target: object) => proxyMap.has(target);

@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, readEmitter } from '../src';
+import { captureReads, manage } from '../src';
 import { autoRun } from '../src/utils';
 
 describe('keys', () => {
@@ -43,13 +43,13 @@ describe('keys', () => {
       public monsters: { [key: string]: number } = {};
     }
     const store = manage(new Store());
-    const [r, readLogs] = readEmitter.run(() => {
+    const [r, readLogs] = captureReads(() => {
       return Object.values(store.monsters);
     });
     expect(r).toEqual([]);
     expect(inspect(readLogs)).toBe(`Map(2) {
-  Store { monsters: {} } => { get: { monsters: {} }, has: {} },
-  {} => { get: {}, has: {}, keys: true }
+  Store { monsters: {} } => { get: Map(1) { 'monsters' => {} } },
+  {} => { keys: true }
 }`);
   });
 });
