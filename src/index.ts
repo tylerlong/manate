@@ -19,7 +19,8 @@ export const exclude = <T extends object>(target: T): T => {
   return target;
 };
 
-const canManage = (obj: object) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const canManage = (obj: any) =>
   obj &&
   (Array.isArray(obj) ||
     obj.toString() === '[object Object]' ||
