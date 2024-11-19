@@ -13,8 +13,10 @@ class WriteEmitter {
       return [f(), writeLog];
     } finally {
       this.batchCounter--;
-      if (this.batchCounter === 0 && this.writeLog.size > 0) {
-        this.listeners.forEach((listener) => listener(this.writeLog));
+      if (this.batchCounter === 0) {
+        if (this.writeLog.size > 0) {
+          this.listeners.forEach((listener) => listener(this.writeLog));
+        }
         this.writeLog = new Map();
       }
     }
