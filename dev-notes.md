@@ -99,9 +99,6 @@ Instead, we could make `position` a property of `monster`.
   - Long ago I supported this feature in the SubX project.
 - use chatGPT to refactor code, piece by piece.
 - rewrite doc for version 2
-- make a class constructor auto manage
-  - so that every instance of this class is auto managed
-  - and the constructor better return the managed object
 
 ## Version 2 Notes
 
