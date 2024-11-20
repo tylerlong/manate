@@ -2,12 +2,12 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, writeEmitter } from '../src';
+import { runInAction, writeEmitter } from '../src';
 
 describe('emitter sync', () => {
   test('default', async () => {
     const obj = {};
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       writeEmitter.emit({ target: obj, prop: '0', value: 1 });
       writeEmitter.emit({ target: obj, prop: '1', value: 1 });
       writeEmitter.emit({ target: obj, prop: '2', value: 1 });

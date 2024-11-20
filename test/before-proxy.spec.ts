@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, manage } from '../src';
+import { manage, runInAction } from '../src';
 
 describe('before proxy', () => {
   test("Update an object before it's proxied", () => {
@@ -16,7 +16,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const b = new B();
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       ma.b = b;
       b.c = 1; // does not trigger write
     });
@@ -36,7 +36,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const b = new B();
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       ma.b = b;
       ma.b.c = 1;
     });
@@ -59,7 +59,7 @@ describe('before proxy', () => {
     const a = new A();
     const ma = manage(a);
     const b = new B();
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       ma.b = b;
       const mb = ma.b;
       mb.c = 1;

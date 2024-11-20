@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, manage } from '../src';
+import { manage, runInAction } from '../src';
 
 describe('inheritance', () => {
   test('default', () => {
@@ -14,7 +14,7 @@ describe('inheritance', () => {
       public d = { e: 0 };
     }
     const b = manage(new B());
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       b.b.c = 1;
     });
     expect(inspect(writeLog)).toBe(

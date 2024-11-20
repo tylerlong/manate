@@ -2,12 +2,12 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, captureReads, manage } from '../src';
+import { captureReads, manage, runInAction } from '../src';
 
 describe('index', () => {
   test('default', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         managed.a = 'world';
         managed.b.c = 'yes!';
@@ -26,7 +26,7 @@ describe('index', () => {
     const o = { a: 'hello', b: { c: 'world' } };
     const managed = manage(o);
     const [writeLog, readLog] = captureReads(() => {
-      const [, writeLog] = batchWrites(() => {
+      const [, writeLog] = runInAction(() => {
         managed.b.c = 'yes!';
         expect(managed.b.c).toBe('yes!');
       });
@@ -48,7 +48,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const [, readLog] = captureReads(() => {
-      const [, writeLog] = batchWrites(() => {
+      const [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         managed.b.c = 'world';
       });
@@ -70,7 +70,7 @@ describe('index', () => {
     }
     const managed = manage<A>({});
     const [, readLog] = captureReads(() => {
-      const [, writeLog] = batchWrites(() => {
+      const [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         const temp = managed.b;
         managed.b = temp;

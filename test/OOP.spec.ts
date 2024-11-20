@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, captureReads, manage } from '../src';
+import { captureReads, manage, runInAction } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -36,7 +36,7 @@ describe('OOP', () => {
 
     const managed = manage(store);
 
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         managed.todoLists[0].todoItems[0].complete = true;
       });

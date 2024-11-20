@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites } from '../src';
+import { runInAction } from '../src';
 
 const wrapAllFunctions = (obj) => {
   let current = obj;
@@ -12,7 +12,7 @@ const wrapAllFunctions = (obj) => {
       if (!descriptor || typeof descriptor.value !== 'function') return;
       const originalFunction = descriptor.value;
       const wrappedFunction = function (...args) {
-        const [result] = batchWrites(() => originalFunction.apply(this, args));
+        const [result] = runInAction(() => originalFunction.apply(this, args));
         return result;
       };
       // Set the name of the wrapped function to match the original
@@ -102,7 +102,7 @@ describe('wrap all functions', () => {
     expect(logs).toEqual([]); // because target.a is a number instead of a function
   });
 
-  test('batchWrites', () => {
+  test('runInAction', () => {
     const instance = [1, 2, 3, 4, 5];
     wrapAllFunctions(instance);
     expect(instance.splice(2, 1)).toEqual([3]);

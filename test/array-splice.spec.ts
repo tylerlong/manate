@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, manage } from '../src';
+import { manage, runInAction } from '../src';
 import { autoRun } from '../src/utils';
 
 describe('array splice', () => {
@@ -10,7 +10,7 @@ describe('array splice', () => {
     const arr = [1, 2, 3, 4, 5];
     const ma = manage(arr);
 
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       ma.splice(2, 1);
     });
     expect(inspect(writeLog)).toBe(`Map(1) {
@@ -29,7 +29,7 @@ describe('array splice', () => {
     arr.splice(2, 1); // there are 4 steps in this operation but it only triggers 1 run, since we have wrapped the splice function
     /*
       there is no need to:
-      batchWrites(() => {
+      runInAction(() => {
         arr.splice(2, 1);
       });
      */

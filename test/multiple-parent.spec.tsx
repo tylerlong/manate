@@ -5,7 +5,7 @@ import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, captureReads, manage } from '../src';
+import { captureReads, manage, runInAction } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {
@@ -15,14 +15,14 @@ describe('multiple parent', () => {
     const d = { b: ma.b };
     const md = manage(d);
     d.b.c = 1;
-    let [, writeLog] = batchWrites(() => {
+    let [, writeLog] = runInAction(() => {
       d.b.c = 1;
     });
     expect(inspect(writeLog)).toBe(
       `Map(1) { { c: 1 } => Map(1) { 'c' => 0 } }`,
     );
 
-    [, writeLog] = batchWrites(() => {
+    [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         md.b.c = 2;
       });
@@ -34,14 +34,14 @@ describe('multiple parent', () => {
       `Map(1) { { c: 2 } => Map(1) { 'c' => 0 } }`,
     );
 
-    [, writeLog] = batchWrites(() => {
+    [, writeLog] = runInAction(() => {
       a.b.c = 3;
     });
     expect(inspect(writeLog)).toBe(
       `Map(1) { { c: 3 } => Map(1) { 'c' => 0 } }`,
     );
 
-    [, writeLog] = batchWrites(() => {
+    [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         ma.b.c = 4;
       });

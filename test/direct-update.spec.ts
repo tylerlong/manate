@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, manage } from '../src';
+import { manage, runInAction } from '../src';
 
 describe('direct update', () => {
   test('default', () => {
@@ -25,7 +25,7 @@ What does this test case tell us?
     expect(webPhone.callSessions).toBeDefined();
     original.callSessions.push(new CallSession());
     expect(webPhone.callSessions[0]).toBeDefined();
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       original.callSessions[0].status = 'calling'; // trigger event
       original.status = 'calling'; // do not trigger event
     });

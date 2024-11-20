@@ -3,7 +3,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, manage } from '../src';
+import { manage, runInAction } from '../src';
 
 describe('array', () => {
   test('managed set length', () => {
@@ -30,7 +30,7 @@ describe('array', () => {
       public todos: string[] = [];
     }
     const managed = manage(new Store());
-    const [, writeLog] = batchWrites(() => {
+    const [, writeLog] = runInAction(() => {
       managed.todos.push('hello');
     });
     expect(inspect(writeLog)).toBe(

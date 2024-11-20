@@ -4,8 +4,8 @@ import { mapGet, setGet } from './map-and-set';
 
 export const readEmitter = new ReadEmitter();
 export const writeEmitter = new WriteEmitter();
-export const batchWrites: typeof writeEmitter.batchWrites =
-  writeEmitter.batchWrites.bind(writeEmitter);
+export const runInAction: typeof writeEmitter.runInAction =
+  writeEmitter.runInAction.bind(writeEmitter);
 export const captureReads: typeof readEmitter.captureReads =
   readEmitter.captureReads.bind(readEmitter);
 
@@ -106,16 +106,16 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     current = Reflect.getPrototypeOf(current)
   ) {
     for (const key of Reflect.ownKeys(current)) {
-      const desc = Reflect.getOwnPropertyDescriptor(current, key)!;
-      if (typeof desc.value !== 'function') continue;
+      const descriptor = Reflect.getOwnPropertyDescriptor(current, key)!;
+      if (typeof descriptor.value !== 'function') continue;
       Reflect.defineProperty(target, key, {
-        ...desc,
+        ...descriptor,
         value: Object.defineProperty(
           function (...args) {
-            return batchWrites(() => desc.value.apply(this, args))[0];
+            return runInAction(() => descriptor.value.apply(this, args))[0];
           },
           'name',
-          { value: desc.value.name },
+          { value: descriptor.value.name },
         ),
       });
     }

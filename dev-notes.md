@@ -97,6 +97,10 @@ Instead, we could make `position` a property of `monster`.
 
 - support computed values
   - Long ago I supported this feature in the SubX project.
+- use chatGPT to refactor code, piece by piece.
+- provide a decorator method for runInAction
+- rename runInAction to action?
+- rewrite doc for version 2
 
 ## Version 2 Notes
 
@@ -106,4 +110,4 @@ And in this `run` method, you are not supposed to change any data. It's mainly f
 
 for writeEmitter, by default it is not batched. and we also don't know when to stop listening, it depends on the events and isTrigger.
 We provide a `batch` method with a `fun` callback. During the execution of `fn`, all events are batched/cached. When `fn` finished, all events will be issued.
-If no batch, we emit `WriteEvent`, if bached, we emit `WriteCache`.
+If no batch, we emit `WriteEvent`, if batched, we emit `WriteCache`.

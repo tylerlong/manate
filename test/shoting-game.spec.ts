@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { batchWrites, captureReads, manage } from '../src';
+import { captureReads, manage, runInAction } from '../src';
 
 describe('shot gaming', () => {
   test('default', () => {
@@ -25,7 +25,7 @@ describe('shot gaming', () => {
     const game = new Game();
     manage(game);
 
-    let [, writeLog] = batchWrites(() => {
+    let [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         game.gun.bullets.push(new Bullet());
       });
@@ -38,7 +38,7 @@ describe('shot gaming', () => {
       `Map(1) { [ Bullet { id: 0 } ] => Map(2) { '0' => 1, 'length' => 0 } }`,
     );
 
-    [, writeLog] = batchWrites(() => {
+    [, writeLog] = runInAction(() => {
       const [, readLog] = captureReads(() => {
         expect(game.gun.bullets.map((b) => b.id)).toEqual([0]); // also trigger gets
       });
