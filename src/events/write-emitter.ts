@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { WriteEvent, WriteLog } from './types';
 
 class WriteEmitter {
@@ -5,13 +6,14 @@ class WriteEmitter {
   private ignoreCounter = 0;
   private listeners = new Set<(e: WriteLog) => void>();
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  action<T extends Function>(value: T): T {
+  action<T extends Function>(fn: T): T {
     const runInAction = this.runInAction.bind(this);
-    return function (...args) {
-      return runInAction(() => value.apply(this, args))[0];
+    return function (this: object, ...args) {
+      return runInAction(() => fn.apply(this, args))[0];
     } as unknown as T;
   }
+
+  // computed<T extends Function>(fn: T): T {}
 
   runInAction<T>(f: () => T): [T, WriteLog] {
     const writeLog = new Map();
