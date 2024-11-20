@@ -8,9 +8,9 @@ class WriteEmitter {
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   action<T extends Function>(value: T): T {
-    const self = this;
+    const runInAction = this.runInAction.bind(this);
     return function (...args) {
-      return self.runInAction(() => value.apply(this, args))[0];
+      return runInAction(() => value.apply(this, args))[0];
     } as unknown as T;
   }
 
