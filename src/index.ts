@@ -101,5 +101,33 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     }
   }
 
+  wrapAllFunctions(target);
+
   return managed;
+};
+
+const wrapAllFunctions = (obj) => {
+  let current = obj;
+  while (current && current !== Object.prototype) {
+    Reflect.ownKeys(current).forEach((key) => {
+      const descriptor = Reflect.getOwnPropertyDescriptor(current, key);
+      if (!descriptor || typeof descriptor.value !== 'function') return;
+      const originalFunction = descriptor.value;
+      const wrappedFunction = function (...args) {
+        const [result] = batchWrites(() => originalFunction.apply(this, args));
+        return result;
+      };
+      // Set the name of the wrapped function to match the original
+      Object.defineProperty(wrappedFunction, 'name', {
+        value: originalFunction.name,
+        configurable: true,
+      });
+      Reflect.defineProperty(obj, key, {
+        value: wrappedFunction,
+        configurable: true,
+        writable: true,
+      });
+    });
+    current = Reflect.getPrototypeOf(current);
+  }
 };

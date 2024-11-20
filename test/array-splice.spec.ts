@@ -18,7 +18,7 @@ describe('array splice', () => {
 }`);
   });
 
-  test('autoRun without batch', () => {
+  test('autoRun without explicit batch', () => {
     const arr = manage([1, 2, 3, 4, 5]);
     let count = 0;
     const runner = autoRun(() => {
@@ -26,28 +26,13 @@ describe('array splice', () => {
       return JSON.stringify(arr);
     });
     runner.start(); // trigger the first run
-    arr.splice(2, 1); // trigger 4 more runs
-    runner.stop();
-    expect(count).toBe(5);
-    expect(runner.r).toBe('[1,2,4,5]');
-  });
-
-  test('autoRun with batch', () => {
-    const arr = manage([1, 2, 3, 4, 5]);
-    let count = 0;
-    const runner = autoRun(() => {
-      count++;
-      return JSON.stringify(arr);
-    });
-    runner.start(); // trigger the first run
-
-    // batch only triggers 1 run
-    // todo: in the future, make all functions batched by default
-    // so we don't need to call batchWrites here
-    batchWrites(() => {
-      arr.splice(2, 1);
-    });
-
+    arr.splice(2, 1); // there are 4 steps in this operation but it only triggers 1 run, since we have wrapped the splice function
+    /*
+      there is no need to:
+      batchWrites(() => {
+        arr.splice(2, 1);
+      });
+     */
     runner.stop();
     expect(count).toBe(2);
     expect(runner.r).toBe('[1,2,4,5]');
