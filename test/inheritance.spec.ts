@@ -13,7 +13,6 @@ describe('inheritance', () => {
     class B extends A {
       public d = { e: 0 };
     }
-    console.log(Reflect.ownKeys(new B()));
     const b = manage(new B());
     const [, writeLog] = batchWrites(() => {
       b.b.c = 1;
