@@ -6,6 +6,15 @@ class WriteEmitter {
   private ignoreCounter = 0;
   private listeners = new Set<(e: WriteLog) => void>();
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  action<T extends Function>(value: T): T {
+    const self = this;
+    return function (...args) {
+      return self.runInAction(() => value.apply(this, args))[0];
+    } as unknown as T;
+  }
+
+  // todo: each time this is called, should create a new writeLog, refer to readEmitter.
   runInAction<T>(f: () => T): [T, WriteLog] {
     this.batchCounter++;
     try {

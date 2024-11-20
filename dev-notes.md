@@ -98,9 +98,8 @@ Instead, we could make `position` a property of `monster`.
 - support computed values
   - Long ago I supported this feature in the SubX project.
 - use chatGPT to refactor code, piece by piece.
-- provide a decorator method for runInAction
-- rename runInAction to action?
 - rewrite doc for version 2
+- make a class constructor auto manage
 
 ## Version 2 Notes
 

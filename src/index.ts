@@ -6,6 +6,8 @@ export const readEmitter = new ReadEmitter();
 export const writeEmitter = new WriteEmitter();
 export const runInAction: typeof writeEmitter.runInAction =
   writeEmitter.runInAction.bind(writeEmitter);
+export const action: typeof writeEmitter.action =
+  writeEmitter.action.bind(writeEmitter);
 export const captureReads: typeof readEmitter.captureReads =
   readEmitter.captureReads.bind(readEmitter);
 
