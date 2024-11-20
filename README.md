@@ -6,9 +6,7 @@ manate lets you handle state with ease across both frontend and backend.
 
 ## Version 2.x
 
-This is the branch for version 2.x. It is current in heavy development.
-
-For a stable version, please check [1.x branch](https://github.com/tylerlong/manate/tree/1.x).
+This is the branch for version 2.x. It is a complete rewrite of [1.x](https://github.com/tylerlong/manate/tree/1.x).
 
 ## Why choose manate?
 
@@ -26,9 +24,7 @@ Start using manate and manage your state effortlessly!
 yarn add manate
 ```
 
-## Usage
-
-### Create the state
+## Create the state
 
 ```ts
 import { manage } from 'manate';
@@ -42,7 +38,7 @@ class Store {
 const store = manage(new Store());
 ```
 
-### Without class/function
+## Without class/function
 
 You don't need to declare a class if you don't want to.
 
@@ -56,7 +52,22 @@ const store = manage({ count: 0 });
 store.count += 1; // change data directly without a function
 ```
 
-### React
+## Actions
+
+All members functions in a managed object will be considered actions.
+What's the point of actions? actions batches the changes events.
+
+For example, in an action, you change the state 100 times.
+But it will not trigger any reaction until the end of the action.
+And by the end of the action, depend on the final state, it will either trigger once or do not trigger.
+
+Let's take React for example, in a method, you change the state 100 times.
+If the method is not an action, the react component will re-render 100 times.
+But if the method is an action, the react component will re-render at most 1 time.
+
+Please refer to [./test/actions.spec.ts](./test/action.spec.ts).
+
+## React
 
 ```tsx
 import { auto } from 'manate/react';
@@ -86,25 +97,6 @@ In the sample above I showed you two ways to update data:
 
 So basically there is no restrictions. Just read/update as how you read/update a JavaScript object.
 
-## Without React
-
-You may use it without React.
-
-```ts
-import { manage, setEmitter, type ManateEvent } from 'manate';
-
-class Store {}
-const store = manage(new Store());
-```
-
-`setEmitter` is an event emitter which will emit "set" events to store. You can subscribe to events:
-
-```ts
-setEmitter.on((event: ManateEvent) => {
-  // something changed, because we got a "set" event
-});
-```
-
 ## Reference but do not track
 
 Sometimes we only want to keep a reference to an object, but we don't want to track its changes.
@@ -123,96 +115,11 @@ class A {
 
 const a = new A();
 const ma = manage(a);
-ma.b.c = 4; // will not trigger a set event because `ma.b` is excluded.
+ma.b.c = 4; // will not trigger a change event because `ma.b` is excluded.
 ```
 
-You may invoke the `exclude` method at any time.
-You may invoke the exlcude method before or after you manage the object:
+You may invoke `exclude` an object **BEFORE** it is managed.
 For more details, please refer to the test cases in [./test/exclude.spec.ts](./test/exclude.spec.ts).
-
-## Utility methods
-
-### `run`
-
-The signature of `run` is
-
-```ts
-function run<T>(
-  managed: T,
-  func: Function,
-): [result: any, isTrigger: (event: ManateEvent) => boolean];
-```
-
-- `managed` is generated from `manage` method: `const managed = manage(store)`.
-- `func` is a function which reads `managed`.
-- `result` is the result of `func()`.
-- `isTrigger` is a function which returns `true` if an `event` will "trigger" `func()` to have a different result.
-  - when it returns true, most likely it's time to run `func()` again(because you will get a different result from last time).
-
-When you invoke `run(managed, func)`, `func()` is invoked immediately.
-You can subscribe to `$(managed)` and filter the events using `isTrigger` to get the trigger events (to run `func()` again).
-
-For a sample usage of `run`, please check [./src/react.ts](./src/react.ts).
-
-Another example is the implementation of the `autoRun` utility method. You may find it in [./src/index.ts](./src/index.ts).
-
-### `autoRun`
-
-The signature of `autoRun` is
-
-```ts
-function autoRun<T>(
-  managed: T,
-  func: () => void,
-  decorator?: (func: () => void) => () => void,
-): { start: () => void; stop: () => void };
-```
-
-- `managed` is generated from `manage` method: `const managed = manage(store)`.
-- `func` is a function which reads `managed`.
-- `decorator` is a method to change run schedule of `func`, for example: `func => _.debounce(func, 10, {leading: true, trailing: true})`
-- `start` and `stop` is to start and stop `autoRun`.
-
-When you invoke `start()`, `func()` is invoked immediately.
-`func()` will be invoked automatically afterwards if there are trigger events from `managed` which change the result of `func()`.
-Invoke `stop` to stop `autoRun`.
-
-For sample usages of `autoRun`, please check [./test/autoRun.spec.ts](./test/autoRun.spec.ts).
-
-## Transactions
-
-Transactions are used together with `autoRun`.
-When you put an object in transaction, changes to the object will not trigger `autoRun` until the transaction ends.
-
-```ts
-import { $ } from 'manate';
-
-const { start } = autoRun(managed, () => {
-  console.log(JSON.stringify(managed));
-});
-start(); // trigger `console.log`
-$(managed).begin(); // start transaction
-// perform changes to managed
-// no matter how many changes you make, `console.log` will not be triggered
-$(managed).commit(); // end transaction
-// `console.log` will be triggered if there were changes
-```
-
-There could be multiple transactions at the same time.
-Transactions could be nested. A change will not trigger run until all enclosing transactions end.
-
-```ts
-const { start } = autoRun(managed, () => {
-  console.log(JSON.stringify(managed));
-});
-start(); // trigger `console.log`
-$(managed).begin();
-$(managed.a).begin();
-// changes to `managed.a` will not trigger console.log until both transactions end
-$(managed.a).commit();
-$(managed).commit();
-// `console.log` will be triggered if there were changes
-```
 
 ## Max Depth
 
@@ -222,26 +129,77 @@ So this library by set the max depth to 10, if max depeth exceeded, an error wil
 In such case, you need to review the data to be managed, why is it so deeply nested, is it reasonable?
 Think about it: is the deelpy nested structure relevant to your business logic? should you manage it at all?
 
-A real example is you try to manage a `ReactElement`. React component instances contain deep, complex internal structures that reference other objects, functions, and potentially even themselves.
-And you should not manage it at all. Instead, you should manage the state data used by the React component.
-
 You may override the max depth by specify the second argument of the `manage` function:
 
 ```ts
 const store = manage(new Store(), 20); // explicitly set max depth to 20, if `Store` is by design a deeply nested data structure
 ```
 
-## Limitations
+## autoRun
 
-- It doesn't manage built-in objects, such as `Set`, `Map` and `RTCPeerConnection`.
+`autoRun` is an utility method. It allows you to automatically run a code snippet if relevant state changes.
+
+```ts
+const runner = autoRun(() => {
+  console.log(store.count);
+});
+runner.start();
+```
+
+`console.log(store.count);` will auto run every time `store.count` is changed.
+
+`runner.start()` will run the code snippet immediately and start watching the state.
+
+`runner.stop` will stop watching the state.
+
+`runner.r` give you the latest return of the code snippet. It could be `undefined` if it doesn't return anything.
+
+## run
+
+`run` is another utility method which powers `autoRun`.
+
+```ts
+const [r, isTrigger] = run(() => {
+  return store.a + store.b;
+});
+
+writeEmitter.on((writeLog) => {
+  if (isTrigger(writeLog)) {
+    console.log(`run "store.a + store.b" now will generate a different result`);
+  }
+});
+```
+
+So `run` accept a funtion as argument. It returns `[r, isTrigger]`. `r` is the result of running the function argument.
+`isTrigger` is a function which check events emitted by `writeEmitter` to tell if run the function again will generate a different result.
+
+## Map & Set
+
+`Map` and `Set` work out-of-box, there is nothing special to mention here since it just works.
+
+Please refer to
+
+- [./test/map-and-set.spec.ts](./test/map-and-set.spec.ts).
+- [./test/map.spec.ts](./test/map.spec.ts)
+- [./test/set.spec.ts](./test/set.spec.ts)
+
+## Built-in objects
+
+Manate doesn't manage built-in objects, such as `new RTCPeerConnection()`.
+Because manate is a state management library. You're not supposed to hold your app state in those built-in objects.
+
+## Circular references
+
+It is fine to have curcukar references in your state.
+
+Refer to [./test/circular.spec.ts](./test/circular.spec.ts).
 
 ## Similarity to MobX
 
-Recently I find manate is very similar to mobx:
+Recently I find that manate is very similar to mobx:
 
 - `import { manage } from 'manate'` is like `import { observable } from 'mobx`
 - `import { auto } from 'manate/react` is like `import { observer } from 'mobx-react-lite'`
 
 If I could realize the similarity 3 years ago, I might just use mobx instead.
-
 For now, since manate is well developed and I am very happy with it, I will continue to use and maintain manate.

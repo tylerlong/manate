@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import { manage, runInAction } from '../src';
 
-describe('two batch writes', () => {
+describe('two runInAction', () => {
   test('default', () => {
     class A {
       public b = { c: 0 };
