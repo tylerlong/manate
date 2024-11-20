@@ -84,8 +84,6 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
       writeEmitter.emit({ target, prop, value: has && r ? -1 : 0 });
       return r;
     },
-
-    // todo: use apply to make all functions batch?
   });
   proxyMap.set(target, managed);
   proxyMap.set(managed, managed);
@@ -101,33 +99,27 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     }
   }
 
-  wrapAllFunctions(target);
+  // make all functions batched
+  for (
+    let current = target as object | null;
+    current && current !== Object.prototype;
+    current = Reflect.getPrototypeOf(current)
+  ) {
+    for (const key of Reflect.ownKeys(current)) {
+      const desc = Reflect.getOwnPropertyDescriptor(current, key)!;
+      if (typeof desc.value !== 'function') continue;
+      Reflect.defineProperty(target, key, {
+        ...desc,
+        value: Object.defineProperty(
+          function (...args) {
+            return batchWrites(() => desc.value.apply(this, args))[0];
+          },
+          'name',
+          { value: desc.value.name },
+        ),
+      });
+    }
+  }
 
   return managed;
-};
-
-const wrapAllFunctions = (obj) => {
-  let current = obj;
-  while (current && current !== Object.prototype) {
-    Reflect.ownKeys(current).forEach((key) => {
-      const descriptor = Reflect.getOwnPropertyDescriptor(current, key);
-      if (!descriptor || typeof descriptor.value !== 'function') return;
-      const originalFunction = descriptor.value;
-      const wrappedFunction = function (...args) {
-        const [result] = batchWrites(() => originalFunction.apply(this, args));
-        return result;
-      };
-      // Set the name of the wrapped function to match the original
-      Object.defineProperty(wrappedFunction, 'name', {
-        value: originalFunction.name,
-        configurable: true,
-      });
-      Reflect.defineProperty(obj, key, {
-        value: wrappedFunction,
-        configurable: true,
-        writable: true,
-      });
-    });
-    current = Reflect.getPrototypeOf(current);
-  }
 };
