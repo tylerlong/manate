@@ -8,6 +8,8 @@ export const runInAction: typeof writeEmitter.runInAction =
   writeEmitter.runInAction.bind(writeEmitter);
 export const action: typeof writeEmitter.action =
   writeEmitter.action.bind(writeEmitter);
+export const computed: typeof writeEmitter.computed =
+  writeEmitter.computed.bind(writeEmitter);
 export const captureReads: typeof readEmitter.captureReads =
   readEmitter.captureReads.bind(readEmitter);
 

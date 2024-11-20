@@ -99,6 +99,8 @@ Instead, we could make `position` a property of `monster`.
   - Long ago I supported this feature in the SubX project.
 - use chatGPT to refactor code, piece by piece.
 - rewrite doc for version 2
+- import everything from 'manate' except react related.
+  - means everything should be exported from index.ts
 
 ## Version 2 Notes
 
