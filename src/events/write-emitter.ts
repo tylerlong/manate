@@ -1,8 +1,7 @@
 import { WriteEvent, WriteLog } from './types';
 
 class WriteEmitter {
-  private writeLog: WriteLog = new Map();
-  private batchCounter = 0;
+  private writeLogs = new Set<WriteLog>();
   private ignoreCounter = 0;
   private listeners = new Set<(e: WriteLog) => void>();
 
@@ -14,19 +13,15 @@ class WriteEmitter {
     } as unknown as T;
   }
 
-  // todo: each time this is called, should create a new writeLog, refer to readEmitter.
   runInAction<T>(f: () => T): [T, WriteLog] {
-    this.batchCounter++;
+    const writeLog = new Map();
+    this.writeLogs.add(writeLog);
     try {
-      const writeLog = this.writeLog;
       return [f(), writeLog];
     } finally {
-      this.batchCounter--;
-      if (this.batchCounter === 0) {
-        if (this.writeLog.size > 0) {
-          this.listeners.forEach((listener) => listener(this.writeLog));
-        }
-        this.writeLog = new Map();
+      this.writeLogs.delete(writeLog);
+      if (this.writeLogs.size === 0 && writeLog.size > 0) {
+        this.listeners.forEach((listener) => listener(writeLog));
       }
     }
   }
@@ -52,16 +47,18 @@ class WriteEmitter {
     if (this.ignoreCounter > 0) {
       return;
     }
-    if (this.batchCounter === 0) {
+    if (this.writeLogs.size === 0) {
       this.listeners.forEach((listener) =>
         listener(new Map([[me.target, new Map([[me.prop, me.value]])]])),
       );
     } else {
-      if (!this.writeLog.has(me.target)) {
-        this.writeLog.set(me.target, new Map());
+      for (const writeLog of this.writeLogs.values()) {
+        if (!writeLog.has(me.target)) {
+          writeLog.set(me.target, new Map());
+        }
+        const writeMap = writeLog.get(me.target)!;
+        writeMap.set(me.prop, me.value + (writeMap.get(me.prop) ?? 0));
       }
-      const writeMap = this.writeLog.get(me.target)!;
-      writeMap.set(me.prop, me.value + (writeMap.get(me.prop) ?? 0));
     }
   }
 }
