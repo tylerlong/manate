@@ -13,12 +13,6 @@ class WriteEmitter {
     } as unknown as T;
   }
 
-  computed<T extends (...args: any[]) => any>(fn: T): T {
-    return function (this: object, ...args) {
-      return fn.apply(this, args);
-    } as unknown as T;
-  }
-
   runInAction<T>(f: () => T): [T, WriteLog] {
     const writeLog = new Map();
     this.writeLogs.add(writeLog);

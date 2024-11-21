@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ReadEmitter from './events/read-emitter';
+import { WriteLog } from './events/types';
 import WriteEmitter from './events/write-emitter';
 import { mapGet, setGet } from './map-and-set';
+import { run } from './utils';
 
 export const readEmitter = new ReadEmitter();
 export const writeEmitter = new WriteEmitter();
@@ -8,10 +11,27 @@ export const runInAction: typeof writeEmitter.runInAction =
   writeEmitter.runInAction.bind(writeEmitter);
 export const action: typeof writeEmitter.action =
   writeEmitter.action.bind(writeEmitter);
-export const computed: typeof writeEmitter.computed =
-  writeEmitter.computed.bind(writeEmitter);
 export const captureReads: typeof readEmitter.captureReads =
   readEmitter.captureReads.bind(readEmitter);
+
+export const computed = <T extends () => any>(fn: T): T => {
+  const cache = new WeakMap<object, any>();
+  return function (this: object) {
+    if (cache.has(this)) {
+      return cache.get(this);
+    }
+    const [r, isTrigger] = run(() => fn.apply(this));
+    cache.set(this, r);
+    const listener = (writeLog: WriteLog) => {
+      if (isTrigger(writeLog)) {
+        writeEmitter.off(listener);
+        cache.delete(this);
+      }
+    };
+    writeEmitter.on(listener);
+    return r;
+  } as unknown as T;
+};
 
 const proxyMap = new WeakMap<object, object>();
 export const isManaged = (target: object) => proxyMap.has(target);
@@ -22,7 +42,6 @@ export const exclude = <T extends object>(target: T): T => {
   return target;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const canManage = (obj: any) =>
   obj &&
   (Array.isArray(obj) ||
