@@ -39,7 +39,6 @@ Instead, we could make `position` a property of `monster`.
 ## Todo
 
 - support computed values
-  - Long ago I supported this feature in the SubX project.
   - make all getters computed
 - use chatGPT to refactor code, piece by piece.
 - import everything from 'manate' except react related.

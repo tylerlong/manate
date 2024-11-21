@@ -134,7 +134,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
       Reflect.defineProperty(target, key, {
         ...descriptor,
         value: Object.defineProperty(
-          function (...args) {
+          function (this: object, ...args) {
             return runInAction(() => descriptor.value.apply(this, args))[0];
           },
           'name',
