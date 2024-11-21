@@ -44,6 +44,7 @@ Instead, we could make `position` a property of `monster`.
 - use chatGPT to refactor code, piece by piece.
 - import everything from 'manate' except react related.
   - means everything should be exported from index.ts
+  - should restructure the whole project, probably
 
 ## Version 2 Notes
 

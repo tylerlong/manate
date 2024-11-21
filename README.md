@@ -183,6 +183,29 @@ Please refer to
 - [./test/map.spec.ts](./test/map.spec.ts)
 - [./test/set.spec.ts](./test/set.spec.ts)
 
+## Computed
+
+You can turn a function with no arguments or a getter into a computed function.
+Computed functions cache their results to avoid unnecessary recalculations.
+
+When to use computed functions:
+
+1. The computation is expensive.
+1. The function is called multiple times.
+1. The state it depends on changes infrequently.
+
+If any of these conditions aren't true, using computed may slow down your app instead of speeding it up.
+
+```ts
+const f = computed(() => {
+  return store.a + store.b;
+});
+```
+
+Here, if `store.a` and `store.b` don't change, subsequent calls to `f` will return the cached result.
+
+However, this isn't a great example — `store.a + store.b` is a simple computation, and using `computed` here likely won't improve performance.
+
 ## Built-in objects
 
 Manate doesn't manage built-in objects, such as `new RTCPeerConnection()`.
