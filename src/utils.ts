@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { captureReads, writeEmitter } from '.';
 import { ReadLog, WriteLog } from './events/types';
 import { Wrapper } from './wrappers';
@@ -83,4 +84,23 @@ export const autoRun = <T>(fn: () => T, wrapper?: Wrapper) => {
     r: undefined as T | undefined,
   };
   return runner;
+};
+
+export const computed = <T extends () => any>(fn: T): T => {
+  const cache = new WeakMap<object, any>();
+  return function (this: object) {
+    if (cache.has(this)) {
+      return cache.get(this);
+    }
+    const [r, isTrigger] = run(() => fn.apply(this));
+    cache.set(this, r);
+    const listener = (writeLog: WriteLog) => {
+      if (isTrigger(writeLog)) {
+        writeEmitter.off(listener);
+        cache.delete(this);
+      }
+    };
+    writeEmitter.on(listener);
+    return r;
+  } as unknown as T;
 };

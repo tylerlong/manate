@@ -1,14 +1,17 @@
-export type Wrapper = (fn: () => void) => () => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Wrapper = <T extends (...args: any[]) => void>(
+  fn: T,
+) => (...args: Parameters<T>) => void;
 
 export const debounce = (delay: number): Wrapper => {
-  return (func: () => void) => {
-    let timeout: NodeJS.Timeout;
-    return () => {
+  return (func) => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    return (...args: Parameters<typeof func>) => {
       if (timeout) {
         clearTimeout(timeout);
       }
       timeout = setTimeout(() => {
-        func();
+        func(...args);
       }, delay);
     };
   };

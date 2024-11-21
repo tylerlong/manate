@@ -1,13 +1,13 @@
 {
   "name": "manate",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "lint": "tsc --jsx react --skipLibCheck --noEmit --target ESNext --moduleResolution NodeNext --module NodeNext ./src/*.ts ./test/*.ts ./test/*.tsx && eslint . --fix && prettier --write . && sort-package-json",
-    "prepublishOnly": "yarn lint && yarn test && tsc src/react.ts --skipLibCheck --declaration --sourceMap --target ESNext --moduleResolution NodeNext --module NodeNext --outDir .",
+    "prepublishOnly": "yarn test && tsc src/react.ts --skipLibCheck --declaration --sourceMap --target ESNext --moduleResolution NodeNext --module NodeNext --outDir .",
     "postpublish": "rm -rf events && rm *.js *.js.map *.d.ts",
     "test": "vitest run"
   },
