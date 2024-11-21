@@ -45,6 +45,27 @@ describe('computed', () => {
     expect(count).toBe(1);
   });
 
+  test('getter', () => {
+    let count = 0;
+
+    class A {
+      a = 1;
+      b = 2;
+
+      @computed
+      get c() {
+        count += 1;
+        return this.a + this.b;
+      }
+    }
+
+    const a = manage(new A());
+    expect(a.c).toBe(3);
+    expect(a.c).toBe(3);
+    expect(a.c).toBe(3);
+    expect(count).toBe(1);
+  });
+
   test('non-decorator', () => {
     let count = 0;
 
