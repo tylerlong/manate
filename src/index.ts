@@ -123,12 +123,14 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
   }
 
   // make all functions batched
+  const seen = new Set<PropertyKey>();
   for (
     let current = target as object | null;
     current && current !== Object.prototype;
     current = Reflect.getPrototypeOf(current)
   ) {
     for (const key of Reflect.ownKeys(current)) {
+      if (seen.has(key)) continue; // prototype definition should not override instance definition
       const descriptor = Reflect.getOwnPropertyDescriptor(current, key)!;
       if (typeof descriptor.value !== 'function') continue;
       Reflect.defineProperty(target, key, {
@@ -141,6 +143,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
           { value: descriptor.value.name },
         ),
       });
+      seen.add(key);
     }
   }
 
