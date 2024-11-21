@@ -97,6 +97,36 @@ In the sample above I showed you two ways to update data:
 
 So basically there is no restrictions. Just read/update as how you read/update a JavaScript object.
 
+### You don't need to pass state as props
+
+In the sample above, we pass the `store` state as a React props. But it is not necessary.
+The following code works too:
+
+```tsx
+import { auto } from 'manate/react';
+
+import store from './store';
+
+const App = auto(() => {
+  return (
+    <Space>
+      <Button
+        onClick={() => {
+          store.count -= 1;
+        }}
+      >
+        -
+      </Button>
+      {store.count}
+      <Button onClick={() => store.increase()}>+</Button>
+    </Space>
+  );
+});
+```
+
+So the store could be a global variable instead of a React prop.
+It doesn't matter where the state is from, as long as it is managed by manate.
+
 ## Reference but do not track
 
 Sometimes we only want to keep a reference to an object, but we don't want to track its changes.
