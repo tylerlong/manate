@@ -12,12 +12,14 @@ export const exclude = <T extends object>(target: T): T => {
   return target;
 };
 
+const reactElementSymbol = Symbol.for('react.element');
 const canManage = (obj: any) =>
   obj &&
   (Array.isArray(obj) ||
     obj.toString() === '[object Object]' ||
     obj.toString() === '[object Map]' ||
     obj.toString() === '[object Set]') &&
+  obj['$$typeof'] !== reactElementSymbol &&
   !excludeSet.has(obj);
 
 export const manage = <T extends object>(target: T, maxDepth = 10): T => {
