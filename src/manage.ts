@@ -24,7 +24,8 @@ const canManage = (obj: any) =>
 
 export const manage = <T extends object>(target: T, maxDepth = 10): T => {
   if (maxDepth < 0) {
-    throw new Error('Max depth exceeded.');
+    console.warn('Max depth exceeded.');
+    return target;
   }
   // return managed if it's already managed
   if (proxyMap.has(target)) {

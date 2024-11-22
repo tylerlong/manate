@@ -179,11 +179,12 @@ For more details, please refer to the test cases in [./test/exclude.spec.ts](./t
 
 For human-created JavaScript objects, a reasonable maximum depth for recursive processing, ignoring circular references, typically ranges between 5 to 10 levels.
 
-So this library by set the max depth to 10, if max depeth exceeded, an error will be thrown.
+So this library by set the max depth to 10, if max depeth exceeded, `console.warn('Max depth exceeded.');` will be executed and the `manage` function will return early. Which means, state data deeper than 10 levels are not managed.
+
 In such case, you need to review the data to be managed, why is it so deeply nested, is it reasonable?
 Think about it: is the deelpy nested structure relevant to your business logic? should you manage it at all?
 
-You may override the max depth by specify the second argument of the `manage` function:
+You may override the max depth by specifying the second argument of the `manage` function:
 
 ```ts
 const store = manage(new Store(), 20); // explicitly set max depth to 20, if `Store` is by design a deeply nested data structure
