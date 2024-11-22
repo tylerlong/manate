@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage } from '../src';
+import { capture, manage } from '../src';
 
 describe('getter', () => {
   test('getter', () => {
@@ -12,7 +12,7 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const [r, readLogs] = captureReads(() => {
+    const [r, readLogs] = capture(() => {
       return managed.visibleTodos;
     });
     expect(r).toBe(true);
@@ -28,7 +28,7 @@ describe('getter', () => {
         return !this.visibility;
       },
     });
-    const [r, readLogs] = captureReads(() => {
+    const [r, readLogs] = capture(() => {
       return managed.visibleTodos();
     });
     expect(r).toBe(true);

@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage } from '../src';
+import { capture, manage } from '../src';
 
 describe('map and set', () => {
   test('map', () => {
@@ -31,7 +31,7 @@ describe('map and set', () => {
     const a = new A();
     const ma = manage(a);
     ma.m.set('a', 1);
-    const [, readLogs] = captureReads(() => {
+    const [, readLogs] = capture(() => {
       expect(ma.m.get('a')).toBe(1);
       expect(ma.m.has('a')).toBe(true);
     });

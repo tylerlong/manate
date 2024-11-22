@@ -2,19 +2,19 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage } from '../src';
+import { capture, manage } from '../src';
 
 describe('Object vs Map', () => {
   test('object', () => {
     const o = manage({ a: 1, b: 2, c: 3 });
-    let [, readLogs] = captureReads(() => {
+    let [, readLogs] = capture(() => {
       expect(Object.keys(o).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(
       `Map(1) { { a: 1, b: 2, c: 3 } => { keys: true } }`,
     );
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       expect(Object.values(o).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(
@@ -23,7 +23,7 @@ describe('Object vs Map', () => {
 }`,
     );
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       expect(Object.entries(o).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(
@@ -42,28 +42,28 @@ describe('Object vs Map', () => {
       ]),
     );
 
-    let [, readLogs] = captureReads(() => {
+    let [, readLogs] = capture(() => {
       expect(Array.from(o.keys()).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(
       `Map(1) { Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true } }`,
     );
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       expect(Array.from(o.values()).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
   Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       expect(Array.from(o.entries()).length).toBe(3);
     });
     expect(inspect(readLogs)).toBe(`Map(1) {
   Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       const iterator1 = o[Symbol.iterator]();
       for (const item of iterator1) {
         expect(item).toBeDefined();
@@ -73,7 +73,7 @@ describe('Object vs Map', () => {
   Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } => { keys: true, get: Map(3) { 'a' => 1, 'b' => 2, 'c' => 3 } }
 }`);
 
-    [, readLogs] = captureReads(() => {
+    [, readLogs] = capture(() => {
       o.forEach((v, k) => {
         expect(v).toBeDefined();
         expect(k).toBeDefined();
@@ -92,7 +92,7 @@ describe('Object vs Map', () => {
         ['c', 3],
       ]),
     );
-    const [, readLogs] = captureReads(() => {
+    const [, readLogs] = capture(() => {
       expect(o.size).toBe(3);
     });
     // size trigger keys

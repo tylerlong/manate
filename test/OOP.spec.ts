@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from '../src';
 
 describe('OOP', () => {
   test('todo list', () => {
@@ -37,7 +37,7 @@ describe('OOP', () => {
     const managed = manage(store);
 
     const [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         managed.todoLists[0].todoItems[0].complete = true;
       });
       expect(inspect(readLog)).toEqual(`Map(4) {

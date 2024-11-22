@@ -63,4 +63,10 @@ class WriteEmitter {
   }
 }
 
-export default WriteEmitter;
+const writeEmitter = new WriteEmitter();
+
+export const action = writeEmitter.action.bind(writeEmitter);
+export const runInAction = writeEmitter.runInAction.bind(writeEmitter);
+export const ignore = writeEmitter.ignore.bind(writeEmitter);
+
+export default writeEmitter;

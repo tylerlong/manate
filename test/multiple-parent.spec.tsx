@@ -5,7 +5,7 @@ import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from '../src';
 import { auto } from '../src/react';
 
 describe('multiple parent', () => {
@@ -23,7 +23,7 @@ describe('multiple parent', () => {
     );
 
     [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         md.b.c = 2;
       });
       expect(inspect(readLog)).toBe(
@@ -42,7 +42,7 @@ describe('multiple parent', () => {
     );
 
     [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         ma.b.c = 4;
       });
       expect(inspect(readLog)).toBe(
@@ -72,7 +72,7 @@ describe('multiple parent', () => {
     const store = manage(new Store());
     store.bullets[0] = new Bullet();
     const props = manage({ bullet: store.bullets[0] });
-    const [, readLog] = captureReads(() => {
+    const [, readLog] = capture(() => {
       expect(props.bullet.speed).toBe(10); // trigger get
     });
     expect(inspect(readLog)).toBe(`Map(2) {

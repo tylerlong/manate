@@ -2,8 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage } from '../src';
-import { autoRun } from '../src/utils';
+import { autoRun, capture, manage } from '../src';
 
 describe('keys', () => {
   test('default', () => {
@@ -43,7 +42,7 @@ describe('keys', () => {
       public monsters: { [key: string]: number } = {};
     }
     const store = manage(new Store());
-    const [r, readLogs] = captureReads(() => {
+    const [r, readLogs] = capture(() => {
       return Object.values(store.monsters);
     });
     expect(r).toEqual([]);

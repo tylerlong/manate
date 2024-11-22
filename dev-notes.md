@@ -38,12 +38,8 @@ Instead, we could make `position` a property of `monster`.
 
 ## Todo
 
-- support computed values
-  - make all getters computed
 - use chatGPT to refactor code, piece by piece.
-- import everything from 'manate' except react related.
-  - means everything should be exported from index.ts
-  - should restructure the whole project, probably
+- write doc for every exported method
 
 ## Version 2 Notes
 

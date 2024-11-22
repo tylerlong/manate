@@ -2,8 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { manage, runInAction } from '../src';
-import { autoRun } from '../src/utils';
+import { autoRun, manage, runInAction } from '../src';
 
 describe('array splice', () => {
   test('default', () => {

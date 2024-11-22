@@ -2,9 +2,7 @@
 import { describe, expect, test } from 'vitest';
 import waitFor from 'wait-for-async';
 
-import { manage } from '../src';
-import { autoRun } from '../src/utils';
-import { debounce } from '../src/wrappers';
+import { autoRun, debounce, manage } from '../src';
 
 describe('autoRun', () => {
   test('default', () => {

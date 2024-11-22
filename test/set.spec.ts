@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage } from '../src';
-import { autoRun } from '../src/utils';
+import { autoRun, manage } from '../src';
 
 describe('set', () => {
   test('autoRun', () => {

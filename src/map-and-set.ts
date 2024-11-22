@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { readEmitter, writeEmitter } from '.';
+import readEmitter from './events/read-emitter';
+import writeEmitter from './events/write-emitter';
 
 export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
   const r = Reflect.get(target, prop, target);

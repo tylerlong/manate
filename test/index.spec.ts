@@ -2,13 +2,13 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from '../src';
 
 describe('index', () => {
   test('default', () => {
     const managed = manage({ a: 'hello', b: { c: 'world' } });
     const [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         managed.a = 'world';
         managed.b.c = 'yes!';
       });
@@ -25,7 +25,7 @@ describe('index', () => {
   test('subscribe to sub prop', () => {
     const o = { a: 'hello', b: { c: 'world' } };
     const managed = manage(o);
-    const [writeLog, readLog] = captureReads(() => {
+    const [writeLog, readLog] = capture(() => {
       const [, writeLog] = runInAction(() => {
         managed.b.c = 'yes!';
         expect(managed.b.c).toBe('yes!');
@@ -47,7 +47,7 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
-    const [, readLog] = captureReads(() => {
+    const [, readLog] = capture(() => {
       const [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         managed.b.c = 'world';
@@ -69,7 +69,7 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
-    const [, readLog] = captureReads(() => {
+    const [, readLog] = capture(() => {
       const [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         const temp = managed.b;

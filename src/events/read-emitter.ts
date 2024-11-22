@@ -4,7 +4,7 @@ import { GetEvent, HasEvent, KeysEvent, ReadLog } from './types';
 class ReadEmitter {
   private readLogs = new Set<ReadLog>();
 
-  captureReads<T>(f: () => T): [T, ReadLog] {
+  capture<T>(f: () => T): [T, ReadLog] {
     const readLog = new Map();
     this.readLogs.add(readLog);
     try {
@@ -51,4 +51,7 @@ class ReadEmitter {
   }
 }
 
-export default ReadEmitter;
+const readEmitter = new ReadEmitter();
+export const capture = readEmitter.capture.bind(readEmitter);
+
+export default readEmitter;

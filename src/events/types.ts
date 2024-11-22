@@ -18,7 +18,7 @@ export type KeysEvent = {
   target: object;
 };
 
-// Why Map key any? Because we want to support Map/Set whose key can be any type
+// Why Map key any? Because we want to support Map/Set whose keys can be any type
 export type WriteLog = Map<object, Map<any, number>>;
 
 export type ReadLog = Map<

@@ -2,7 +2,7 @@ import { inspect } from 'util';
 
 import { describe, expect, test } from 'vitest';
 
-import { captureReads, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from '../src';
 
 describe('shot gaming', () => {
   test('default', () => {
@@ -26,7 +26,7 @@ describe('shot gaming', () => {
     manage(game);
 
     let [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         game.gun.bullets.push(new Bullet());
       });
       expect(inspect(readLog)).toBe(`Map(2) {
@@ -39,7 +39,7 @@ describe('shot gaming', () => {
     );
 
     [, writeLog] = runInAction(() => {
-      const [, readLog] = captureReads(() => {
+      const [, readLog] = capture(() => {
         expect(game.gun.bullets.map((b) => b.id)).toEqual([0]); // also trigger gets
       });
       expect(inspect(readLog)).toBe(`Map(3) {

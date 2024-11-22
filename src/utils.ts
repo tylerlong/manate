@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { captureReads, writeEmitter } from '.';
+import { capture } from './events/read-emitter';
 import { ReadLog, WriteLog } from './events/types';
+import writeEmitter, { ignore } from './events/write-emitter';
 import { Wrapper } from './wrappers';
 
 const getValue = (target: object, prop: PropertyKey) => {
@@ -17,7 +18,7 @@ const hasValue = (target: object, prop: PropertyKey) => {
   return Reflect.has(target, prop);
 };
 
-export const doesWriteTriggerRead = (
+export const shouldRecompute = (
   writeLog: WriteLog,
   readLog: ReadLog,
 ): boolean => {
@@ -54,16 +55,15 @@ export const doesWriteTriggerRead = (
 export const run = <T>(
   fn: () => T,
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
-  const [r, readLog] = captureReads(fn);
-  const isTrigger = (writeLog: WriteLog) =>
-    doesWriteTriggerRead(writeLog, readLog);
+  const [r, readLog] = capture(fn);
+  const isTrigger = (writeLog: WriteLog) => shouldRecompute(writeLog, readLog);
   return [r, isTrigger];
 };
 
 export const autoRun = <T>(fn: () => T, wrapper?: Wrapper) => {
   let isTrigger: (event: WriteLog) => boolean;
   let wrappedRun = () => {
-    [runner.r, isTrigger] = writeEmitter.ignore(() => run(fn)); // ignore to avoid infinite loop
+    [runner.r, isTrigger] = ignore(() => run(fn)); // ignore to avoid infinite loop
   };
   if (wrapper) {
     wrappedRun = wrapper(wrappedRun);

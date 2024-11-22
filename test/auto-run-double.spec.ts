@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { manage, writeEmitter } from '../src';
-import { autoRun } from '../src/utils';
+import { autoRun, manage, writeEmitter } from '../src';
 
 describe('autoRun double', () => {
   test('assign same value emit event', () => {
