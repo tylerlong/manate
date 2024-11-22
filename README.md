@@ -4,10 +4,6 @@ manate is a lightweight, intuitive state management library that keeps things si
 Pronounced like "many-it" and short for "manage state".
 manate lets you handle state with ease across both frontend and backend.
 
-## Version 2.x
-
-This is the branch for version 2.x. It is a complete rewrite of [1.x](https://github.com/tylerlong/manate/tree/1.x).
-
 ## Why choose manate?
 
 - Effortless to use: No complex syntax – your state is just a JavaScript object.
@@ -17,6 +13,32 @@ This is the branch for version 2.x. It is a complete rewrite of [1.x](https://gi
 - TypeScript-ready: First-class TypeScript support for robust, type-safe development.
 
 Start using manate and manage your state effortlessly!
+
+## Version 2.x
+
+This is the branch for version 2.x. It is a complete rewrite of [1.x](https://github.com/tylerlong/manate/tree/1.x).
+
+### Breaking changes
+
+Compared to version 1.x, the most important breaking change is the `autoRun` function.
+
+```ts
+import { autoRun } from 'manage';
+
+const store = manage({ a: 1 });
+
+// version 2.x
+autoRun(() => {
+  console.log(store.a);
+});
+
+// version 1.x
+autoRun(store, () => {
+  console.log(store.a);
+});
+```
+
+So you no longer need to pass the managed state as the first argument.
 
 ## Installation
 
