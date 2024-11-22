@@ -24,7 +24,7 @@ Start using manate and manage your state effortlessly!
 yarn add manate
 ```
 
-## Create the state
+## Manage the state
 
 ```ts
 import { manage } from 'manate';
@@ -41,31 +41,14 @@ const store = manage(new Store());
 ## Without class/function
 
 You don't need to declare a class if you don't want to.
-
 You don't need to create a function if you don't want to.
 
 ```ts
 import { manage } from 'manate';
 
 const store = manage({ count: 0 });
-
 store.count += 1; // change data directly without a function
 ```
-
-## Actions
-
-All members functions in a managed object will be considered actions.
-What's the point of actions? actions batches the changes events.
-
-For example, in an action, you change the state 100 times.
-But it will not trigger any reaction until the end of the action.
-And by the end of the action, depend on the final state, it will either trigger once or do not trigger.
-
-Let's take React for example, in a method, you change the state 100 times.
-If the method is not an action, the react component will re-render 100 times.
-But if the method is an action, the react component will re-render at most 1 time.
-
-Please refer to [./test/actions.spec.ts](./test/action.spec.ts).
 
 ## React
 
@@ -90,14 +73,14 @@ const App = auto((props: { store: Store }) => {
 });
 ```
 
-In the sample above I showed you two ways to update data:
+In the sample above I showed you two ways to update state:
 
 - update it directly: `store.count -= 1`
 - update it through a member function: `store.increase()`
 
-So basically there is no restrictions. Just read/update as how you read/update a JavaScript object.
+So, basically there is no restrictions. Just read/write as how you read/write a JavaScript object.
 
-### You don't need to pass state as props
+### You don't need to pass managed state as props
 
 In the sample above, we pass the `store` state as a React props. But it is not necessary.
 The following code works too:
@@ -126,6 +109,47 @@ const App = auto(() => {
 
 So the store could be a global variable instead of a React prop.
 It doesn't matter where the state is from, as long as it is managed by manate.
+
+## Read events & Write events
+
+From manate's point of view, there are only two kinds of events: read events and write events.
+
+### Read events
+
+Read events doesn't change data:
+
+```ts
+const obj = { prop: 1 };
+console.log(obj.prop); // access a property
+console.log('prop' in obj); // check a property existence
+console.log(Object.keys(obj)); // list all the property keys
+```
+
+### Write events
+
+Write events change data:
+
+```ts
+const obj = {};
+obj.prop = 1; // create a new property
+obj.prop = 2; // update a property
+delete obj.prop; // delete a property
+```
+
+## Actions
+
+All members functions in a managed object will be considered actions.
+What's the point of actions? actions batches the changes events.
+
+For example, in an action, you change the state 100 times.
+But it will not trigger any reaction until the end of the action.
+And by the end of the action, depend on the final state, it will either trigger once or do not trigger.
+
+Let's take React for example, in a method, you change the state 100 times.
+If the method is not an action, the react component will re-render 100 times.
+But if the method is an action, the react component will re-render at most 1 time.
+
+Please refer to [./test/actions.spec.ts](./test/action.spec.ts).
 
 ## Reference but do not track
 
