@@ -1,4 +1,4 @@
-## **`shouldRecompute`**
+## shouldRecompute
 
 ### **Signature**
 
@@ -100,7 +100,7 @@ The difference between `f()` and `f2()` is: `f2()` will batch the two changes to
 - The wrapped function retains the same signature and behavior as the original function but ensures efficient batching of side effects.
 - It works seamlessly with decorators, allowing methods to be annotated with `@action`.
 
-## **`ignore`**
+## ignore
 
 ### **Signature**
 

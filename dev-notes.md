@@ -40,6 +40,7 @@ Instead, we could make `position` a property of `monster`.
 
 - use chatGPT to refactor code, piece by piece.
 - write doc for every exported method
+  - wait until I finish the markplus website.
 
 ## Version 2 Notes
 
