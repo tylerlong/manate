@@ -227,7 +227,7 @@ runner.start();
 
 `runner.start()` will run the code snippet immediately and start watching the state.
 
-`runner.stop` will stop watching the state.
+`runner.stop()` will stop watching the state.
 
 `runner.r` give you the latest return of the code snippet. It could be `undefined` if it doesn't return anything.
 
