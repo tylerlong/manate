@@ -23,8 +23,7 @@ const canManage = (obj: any) =>
   !excludeSet.has(obj);
 
 export const manage = <T extends object>(target: T, maxDepth = 10): T => {
-  if (maxDepth < 0) {
-    console.warn('Max depth exceeded.');
+  if (maxDepth <= 0) {
     return target;
   }
   // return managed if it's already managed

@@ -194,22 +194,30 @@ const ma = manage(a);
 ma.b.c = 4; // will not trigger a change event because `ma.b` is excluded.
 ```
 
-You may invoke `exclude` an object **BEFORE** it is managed.
+You must `exclude` an object **BEFORE** it is managed.
 For more details, please refer to the test cases in [./test/exclude.spec.ts](./test/exclude.spec.ts).
 
 ## Max Depth
 
 For human-created JavaScript objects, a reasonable maximum depth for recursive processing, ignoring circular references, typically ranges between 5 to 10 levels.
 
-So this library by set the max depth to 10, if max depeth exceeded, `console.warn('Max depth exceeded.');` will be executed and the `manage` function will return early. Which means, state data deeper than 10 levels are not managed.
-
-In such case, you need to review the data to be managed, why is it so deeply nested, is it reasonable?
-Think about it: is the deelpy nested structure relevant to your business logic? should you manage it at all?
+So this library by set the max depth to 10, if max depeth exceeded, the `manage` function will return early.
+Which means, state data deeper than 10 levels are not managed.
 
 You may override the max depth by specifying the second argument of the `manage` function:
 
 ```ts
 const store = manage(new Store(), 20); // explicitly set max depth to 20, if `Store` is by design a deeply nested data structure
+```
+
+`maxDepth = 1` means only the current object will be managed, none of its properties will be managed. For example:
+
+```ts
+const o = { a: { b: 1 }, c: 2 };
+const mo = manage(o, 1); // maxDepth = 1
+
+o.c = 3; // this will trigger write events since `o` is managed
+o.a.b = 4; // this will NOT tigger write events since `o.a` is not managed
 ```
 
 ## autoRun
