@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import readEmitter from './events/read-emitter';
-import writeEmitter, { runInAction } from './events/write-emitter';
-import { mapGet, setGet } from './map-and-set';
+import readEmitter from './events/read-emitter.js';
+import writeEmitter, { runInAction } from './events/write-emitter.js';
+import { mapGet, setGet } from './map-and-set.js';
 
 const proxyMap = new WeakMap<object, object>();
 export const isManaged = (target: object) => proxyMap.has(target);

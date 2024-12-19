@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { capture } from './events/read-emitter';
-import { ReadLog, WriteLog } from './events/types';
-import writeEmitter, { ignore } from './events/write-emitter';
-import { Wrapper } from './wrappers';
+import { capture } from './events/read-emitter.js';
+import { ReadLog, WriteLog } from './events/types.js';
+import writeEmitter, { ignore } from './events/write-emitter.js';
+import { Wrapper } from './wrappers.js';
 
 const getValue = (target: object, prop: PropertyKey) => {
   if (target instanceof Map) {

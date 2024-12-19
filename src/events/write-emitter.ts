@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { WriteEvent, WriteLog } from './types';
+import { WriteEvent, WriteLog } from './types.js';
 
 class WriteEmitter {
   private writeLogs = new Set<WriteLog>();

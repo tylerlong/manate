@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GetEvent, HasEvent, KeysEvent, ReadLog } from './types';
+import { GetEvent, HasEvent, KeysEvent, ReadLog } from './types.js';
 
 class ReadEmitter {
   private readLogs = new Set<ReadLog>();
