@@ -1,15 +1,15 @@
 {
   "name": "manate",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "type": "module",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "yarn tsc --noEmit && eslint . --fix && prettier --write . && sort-package-json",
     "prepublishOnly": "yarn test && yarn tsc",
-    "postpublish": "rm -rf lib",
+    "postpublish": "rm -rf events && rm *.js *.d.ts",
     "test": "vitest run"
   },
   "devDependencies": {

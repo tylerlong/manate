@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": ".",
     "declaration": true,
     "jsx": "react",
     "module": "nodenext",
