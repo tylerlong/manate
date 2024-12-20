@@ -47,18 +47,19 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
+    let writeLog;
     const [, readLog] = capture(() => {
-      const [, writeLog] = runInAction(() => {
+      [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         managed.b.c = 'world';
       });
-      expect(inspect(writeLog)).toBe(
-        `Map(2) {
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(2) {
   { b: { c: 'world' } } => Map(1) { 'b' => 1 },
   { c: 'world' } => Map(1) { 'c' => 0 }
 }`,
-      );
-    });
+    );
     expect(inspect(readLog)).toBe(
       `Map(1) { { b: { c: 'world' } } => { get: Map(1) { 'b' => [Object] } } }`,
     );
@@ -69,21 +70,22 @@ describe('index', () => {
       b?: { c: string };
     }
     const managed = manage<A>({});
+    let writeLog;
     const [, readLog] = capture(() => {
-      const [, writeLog] = runInAction(() => {
+      [, writeLog] = runInAction(() => {
         managed.b = { c: 'hello' };
         const temp = managed.b;
         managed.b = temp;
         managed.b = temp;
         managed.b.c = 'world';
       });
-      expect(inspect(writeLog)).toBe(
-        `Map(2) {
+    });
+    expect(inspect(writeLog)).toBe(
+      `Map(2) {
   { b: { c: 'world' } } => Map(1) { 'b' => 1 },
   { c: 'world' } => Map(1) { 'c' => 0 }
 }`,
-      );
-    });
+    );
     expect(inspect(readLog)).toBe(
       `Map(1) { { b: { c: 'world' } } => { get: Map(1) { 'b' => [Object] } } }`,
     );
