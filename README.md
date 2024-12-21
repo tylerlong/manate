@@ -23,7 +23,7 @@ This is the branch for version 2.x. It is a complete rewrite of [1.x](https://gi
 Compared to version 1.x, the most important breaking change is the `autoRun` function.
 
 ```ts
-import { autoRun } from 'manage';
+import { autoRun } from "manage";
 
 const store = manage({ a: 1 });
 
@@ -46,10 +46,16 @@ So you no longer need to pass the managed state as the first argument.
 yarn add manate
 ```
 
+or
+
+```
+deno add npm:manate
+```
+
 ## Manage the state
 
 ```ts
-import { manage } from 'manate';
+import { manage } from "manate";
 
 class Store {
   count = 0;
@@ -66,7 +72,7 @@ You don't need to declare a class if you don't want to.
 You don't need to create a function if you don't want to.
 
 ```ts
-import { manage } from 'manate';
+import { manage } from "manate";
 
 const store = manage({ count: 0 });
 store.count += 1; // change data directly without a function
@@ -75,7 +81,7 @@ store.count += 1; // change data directly without a function
 ## React
 
 ```tsx
-import { auto } from 'manate/react';
+import { auto } from "manate/react";
 
 const App = auto((props: { store: Store }) => {
   const { store } = props;
@@ -108,9 +114,9 @@ In the sample above, we pass the `store` state as a React props. But it is not n
 The following code works too:
 
 ```tsx
-import { auto } from 'manate/react';
+import { auto } from "manate/react";
 
-import store from './store';
+import store from "./store";
 
 const App = auto(() => {
   return (
@@ -143,7 +149,7 @@ Read events doesn't change data:
 ```ts
 const obj = { prop: 1 };
 console.log(obj.prop); // access a property
-console.log('prop' in obj); // check a property existence
+console.log("prop" in obj); // check a property existence
 console.log(Object.keys(obj)); // list all the property keys
 ```
 
@@ -180,7 +186,7 @@ Sometimes we only want to keep a reference to an object, but we don't want to tr
 You may `exclude` it from being tracked.
 
 ```ts
-import { exclude, manage } from 'manate';
+import { exclude, manage } from "manate";
 
 class B {
   public c = 1;

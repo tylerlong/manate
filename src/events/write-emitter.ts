@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { WriteEvent, WriteLog } from './types.js';
+import { WriteEvent, WriteLog } from "./types.ts";
 
 class WriteEmitter {
   private writeLogs = new Set<WriteLog>();
@@ -8,7 +7,7 @@ class WriteEmitter {
 
   action<T extends (...args: any[]) => any>(fn: T): T {
     const runInAction = this.runInAction.bind(this);
-    return function (this: object, ...args) {
+    return function (this: object, ...args: any[]) {
       return runInAction(() => fn.apply(this, args))[0];
     } as unknown as T;
   }
@@ -49,7 +48,7 @@ class WriteEmitter {
     }
     if (this.writeLogs.size === 0) {
       this.listeners.forEach((listener) =>
-        listener(new Map([[me.target, new Map([[me.prop, me.value]])]])),
+        listener(new Map([[me.target, new Map([[me.prop, me.value]])]]))
       );
     } else {
       for (const writeLog of this.writeLogs.values()) {

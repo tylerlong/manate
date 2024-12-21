@@ -7,10 +7,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "lint": "yarn tsc --noEmit && eslint . --fix && prettier --write . && sort-package-json",
-    "prepublishOnly": "yarn test && yarn tsc",
-    "postpublish": "rm -rf events && rm *.js *.d.ts",
-    "test": "vitest run"
+    "prepublishOnly": "deno task test && deno task compile",
+    "postpublish": "rm -rf events && rm *.js *.d.ts"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -23,6 +21,7 @@
     "jsdom": "^25.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "shell-commands": "^0.4.2",
     "sort-package-json": "^2.12.0",
     "ttpt": "^0.13.0",
     "typescript": "^5.7.2",

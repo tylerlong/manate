@@ -1,26 +1,26 @@
-import readEmitter, { capture } from './events/read-emitter.js';
+import readEmitter, { capture } from "./events/read-emitter.ts";
 import writeEmitter, {
   action,
   ignore,
   runInAction,
-} from './events/write-emitter.js';
-import { exclude, isManaged, manage } from './manage.js';
-import { autoRun, computed, run, shouldRecompute } from './utils.js';
-import { debounce } from './wrappers.js';
+} from "./events/write-emitter.ts";
+import { exclude, isManaged, manage } from "./manage.ts";
+import { autoRun, computed, run, shouldRecompute } from "./utils.ts";
+import { debounce } from "./wrappers.ts";
 
 export {
-  capture,
   action,
-  runInAction,
-  ignore,
-  readEmitter,
-  writeEmitter,
   autoRun,
+  capture,
   computed,
-  run,
-  shouldRecompute,
   debounce,
   exclude,
+  ignore,
   isManaged,
   manage,
+  readEmitter,
+  run,
+  runInAction,
+  shouldRecompute,
+  writeEmitter,
 };

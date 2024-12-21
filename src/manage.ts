@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import readEmitter from './events/read-emitter.js';
-import writeEmitter, { runInAction } from './events/write-emitter.js';
-import { mapGet, setGet } from './map-and-set.js';
+import readEmitter from "./events/read-emitter.ts";
+import writeEmitter, { runInAction } from "./events/write-emitter.ts";
+import { mapGet, setGet } from "./map-and-set.ts";
 
 const proxyMap = new WeakMap<object, object>();
 export const isManaged = (target: object) => proxyMap.has(target);
@@ -12,14 +12,14 @@ export const exclude = <T extends object>(target: T): T => {
   return target;
 };
 
-const reactElementSymbol = Symbol.for('react.element');
+const reactElementSymbol = Symbol.for("react.element");
 const canManage = (obj: any) =>
   obj &&
   (Array.isArray(obj) ||
-    obj.toString() === '[object Object]' ||
-    obj.toString() === '[object Map]' ||
-    obj.toString() === '[object Set]') &&
-  obj['$$typeof'] !== reactElementSymbol &&
+    obj.toString() === "[object Object]" ||
+    obj.toString() === "[object Map]" ||
+    obj.toString() === "[object Set]") &&
+  obj["$$typeof"] !== reactElementSymbol &&
   !excludeSet.has(obj);
 
 export const manage = <T extends object>(target: T, maxDepth = 10): T => {
@@ -44,7 +44,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
         return setGet(target, prop);
       }
       const r = Reflect.get(target, prop, receiver);
-      if (typeof r !== 'function') {
+      if (typeof r !== "function") {
         readEmitter.emitGet({ target, prop, value: r });
       }
       return r;
@@ -63,7 +63,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     defineProperty: (
       target: T,
       prop: PropertyKey,
-      descriptor: PropertyDescriptor,
+      descriptor: PropertyDescriptor
     ): boolean => {
       const has = Reflect.has(target, prop);
       const r = Reflect.defineProperty(target, prop, {
@@ -104,15 +104,15 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     for (const key of Reflect.ownKeys(current)) {
       if (seen.has(key)) continue; // prototype definition should not override instance definition
       const descriptor = Reflect.getOwnPropertyDescriptor(current, key)!;
-      if (typeof descriptor.value !== 'function') continue;
+      if (typeof descriptor.value !== "function") continue;
       Reflect.defineProperty(target, key, {
         ...descriptor,
         value: Object.defineProperty(
-          function (this: object, ...args) {
+          function (this: object, ...args: any[]) {
             return runInAction(() => descriptor.value.apply(this, args))[0];
           },
-          'name',
-          { value: descriptor.value.name },
+          "name",
+          { value: descriptor.value.name }
         ),
       });
       seen.add(key);

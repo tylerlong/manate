@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { capture } from './events/read-emitter.js';
-import { ReadLog, WriteLog } from './events/types.js';
-import writeEmitter, { ignore } from './events/write-emitter.js';
-import { Wrapper } from './wrappers.js';
+import { capture } from "./events/read-emitter.ts";
+import { ReadLog, WriteLog } from "./events/types.ts";
+import writeEmitter, { ignore } from "./events/write-emitter.ts";
+import { Wrapper } from "./wrappers.ts";
 
 const getValue = (target: object, prop: PropertyKey) => {
   if (target instanceof Map) {
@@ -20,7 +20,7 @@ const hasValue = (target: object, prop: PropertyKey) => {
 
 export const shouldRecompute = (
   writeLog: WriteLog,
-  readLog: ReadLog,
+  readLog: ReadLog
 ): boolean => {
   for (const [target, writeMap] of writeLog) {
     if (readLog.has(target)) {
@@ -42,7 +42,7 @@ export const shouldRecompute = (
         }
       }
       if (
-        'keys' in readObj &&
+        "keys" in readObj &&
         Array.from(writeMap.values()).some((i) => i !== 0)
       ) {
         return true;
@@ -53,7 +53,7 @@ export const shouldRecompute = (
 };
 
 export const run = <T>(
-  fn: () => T,
+  fn: () => T
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = capture(fn);
   const isTrigger = (writeLog: WriteLog) => shouldRecompute(writeLog, readLog);
