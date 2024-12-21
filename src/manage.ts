@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import readEmitter from "./events/read-emitter.ts";
 import writeEmitter, { runInAction } from "./events/write-emitter.ts";
 import { mapGet, setGet } from "./map-and-set.ts";
@@ -62,7 +63,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
     defineProperty: (
       target: T,
       prop: PropertyKey,
-      descriptor: PropertyDescriptor
+      descriptor: PropertyDescriptor,
     ): boolean => {
       const has = Reflect.has(target, prop);
       const r = Reflect.defineProperty(target, prop, {
@@ -111,7 +112,7 @@ export const manage = <T extends object>(target: T, maxDepth = 10): T => {
             return runInAction(() => descriptor.value.apply(this, args))[0];
           },
           "name",
-          { value: descriptor.value.name }
+          { value: descriptor.value.name },
         ),
       });
       seen.add(key);

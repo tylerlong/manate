@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { describe, expect, test } from "vitest";
 import waitFor from "wait-for-async";
 
@@ -37,7 +38,7 @@ describe("autoRun", () => {
     expect(numbers).toEqual([0, 4]);
   });
 
-  test("unknown property", async () => {
+  test("unknown property", () => {
     class Store {
       public number = 0;
     }

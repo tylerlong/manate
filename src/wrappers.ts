@@ -1,5 +1,6 @@
+// deno-lint-ignore no-explicit-any
 export type Wrapper = <T extends (...args: any[]) => void>(
-  fn: T
+  fn: T,
 ) => (...args: Parameters<T>) => void;
 
 export const debounce = (delay: number): Wrapper => {

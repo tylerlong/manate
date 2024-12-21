@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { capture } from "./events/read-emitter.ts";
 import { ReadLog, WriteLog } from "./events/types.ts";
 import writeEmitter, { ignore } from "./events/write-emitter.ts";
@@ -19,7 +20,7 @@ const hasValue = (target: object, prop: PropertyKey) => {
 
 export const shouldRecompute = (
   writeLog: WriteLog,
-  readLog: ReadLog
+  readLog: ReadLog,
 ): boolean => {
   for (const [target, writeMap] of writeLog) {
     if (readLog.has(target)) {
@@ -52,7 +53,7 @@ export const shouldRecompute = (
 };
 
 export const run = <T>(
-  fn: () => T
+  fn: () => T,
 ): [r: T, isTrigger: (event: WriteLog) => boolean] => {
   const [r, readLog] = capture(fn);
   const isTrigger = (writeLog: WriteLog) => shouldRecompute(writeLog, readLog);

@@ -78,6 +78,7 @@ describe("inheritance", () => {
   test("prototype", () => {
     class A {}
 
+    // deno-lint-ignore no-explicit-any
     (A.prototype as any).b = 1;
 
     class B extends A {}

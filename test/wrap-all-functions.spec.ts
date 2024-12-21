@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";

@@ -5,7 +5,7 @@ import { describe, expect, test } from "vitest";
 import { runInAction, writeEmitter } from "../src/index.ts";
 
 describe("emitter sync", () => {
-  test("default", async () => {
+  test("default", () => {
     const obj = {};
     const [, writeLog] = runInAction(() => {
       writeEmitter.emit({ target: obj, prop: "0", value: 1 });

@@ -6,6 +6,7 @@ import { manage, runInAction } from "../src/index.ts";
 
 describe("symbol", () => {
   test("default", () => {
+    // deno-lint-ignore no-explicit-any
     const mo = manage({}) as any;
     mo["a"] = {};
     mo["a"]["b"] = {};

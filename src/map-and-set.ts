@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import readEmitter from "./events/read-emitter.ts";
 import writeEmitter from "./events/write-emitter.ts";
 

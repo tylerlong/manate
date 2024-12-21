@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { manage, writeEmitter } from "../src/index.ts";
 
 describe("typings", () => {
-  test("default 1", async () => {
+  test("default 1", () => {
     class Store {
       public count = 0;
 
@@ -17,7 +17,7 @@ describe("typings", () => {
     mo.increase();
   });
 
-  test("default 2", async () => {
+  test("default 2", () => {
     const mo = manage({ a: { b: 1 } });
     writeEmitter.on(() => {
       // does nothing
@@ -25,7 +25,7 @@ describe("typings", () => {
     mo.a = { b: 2 };
   });
 
-  test("extend", async () => {
+  test("extend", () => {
     class A {
       private p1 = 1;
     }
