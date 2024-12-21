@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type WriteEvent = {
   target: object;
   prop: PropertyKey;

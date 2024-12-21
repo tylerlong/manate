@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetEvent, HasEvent, KeysEvent, ReadLog } from "./types.ts";
 
 class ReadEmitter {
