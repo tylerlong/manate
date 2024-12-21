@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, manage, writeEmitter } from '../src';
+import { autoRun, manage, writeEmitter } from "../src/index.ts";
 
-describe('autoRun double', () => {
-  test('assign same value emit event', () => {
+describe("autoRun double", () => {
+  test("assign same value emit event", () => {
     class Store {
       public canvasSize = { width: 0, height: 0 };
       public worldSize = { width: 0, height: 0 };
@@ -19,7 +19,7 @@ describe('autoRun double', () => {
     expect(count).toBe(2);
   });
 
-  test('assign same value wont trigger', () => {
+  test("assign same value wont trigger", () => {
     class Store {
       public canvasSize = { width: 0, height: 0 };
       public worldSize = { width: 0, height: 0 };

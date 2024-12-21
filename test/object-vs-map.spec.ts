@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage } from '../src';
+import { capture, manage } from "../src/index.ts";
 
-describe('Object vs Map', () => {
-  test('object', () => {
+describe("Object vs Map", () => {
+  test("object", () => {
     const o = manage({ a: 1, b: 2, c: 3 });
     let [, readLogs] = capture(() => {
       expect(Object.keys(o).length).toBe(3);
@@ -33,12 +33,12 @@ describe('Object vs Map', () => {
     );
   });
 
-  test('maps', () => {
+  test("maps", () => {
     const o = manage(
       new Map([
-        ['a', 1],
-        ['b', 2],
-        ['c', 3],
+        ["a", 1],
+        ["b", 2],
+        ["c", 3],
       ]),
     );
 
@@ -84,12 +84,12 @@ describe('Object vs Map', () => {
 }`);
   });
 
-  test('map size', () => {
+  test("map size", () => {
     const o = manage(
       new Map([
-        ['a', 1],
-        ['b', 2],
-        ['c', 3],
+        ["a", 1],
+        ["b", 2],
+        ["c", 3],
       ]),
     );
     const [, readLogs] = capture(() => {
@@ -101,9 +101,9 @@ describe('Object vs Map', () => {
     );
   });
 
-  test('map proxy', () => {
+  test("map proxy", () => {
     const map = new Map<string, number>();
-    map.set('a', 1);
+    map.set("a", 1);
     const mm = new Proxy(map, {
       get: (target: Map<string, number>, prop: PropertyKey) => {
         const r = Reflect.get(target, prop, target);

@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { computed, manage } from '../src';
+import { computed, manage } from "../src/index.ts";
 
-describe('computed', () => {
-  test('default', () => {
+describe("computed", () => {
+  test("default", () => {
     let count = 0;
 
     class A {
@@ -23,14 +23,13 @@ describe('computed', () => {
     expect(count).toBe(3);
   });
 
-  test('computed', () => {
+  test("computed", () => {
     let count = 0;
 
     class A {
       a = 1;
       b = 2;
 
-      // eslint-disable-next-line prettier/prettier
       @computed
       c() {
         count += 1;
@@ -45,7 +44,7 @@ describe('computed', () => {
     expect(count).toBe(1);
   });
 
-  test('getter', () => {
+  test("getter", () => {
     let count = 0;
 
     class A {
@@ -66,14 +65,13 @@ describe('computed', () => {
     expect(count).toBe(1);
   });
 
-  test('non-decorator', () => {
+  test("non-decorator", () => {
     let count = 0;
 
     class A {
       a = 1;
       b = 2;
 
-       
       c() {
         count += 1;
         return this.a + this.b;
@@ -88,14 +86,13 @@ describe('computed', () => {
     expect(count).toBe(1);
   });
 
-  test('before manage', () => {
+  test("before manage", () => {
     let count = 0;
 
     class A {
       a = 1;
       b = 2;
 
-       
       c() {
         count += 1;
         return this.a + this.b;

@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { action, manage, autoRun } from '../src';
+import { action, autoRun, manage } from "../src/index.ts";
 
-describe('action', () => {
-  test('default', () => {
+describe("action", () => {
+  test("default", () => {
     const arr = manage([1, 2, 3, 4, 5]);
     let count = 0;
     const runner = autoRun(() => {
@@ -23,13 +23,12 @@ describe('action', () => {
     expect(count).toBe(2);
   });
 
-  test('decorator', () => {
+  test("decorator", () => {
     const arr = manage([1, 2, 3, 4, 5]);
 
     class A {
       public temp = 1;
 
-      // eslint-disable-next-line prettier/prettier
       @action
       f() {
         expect(this.temp).toBe(1);

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, expect, test } from 'vitest';
-import waitFor from 'wait-for-async';
+import { describe, expect, test } from "vitest";
+import waitFor from "wait-for-async";
 
-import { autoRun, debounce, manage } from '../src';
+import { autoRun, debounce, manage } from "../src/index.ts";
 
-describe('autoRun', () => {
-  test('default', () => {
+describe("autoRun", () => {
+  test("default", () => {
     class Store {
-      public greeting = 'Hello';
+      public greeting = "Hello";
     }
     const store = manage(new Store());
     const greetings: string[] = [];
@@ -16,12 +16,12 @@ describe('autoRun', () => {
       greetings.push(store.greeting);
     });
     autoRunner.start();
-    store.greeting = 'Hi';
+    store.greeting = "Hi";
     autoRunner.stop();
-    expect(greetings).toEqual(['Hello', 'Hi']);
+    expect(greetings).toEqual(["Hello", "Hi"]);
   });
 
-  test('debounce', async () => {
+  test("debounce", async () => {
     class Store {
       public number = 0;
     }
@@ -38,7 +38,7 @@ describe('autoRun', () => {
     expect(numbers).toEqual([0, 4]);
   });
 
-  test('unknown property', async () => {
+  test("unknown property", async () => {
     class Store {
       public number = 0;
     }

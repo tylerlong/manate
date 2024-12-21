@@ -1,16 +1,16 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from "../src/index.ts";
 
-describe('index', () => {
-  test('default', () => {
-    const managed = manage({ a: 'hello', b: { c: 'world' } });
+describe("index", () => {
+  test("default", () => {
+    const managed = manage({ a: "hello", b: { c: "world" } });
     const [, writeLog] = runInAction(() => {
       const [, readLog] = capture(() => {
-        managed.a = 'world';
-        managed.b.c = 'yes!';
+        managed.a = "world";
+        managed.b.c = "yes!";
       });
       expect(inspect(readLog)).toBe(`Map(1) {
   { a: 'world', b: { c: 'yes!' } } => { get: Map(1) { 'b' => [Object] } }
@@ -22,13 +22,13 @@ describe('index', () => {
 }`);
   });
 
-  test('subscribe to sub prop', () => {
-    const o = { a: 'hello', b: { c: 'world' } };
+  test("subscribe to sub prop", () => {
+    const o = { a: "hello", b: { c: "world" } };
     const managed = manage(o);
     const [writeLog, readLog] = capture(() => {
       const [, writeLog] = runInAction(() => {
-        managed.b.c = 'yes!';
-        expect(managed.b.c).toBe('yes!');
+        managed.b.c = "yes!";
+        expect(managed.b.c).toBe("yes!");
       });
       return writeLog;
     });
@@ -42,7 +42,7 @@ describe('index', () => {
     expect(writeLog.keys().next().value).toBe(Array.from(readLog.keys())[1]);
   });
 
-  test('new obj as prop', () => {
+  test("new obj as prop", () => {
     interface A {
       b?: { c: string };
     }
@@ -50,8 +50,8 @@ describe('index', () => {
     let writeLog;
     const [, readLog] = capture(() => {
       [, writeLog] = runInAction(() => {
-        managed.b = { c: 'hello' };
-        managed.b.c = 'world';
+        managed.b = { c: "hello" };
+        managed.b.c = "world";
       });
     });
     expect(inspect(writeLog)).toBe(
@@ -65,7 +65,7 @@ describe('index', () => {
     );
   });
 
-  test('set same obj multiple times', () => {
+  test("set same obj multiple times", () => {
     interface A {
       b?: { c: string };
     }
@@ -73,11 +73,11 @@ describe('index', () => {
     let writeLog;
     const [, readLog] = capture(() => {
       [, writeLog] = runInAction(() => {
-        managed.b = { c: 'hello' };
+        managed.b = { c: "hello" };
         const temp = managed.b;
         managed.b = temp;
         managed.b = temp;
-        managed.b.c = 'world';
+        managed.b.c = "world";
       });
     });
     expect(inspect(writeLog)).toBe(
@@ -91,8 +91,8 @@ describe('index', () => {
     );
   });
 
-  test('to JSON', () => {
-    const managed = manage({ a: 'hello', b: { c: 'world' } });
+  test("to JSON", () => {
+    const managed = manage({ a: "hello", b: { c: "world" } });
     expect(JSON.stringify(managed)).toBe('{"a":"hello","b":{"c":"world"}}');
   });
 });

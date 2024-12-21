@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { isManaged, manage } from '../src';
+import { isManaged, manage } from "../src/index.ts";
 
-describe('max depth', () => {
-  test('default', () => {
+describe("max depth", () => {
+  test("default", () => {
     const newObj = () => ({ b: { c: { d: { e: 1 } } } });
 
     const m1 = manage(newObj(), 3);

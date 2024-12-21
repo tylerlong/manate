@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage } from '../src';
+import { capture, manage } from "../src/index.ts";
 
-describe('getter', () => {
-  test('getter', () => {
+describe("getter", () => {
+  test("getter", () => {
     const managed = manage({
       visibility: false,
       get visibleTodos() {
@@ -21,7 +21,7 @@ describe('getter', () => {
 }`);
   });
 
-  test('normal method', () => {
+  test("normal method", () => {
     const managed = manage({
       visibility: false,
       visibleTodos() {
@@ -37,7 +37,7 @@ describe('getter', () => {
 }`);
   });
 
-  test('JS managed normal method', () => {
+  test("JS managed normal method", () => {
     class Store {
       public hidden = false;
 
@@ -53,10 +53,10 @@ describe('getter', () => {
       },
     });
     expect(managed.visible()).toBe(true);
-    expect(accessList).toEqual(['visible', 'hidden']);
+    expect(accessList).toEqual(["visible", "hidden"]);
   });
 
-  test('JS managed getter method', () => {
+  test("JS managed getter method", () => {
     class Store {
       public hidden = false;
 
@@ -72,6 +72,6 @@ describe('getter', () => {
       },
     });
     expect(managed.visible).toBe(true);
-    expect(accessList).toEqual(['visible', 'hidden']);
+    expect(accessList).toEqual(["visible", "hidden"]);
   });
 });

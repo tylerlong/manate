@@ -1,11 +1,11 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, manage } from '../src';
+import { autoRun, manage } from "../src/index.ts";
 
-describe('autoRunDirty', () => {
-  test('default', () => {
+describe("autoRunDirty", () => {
+  test("default", () => {
     class Store {
-      public greeting = 'Hello';
+      public greeting = "Hello";
     }
     const store = manage(new Store());
     const greetings: string[] = [];
@@ -17,8 +17,8 @@ describe('autoRunDirty', () => {
       store.greeting = (count++).toString();
     });
     autoRunner.start();
-    store.greeting = 'Hi';
+    store.greeting = "Hi";
     autoRunner.stop();
-    expect(greetings).toEqual(['Hello', 'Hi']);
+    expect(greetings).toEqual(["Hello", "Hi"]);
   });
 });

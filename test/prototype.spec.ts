@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-describe('prototype', () => {
-  test('default', () => {
+describe("prototype", () => {
+  test("default", () => {
     class A {
       c() {
         return 1;
@@ -15,7 +15,7 @@ describe('prototype', () => {
     expect(Object.getPrototypeOf(a).c()).toBe(1);
   });
 
-  test('iterate', () => {
+  test("iterate", () => {
     class A {
       c() {
         return 1;
@@ -35,6 +35,6 @@ describe('prototype', () => {
         arr.push(key);
       }
     }
-    expect(arr.filter((k) => k === 'c').length).toBe(2);
+    expect(arr.filter((k) => k === "c").length).toBe(2);
   });
 });

@@ -1,22 +1,22 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { runInAction } from '../src';
+import { runInAction } from "../src/index.ts";
 
-const wrapAllFunctions = (obj) => {
+const wrapAllFunctions = (obj: any) => {
   let current = obj;
   while (current && current !== Object.prototype) {
     Reflect.ownKeys(current).forEach((key) => {
       const descriptor = Reflect.getOwnPropertyDescriptor(current, key);
-      if (!descriptor || typeof descriptor.value !== 'function') return;
+      if (!descriptor || typeof descriptor.value !== "function") return;
       const originalFunction = descriptor.value;
-      const wrappedFunction = function (...args) {
+      const wrappedFunction = function (this: any, ...args: any[]) {
         const [result] = runInAction(() => originalFunction.apply(this, args));
         return result;
       };
       // Set the name of the wrapped function to match the original
-      Object.defineProperty(wrappedFunction, 'name', {
+      Object.defineProperty(wrappedFunction, "name", {
         value: originalFunction.name,
         configurable: true,
       });
@@ -30,20 +30,20 @@ const wrapAllFunctions = (obj) => {
   }
 };
 
-describe('wrap all functions', () => {
-  test('default', () => {
+describe("wrap all functions", () => {
+  test("default", () => {
     const logs: string[] = [];
 
-    function wrapAllFunctions(obj) {
+    function wrapAllFunctions(obj: any) {
       let current = obj;
       while (current && current !== Object.prototype) {
         Reflect.ownKeys(current).forEach((key) => {
           const originalFunction = Reflect.get(current, key);
-          if (typeof originalFunction === 'function') {
-            const wrappedFunction = function (...args) {
-              logs.push('start');
+          if (typeof originalFunction === "function") {
+            const wrappedFunction = function (this: any, ...args: any[]) {
+              logs.push("start");
               const result = originalFunction.apply(this, args);
-              logs.push('end');
+              logs.push("end");
               return result;
             };
             Reflect.defineProperty(obj, key, {
@@ -61,22 +61,22 @@ describe('wrap all functions', () => {
     wrapAllFunctions(instance);
     expect(instance.splice(2, 1)).toEqual([3]);
     expect(instance).toEqual([1, 2, 4, 5]);
-    expect(logs).toEqual(['start', 'end']);
+    expect(logs).toEqual(["start", "end"]);
   });
 
-  test('getters', () => {
+  test("getters", () => {
     const logs: string[] = [];
 
-    function wrapAllFunctions(obj) {
+    function wrapAllFunctions(obj: any) {
       let current = obj;
       while (current && current !== Object.prototype) {
         Reflect.ownKeys(current).forEach((key) => {
           const originalFunction = Reflect.get(current, key);
-          if (typeof originalFunction === 'function') {
-            const wrappedFunction = function (...args) {
-              logs.push('start');
+          if (typeof originalFunction === "function") {
+            const wrappedFunction = function (this: any, ...args: any[]) {
+              logs.push("start");
               const result = originalFunction.apply(this, args);
-              logs.push('end');
+              logs.push("end");
               return result;
             };
             Reflect.defineProperty(obj, key, {
@@ -102,24 +102,24 @@ describe('wrap all functions', () => {
     expect(logs).toEqual([]); // because target.a is a number instead of a function
   });
 
-  test('runInAction', () => {
+  test("runInAction", () => {
     const instance = [1, 2, 3, 4, 5];
     wrapAllFunctions(instance);
     expect(instance.splice(2, 1)).toEqual([3]);
     expect(instance).toEqual([1, 2, 4, 5]);
   });
 
-  test('Set', () => {
+  test("Set", () => {
     const instance = new Set<number>();
     wrapAllFunctions(instance);
     instance.add(1);
     expect(instance.size).toEqual(1);
   });
 
-  test('inspect', () => {
+  test("inspect", () => {
     const o = { f: () => 1 };
-    expect(inspect(o)).toBe('{ f: [Function: f] }');
+    expect(inspect(o)).toBe("{ f: [Function: f] }");
     wrapAllFunctions(o);
-    expect(inspect(o)).toBe('{ f: [Function: f] }'); // should not change the function name
+    expect(inspect(o)).toBe("{ f: [Function: f] }"); // should not change the function name
   });
 });

@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from "../src/index.ts";
 
-describe('shot gaming', () => {
-  test('default', () => {
+describe("shot gaming", () => {
+  test("default", () => {
     class Game {
       public gun = new Gun();
     }

@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, writeEmitter } from '../src';
+import { manage, writeEmitter } from "../src/index.ts";
 
-describe('typings', () => {
-  test('default 1', async () => {
+describe("typings", () => {
+  test("default 1", async () => {
     class Store {
       public count = 0;
 
@@ -17,7 +17,7 @@ describe('typings', () => {
     mo.increase();
   });
 
-  test('default 2', async () => {
+  test("default 2", async () => {
     const mo = manage({ a: { b: 1 } });
     writeEmitter.on(() => {
       // does nothing
@@ -25,7 +25,7 @@ describe('typings', () => {
     mo.a = { b: 2 };
   });
 
-  test('extend', async () => {
+  test("extend", async () => {
     class A {
       private p1 = 1;
     }

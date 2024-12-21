@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { exclude, manage, writeEmitter } from '../src';
+import { exclude, manage, writeEmitter } from "../src/index.ts";
 
-describe('exclude', () => {
-  test('exclude beforewards', () => {
+describe("exclude", () => {
+  test("exclude beforewards", () => {
     class A {
       public b = 1;
       public parent: A | null = null;
@@ -22,7 +22,7 @@ describe('exclude', () => {
     expect(r).toBeFalsy();
   });
 
-  test('exclude in class constructor', () => {
+  test("exclude in class constructor", () => {
     class B {
       constructor() {
         exclude(this);
@@ -44,7 +44,7 @@ describe('exclude', () => {
     expect(r).toBeFalsy();
   });
 
-  test('without exclude', () => {
+  test("without exclude", () => {
     class B {
       public c = 1;
     }
@@ -63,9 +63,9 @@ describe('exclude', () => {
     expect(r).toBeTruthy();
   });
 
-  test('default-1', () => {
+  test("default-1", () => {
     class A {
-      public b: B;
+      public b?: B;
     }
 
     class B {
@@ -80,11 +80,11 @@ describe('exclude', () => {
     writeEmitter.on(() => {
       r = true;
     });
-    ma.b.c = 4;
+    ma.b!.c = 4;
     expect(r).toBeFalsy();
   });
 
-  test('default-2', () => {
+  test("default-2", () => {
     class B {
       public c = 1;
     }

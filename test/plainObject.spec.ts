@@ -1,32 +1,32 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { isManaged, manage } from '../src';
+import { isManaged, manage } from "../src/index.ts";
 
-describe('plain objects', () => {
-  test('default', () => {
+describe("plain objects", () => {
+  test("default", () => {
     class Store {
-      public _config = '{}';
+      public _config = "{}";
 
       public get config() {
-        return JSON.parse(store._config || '{}');
+        return JSON.parse(store._config || "{}");
       }
     }
     const store = manage(new Store());
     store._config = JSON.stringify({
-      someString: 'sss',
+      someString: "sss",
       someArr: [],
     });
     expect(isManaged(store.config)).toBeFalsy();
     expect(isManaged(store)).toBeTruthy();
   });
 
-  test('another way', () => {
+  test("another way", () => {
     class Store {
       public config = {};
     }
     const store = manage(new Store());
     store.config = {
-      someString: 'sss',
+      someString: "sss",
       someArr: [],
     };
     expect(isManaged(store)).toBeTruthy();

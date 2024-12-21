@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, manage, runInAction } from '../src';
+import { autoRun, manage, runInAction } from "../src/index.ts";
 
-describe('transaction', () => {
-  test('default', () => {
+describe("transaction", () => {
+  test("default", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },
@@ -23,7 +23,7 @@ describe('transaction', () => {
     expect(count).toBe(2);
   });
 
-  test('two transactions', () => {
+  test("two transactions", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },
@@ -45,7 +45,7 @@ describe('transaction', () => {
     });
   });
 
-  test('two transactions 2', () => {
+  test("two transactions 2", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },
@@ -67,7 +67,7 @@ describe('transaction', () => {
     expect(count).toBe(2);
   });
 
-  test('two transactions 3', () => {
+  test("two transactions 3", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },
@@ -90,7 +90,7 @@ describe('transaction', () => {
     expect(count).toBe(2);
   });
 
-  test('two transactions 4', () => {
+  test("two transactions 4", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },
@@ -115,7 +115,7 @@ describe('transaction', () => {
     expect(count).toBe(3);
   });
 
-  test('two transactions 5', () => {
+  test("two transactions 5", () => {
     const mo = manage({
       a1: { b1: { c1: { d1: 0 } } },
       a2: { b2: { c2: { d2: 0 } } },

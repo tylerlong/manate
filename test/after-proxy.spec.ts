@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
+import { manage } from "../src/index.ts";
 
-describe('after proxy', () => {
-  test('default', () => {
+describe("after proxy", () => {
+  test("default", () => {
     class A {
       public b = { c: 0 };
     }

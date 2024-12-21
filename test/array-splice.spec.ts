@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, manage, runInAction } from '../src';
+import { autoRun, manage, runInAction } from "../src/index.ts";
 
-describe('array splice', () => {
-  test('default', () => {
+describe("array splice", () => {
+  test("default", () => {
     const arr = [1, 2, 3, 4, 5];
     const ma = manage(arr);
 
@@ -17,7 +17,7 @@ describe('array splice', () => {
 }`);
   });
 
-  test('autoRun without explicit batch', () => {
+  test("autoRun without explicit batch", () => {
     const arr = manage([1, 2, 3, 4, 5]);
     let count = 0;
     const runner = autoRun(() => {
@@ -34,6 +34,6 @@ describe('array splice', () => {
      */
     runner.stop();
     expect(count).toBe(2);
-    expect(runner.r).toBe('[1,2,4,5]');
+    expect(runner.r).toBe("[1,2,4,5]");
   });
 });

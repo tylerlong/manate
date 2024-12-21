@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, manage } from '../src';
+import { autoRun, manage } from "../src/index.ts";
 
-describe('set', () => {
-  test('autoRun', () => {
+describe("set", () => {
+  test("autoRun", () => {
     class A {
       public s = new Set<number>();
     }
@@ -20,7 +20,7 @@ describe('set', () => {
     expect(count).toBe(2);
   });
 
-  test('autoRun-unchanged', () => {
+  test("autoRun-unchanged", () => {
     class A {
       public s = new Set<number>();
     }
@@ -39,7 +39,7 @@ describe('set', () => {
     expect(count).toBe(1);
   });
 
-  test('autoRun-size', () => {
+  test("autoRun-size", () => {
     class A {
       public s = new Set<number>();
     }

@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from '../src';
+import { manage, runInAction } from "../src/index.ts";
 
-describe('manage constructor', () => {
-  test('default', () => {
+describe("manage constructor", () => {
+  test("default", () => {
     class A {
       b = 0;
 
@@ -21,7 +21,7 @@ describe('manage constructor', () => {
     );
   });
 
-  test('auto manage', () => {
+  test("auto manage", () => {
     class A {
       b = 0;
 

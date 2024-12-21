@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, type FunctionComponent } from "react";
+import { type FunctionComponent, memo, useEffect, useState } from "react";
 
 import { WriteLog } from "./events/types.ts";
 import writeEmitter from "./events/write-emitter.ts";

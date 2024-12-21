@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from '../src';
+import { manage, runInAction } from "../src/index.ts";
 
-describe('inheritance', () => {
-  test('default', () => {
+describe("inheritance", () => {
+  test("default", () => {
     class A {
       public b = { c: 0 };
     }
@@ -22,17 +22,17 @@ describe('inheritance', () => {
     );
   });
 
-  test('field', () => {
+  test("field", () => {
     class A {
       b = 1;
     }
 
     class B extends A {}
-    expect(Reflect.ownKeys(new A())).toEqual(['b']);
-    expect(Reflect.ownKeys(new B())).toEqual(['b']);
+    expect(Reflect.ownKeys(new A())).toEqual(["b"]);
+    expect(Reflect.ownKeys(new B())).toEqual(["b"]);
   });
 
-  test('getter', () => {
+  test("getter", () => {
     class A {
       get b() {
         return 1;
@@ -44,17 +44,17 @@ describe('inheritance', () => {
     expect(Reflect.ownKeys(new B())).toEqual([]);
   });
 
-  test('getter without class', () => {
+  test("getter without class", () => {
     const a = {
       get b() {
         return 1;
       },
     };
 
-    expect(Reflect.ownKeys(a)).toEqual(['b']);
+    expect(Reflect.ownKeys(a)).toEqual(["b"]);
   });
 
-  test('function', () => {
+  test("function", () => {
     class A {
       b() {
         return 1;
@@ -66,18 +66,18 @@ describe('inheritance', () => {
     expect(Reflect.ownKeys(new B())).toEqual([]);
   });
 
-  test('function without class', () => {
+  test("function without class", () => {
     const a = {
       b() {
         return 1;
       },
     };
-    expect(Reflect.ownKeys(a)).toEqual(['b']);
+    expect(Reflect.ownKeys(a)).toEqual(["b"]);
   });
 
-  test('prototype', () => {
+  test("prototype", () => {
     class A {}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (A.prototype as any).b = 1;
 
     class B extends A {}
@@ -86,7 +86,7 @@ describe('inheritance', () => {
     expect(Reflect.ownKeys(new B())).toEqual([]);
   });
 
-  test('list function names', () => {
+  test("list function names", () => {
     class A {
       b() {
         return 1;
@@ -98,7 +98,7 @@ describe('inheritance', () => {
       let current: object | null = o;
       while (current && current !== Object.prototype) {
         Reflect.ownKeys(current).forEach((key) => {
-          if (typeof Reflect.get(current!, key) === 'function') {
+          if (typeof Reflect.get(current!, key) === "function") {
             functionNames.push(key); // Add function name
           }
         });
@@ -107,10 +107,10 @@ describe('inheritance', () => {
       return functionNames;
     };
     const functionNames = getFunctionNames(a);
-    expect(functionNames).toEqual(['constructor', 'b']);
+    expect(functionNames).toEqual(["constructor", "b"]);
   });
 
-  test('list function names except constructor', () => {
+  test("list function names except constructor", () => {
     class A {
       b() {
         return 1;
@@ -123,8 +123,8 @@ describe('inheritance', () => {
       while (current && current !== Object.prototype) {
         Reflect.ownKeys(current).forEach((key) => {
           if (
-            typeof Reflect.get(current!, key) === 'function' &&
-            key !== 'constructor'
+            typeof Reflect.get(current!, key) === "function" &&
+            key !== "constructor"
           ) {
             functionNames.push(key); // Add function name
           }
@@ -134,10 +134,10 @@ describe('inheritance', () => {
       return functionNames;
     };
     const functionNames = getFunctionNames(a);
-    expect(functionNames).toEqual(['b']);
+    expect(functionNames).toEqual(["b"]);
   });
 
-  test('list function names without class', () => {
+  test("list function names without class", () => {
     const a = {
       b() {
         return 1;
@@ -148,7 +148,7 @@ describe('inheritance', () => {
       let current: object | null = o;
       while (current && current !== Object.prototype) {
         Reflect.ownKeys(current).forEach((key) => {
-          if (typeof Reflect.get(current!, key) === 'function') {
+          if (typeof Reflect.get(current!, key) === "function") {
             functionNames.push(key); // Add function name
           }
         });
@@ -157,6 +157,6 @@ describe('inheritance', () => {
       return functionNames;
     };
     const functionNames = getFunctionNames(a);
-    expect(functionNames).toEqual(['b']);
+    expect(functionNames).toEqual(["b"]);
   });
 });

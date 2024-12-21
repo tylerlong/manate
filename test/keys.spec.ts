@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { autoRun, capture, manage } from '../src';
+import { autoRun, capture, manage } from "../src/index.ts";
 
-describe('keys', () => {
-  test('default', () => {
+describe("keys", () => {
+  test("default", () => {
     class Store {
       public monsters: { [key: string]: number } = {};
     }
@@ -16,12 +16,12 @@ describe('keys', () => {
       count += 1;
     });
     start();
-    store.monsters['a'] = 1;
-    store.monsters['b'] = 2;
+    store.monsters["a"] = 1;
+    store.monsters["b"] = 2;
     expect(count).toBe(3);
   });
 
-  test('values', () => {
+  test("values", () => {
     class Store {
       public monsters: { [key: string]: number } = {};
     }
@@ -32,12 +32,12 @@ describe('keys', () => {
       count += 1;
     });
     start();
-    store.monsters['a'] = 1;
-    store.monsters['b'] = 2;
+    store.monsters["a"] = 1;
+    store.monsters["b"] = 2;
     expect(count).toBe(3);
   });
 
-  test('values low level', () => {
+  test("values low level", () => {
     class Store {
       public monsters: { [key: string]: number } = {};
     }

@@ -1,13 +1,13 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from '../src';
+import { manage, runInAction } from "../src/index.ts";
 
-describe('before proxy', () => {
+describe("before proxy", () => {
   test("Update an object before it's proxied", () => {
     class A {
-      public b: B;
+      public b?: B;
     }
 
     class B {
@@ -27,7 +27,7 @@ describe('before proxy', () => {
 
   test("Update an object after it's proxied", () => {
     class A {
-      public b: B;
+      public b?: B;
     }
 
     class B {
@@ -50,7 +50,7 @@ describe('before proxy', () => {
 
   test("Update an object after it's proxied - 2", () => {
     class A {
-      public b: B;
+      public b?: B;
     }
 
     class B {

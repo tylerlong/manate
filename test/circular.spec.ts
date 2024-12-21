@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
+import { manage } from "../src/index.ts";
 
-describe('circular', () => {
-  test('direct', () => {
+describe("circular", () => {
+  test("direct", () => {
     class A {
       public b = 1;
       public parent: A | null = null;
@@ -12,7 +12,7 @@ describe('circular', () => {
     const ma = manage(a);
     ma.parent = ma;
   });
-  test('indirect', () => {
+  test("indirect", () => {
     class A {
       public b = 1;
       public parent: A | null = null;
@@ -24,7 +24,7 @@ describe('circular', () => {
     ma.parent = mb;
     mb.parent = ma;
   });
-  test('3-steps away', () => {
+  test("3-steps away", () => {
     class A {
       public b = 1;
       public parent: A | null = null;
@@ -39,7 +39,7 @@ describe('circular', () => {
     mb.parent = mc;
     mc.parent = ma;
   });
-  test('manage after circular', () => {
+  test("manage after circular", () => {
     class A {
       constructor(public b?: B) {}
     }

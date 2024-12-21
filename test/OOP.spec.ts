@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage, runInAction } from '../src';
+import { capture, manage, runInAction } from "../src/index.ts";
 
-describe('OOP', () => {
-  test('todo list', () => {
+describe("OOP", () => {
+  test("todo list", () => {
     class Store {
       public todoLists: TodoList[] = [];
     }
@@ -29,9 +29,9 @@ describe('OOP', () => {
     }
 
     const store = new Store();
-    const todoList = new TodoList('Work');
+    const todoList = new TodoList("Work");
     store.todoLists.push(todoList);
-    const todoItem = new TodoItem('Daily meeting');
+    const todoItem = new TodoItem("Daily meeting");
     todoList.todoItems.push(todoItem);
 
     const managed = manage(store);

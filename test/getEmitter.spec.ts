@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, writeEmitter } from '../src';
+import { manage, writeEmitter } from "../src/index.ts";
 
-describe('getter', () => {
-  test('getter', () => {
+describe("getter", () => {
+  test("getter", () => {
     const obj = { a: 1, b: 2 };
     const managed = manage(obj);
     expect(writeEmitter).toBeDefined();

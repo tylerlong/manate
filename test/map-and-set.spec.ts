@@ -1,39 +1,39 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { capture, manage } from '../src';
+import { capture, manage } from "../src/index.ts";
 
-describe('map and set', () => {
-  test('map', () => {
+describe("map and set", () => {
+  test("map", () => {
     class A {
       public m = new Map<string, number>();
     }
     const a = new A();
     const ma = manage(a);
-    ma.m.set('a', 1);
-    expect(ma.m.get('a')).toBe(1);
-    expect(ma.m.has('a')).toBe(true);
+    ma.m.set("a", 1);
+    expect(ma.m.get("a")).toBe(1);
+    expect(ma.m.has("a")).toBe(true);
   });
-  test('set', () => {
+  test("set", () => {
     class A {
       public s = new Set<string>();
     }
     const a = new A();
     const ma = manage(a);
-    ma.s.add('a');
-    expect(ma.s.has('a')).toBe(true);
+    ma.s.add("a");
+    expect(ma.s.has("a")).toBe(true);
   });
-  test('traps', () => {
+  test("traps", () => {
     class A {
       public m = new Map<string, number>();
     }
     const a = new A();
     const ma = manage(a);
-    ma.m.set('a', 1);
+    ma.m.set("a", 1);
     const [, readLogs] = capture(() => {
-      expect(ma.m.get('a')).toBe(1);
-      expect(ma.m.has('a')).toBe(true);
+      expect(ma.m.get("a")).toBe(1);
+      expect(ma.m.has("a")).toBe(true);
     });
     expect(inspect(readLogs)).toBe(`Map(2) {
   A { m: Map(1) { 'a' => 1 } } => { get: Map(1) { 'm' => [Map] } },

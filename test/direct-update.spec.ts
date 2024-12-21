@@ -1,11 +1,11 @@
-import { inspect } from 'util';
+import { inspect } from "node:util";
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from '../src';
+import { manage, runInAction } from "../src/index.ts";
 
-describe('direct update', () => {
-  test('default', () => {
+describe("direct update", () => {
+  test("default", () => {
     /*
 What does this test case tell us?
 - After we manage an object `const mo = manage(o)`, its children (like `o.callSessions`) all become managed (unless they cannot be managed, like string)
@@ -13,12 +13,12 @@ What does this test case tell us?
 - However, if you update `o`'s string property directly, the event will not be triggered. Because `o` is not managed, `mo` is.
      */
     class WebPhone {
-      public status = 'idle';
+      public status = "idle";
       public callSessions: CallSession[] = [];
     }
 
     class CallSession {
-      public status = 'idle';
+      public status = "idle";
     }
     const original = new WebPhone();
     const webPhone = manage(original);
@@ -26,8 +26,8 @@ What does this test case tell us?
     original.callSessions.push(new CallSession());
     expect(webPhone.callSessions[0]).toBeDefined();
     const [, writeLog] = runInAction(() => {
-      original.callSessions[0].status = 'calling'; // trigger event
-      original.status = 'calling'; // do not trigger event
+      original.callSessions[0].status = "calling"; // trigger event
+      original.status = "calling"; // do not trigger event
     });
     expect(inspect(writeLog)).toBe(
       `Map(1) {
