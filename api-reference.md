@@ -38,13 +38,13 @@ The `runInAction` function ensures that any side-effects, such as triggering rec
 ### Example Usage
 
 ```typescript
-import { manage, runInAction } from 'manate';
+import { manage, runInAction } from "manate";
 
 const state = manage({ prop: 1 });
 
 const [result, writeLog] = runInAction(() => {
   state.prop = 42; // State is updated
-  return 'Done';
+  return "Done";
 });
 
 console.log(result); // Outputs: "Done"
@@ -80,7 +80,7 @@ This is particularly useful for managing state in reactive systems where multipl
 ### Example Usage
 
 ```typescript
-import { action, manage } from 'manate';
+import { action, manage } from "manate";
 
 const store = manage({ prop: 1 });
 
@@ -128,7 +128,7 @@ This is useful in scenarios where temporary or intermediate state updates should
 ### **Example Usage**
 
 ```typescript
-import { ignore, manage } from 'manate';
+import { ignore, manage } from "manate";
 
 const state = manage({ prop: 1 });
 
@@ -147,3 +147,5 @@ In this example, even though `state.prop` is updated twice within `ignore`, no r
 - Code executed within `ignore` will not trigger recomputation until the function completes.
 - If `ignore` is nested, recomputation will remain suppressed until all nested calls have completed.
 - Use `ignore` sparingly to avoid suppressing recomputation for essential updates.
+
+## TBD
