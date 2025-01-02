@@ -44,6 +44,22 @@ describe("exclude", () => {
     expect(r).toBeFalsy();
   });
 
+  test("exclude in init state", () => {
+    const initState = {
+      b: exclude([{ x: 1 }]),
+      c: [{ y: 1 }]
+    }
+    const ma = manage(initState);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
+    });
+    ma.b[0].x = 4;
+    expect(r).toBeFalsy();
+    ma.c[0].y = 4;
+    expect(r).toBeTruthy();
+  });
+
   test("without exclude", () => {
     class B {
       public c = 1;
