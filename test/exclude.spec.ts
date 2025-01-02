@@ -48,7 +48,7 @@ describe("exclude", () => {
     const initState = {
       b: exclude([{ x: 1 }]),
       c: [{ y: 1 }]
-    }
+    };
     const ma = manage(initState);
     let r = false;
     writeEmitter.on(() => {
@@ -57,6 +57,24 @@ describe("exclude", () => {
     ma.b[0].x = 4;
     expect(r).toBeFalsy();
     ma.c[0].y = 4;
+    expect(r).toBeTruthy();
+  });
+
+  test("reassign would remove exclude", () => {
+    const initState = {
+      b: exclude([{ x: 1 }])
+    };
+    const ma = manage(initState);
+    let r = false;
+    writeEmitter.on(() => {
+      r = true;
+    });
+    ma.b[0].x = 4;
+    expect(r).toBeFalsy();
+    ma.b = [{ x: 4 }];
+    expect(r).toBeTruthy();
+    r = false;
+    ma.b[0].x = 6;
     expect(r).toBeTruthy();
   });
 
