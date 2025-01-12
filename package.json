@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "2.0.0-beta.7",
+  "version": "2.0.0-beta.8",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "type": "module",
@@ -14,16 +14,16 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "shell-commands": "^0.4.2",
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.3",
     "vitest": "^2.1.8",
-    "wait-for-async": "^0.7.2",
+    "wait-for-async": "^0.7.5",
     "yarn-upgrade-all": "^0.7.4"
   }
 }
