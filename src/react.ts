@@ -29,19 +29,13 @@ export class Component<P = {}, S = {}> extends React.Component<P, S> {
 
   constructor(props: P) {
     super(props);
-    // Store the original render method
     this.originalRender = this.render;
-    // Override render with our wrapped version
     this.render = this.autoRender;
-    
-    // Call original componentDidMount if it exists
     const originalDidMount = this.componentDidMount?.bind(this);
     this.componentDidMount = () => {
       writeEmitter.on(this.handleWrite);
       originalDidMount?.();
     }
-
-    // Call original componentWillUnmount if it exists
     const originalWillUnmount = this.componentWillUnmount?.bind(this);
     this.componentWillUnmount = () => {
       writeEmitter.off(this.handleWrite);
