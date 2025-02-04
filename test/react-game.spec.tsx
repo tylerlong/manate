@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
-import { act, cleanup, render } from '@testing-library/react';
-import React from 'react';
-import { describe, expect, test } from 'vitest';
+import { act, cleanup, render } from "@testing-library/react";
+import React from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
 let id = 0;
 
@@ -25,7 +25,7 @@ const BulletComponent = auto(
   (props: { bullet: Bullet; position: [number, number, number] }) => {
     count += 1;
     const { bullet, position } = props;
-    return String(bullet.id) + position.join('-');
+    return String(bullet.id) + position.join("-");
   },
 );
 
@@ -40,8 +40,8 @@ const App = auto((props: { store: Store }) => {
 
 const store = manage(new Store());
 
-describe('React Game', () => {
-  test('default', async () => {
+describe("React Game", () => {
+  test("default", () => {
     render(<App store={store} />);
     expect(count).toBe(0);
     act(() => {

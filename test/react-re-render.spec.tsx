@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
-import { act, cleanup, render } from '@testing-library/react';
-import React from 'react';
-import { describe, expect, test } from 'vitest';
+import { act, cleanup, render } from "@testing-library/react";
+import React from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
-describe('React re-render', () => {
-  test('Update children props', async () => {
+describe("React re-render", () => {
+  test("Update children props", () => {
     let id = 0;
 
     class Bullet {
@@ -65,7 +65,7 @@ describe('React re-render', () => {
     // why this test case works? because React is async, refer to mutiple-parent.spec.tsx
   });
 
-  test('Add new child', async () => {
+  test("Add new child", () => {
     let id = 0;
 
     class Bullet {

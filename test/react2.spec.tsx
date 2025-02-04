@@ -1,15 +1,15 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import React from 'react';
-import { describe, expect, test } from 'vitest';
+import { act, cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
 class Store {
   public hanzi: Hanzi;
-  public hanzis = [new Hanzi('刘'), new Hanzi('春'), new Hanzi('涛')];
+  public hanzis = [new Hanzi("刘"), new Hanzi("春"), new Hanzi("涛")];
   public index = 0;
 
   public constructor() {
@@ -52,27 +52,27 @@ const HanziComponent = auto((props: { hanzi: Hanzi }) => {
   return hanzi.hanzi;
 });
 
-describe('React', () => {
-  test('default', async () => {
+describe("React", () => {
+  test("default", async () => {
     render(<App store={store} />);
-    const changeButton = screen.getByText('Change Hanzi');
-    expect(renderHistory).toEqual(['刘']);
+    const changeButton = screen.getByText("Change Hanzi");
+    expect(renderHistory).toEqual(["刘"]);
     act(() => {
-      store.hanzi.hanzi = '劉';
+      store.hanzi.hanzi = "劉";
     });
-    expect(renderHistory).toEqual(['刘', '劉']);
+    expect(renderHistory).toEqual(["刘", "劉"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '劉', '春']);
+    expect(renderHistory).toEqual(["刘", "劉", "春"]);
     act(() => {
-      store.hanzi.hanzi = '耀';
+      store.hanzi.hanzi = "耀";
     });
-    expect(renderHistory).toEqual(['刘', '劉', '春', '耀']);
+    expect(renderHistory).toEqual(["刘", "劉", "春", "耀"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '劉', '春', '耀', '涛']);
+    expect(renderHistory).toEqual(["刘", "劉", "春", "耀", "涛"]);
     act(() => {
-      store.hanzi.hanzi = '阳';
+      store.hanzi.hanzi = "阳";
     });
-    expect(renderHistory).toEqual(['刘', '劉', '春', '耀', '涛', '阳']);
+    expect(renderHistory).toEqual(["刘", "劉", "春", "耀", "涛", "阳"]);
     cleanup();
   });
 });

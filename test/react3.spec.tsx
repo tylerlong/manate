@@ -1,15 +1,15 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import React from 'react';
-import { describe, expect, test } from 'vitest';
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
 class Store {
   public hanzi: Hanzi;
-  public hanzis = [new Hanzi('刘'), new Hanzi('春'), new Hanzi('涛')];
+  public hanzis = [new Hanzi("刘"), new Hanzi("春"), new Hanzi("涛")];
   public index = 0;
 
   public constructor() {
@@ -52,21 +52,21 @@ const HanziComponent = auto((props: { hanzi: Hanzi }) => {
   return hanzi.hanzi;
 });
 
-describe('React', () => {
-  test('default', async () => {
+describe("React", () => {
+  test("default", async () => {
     render(<App store={store} />);
-    const changeButton = screen.getByText('Change Hanzi');
-    expect(renderHistory).toEqual(['刘']);
+    const changeButton = screen.getByText("Change Hanzi");
+    expect(renderHistory).toEqual(["刘"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '春']);
+    expect(renderHistory).toEqual(["刘", "春"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '春', '涛']);
+    expect(renderHistory).toEqual(["刘", "春", "涛"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '春', '涛', '刘']);
+    expect(renderHistory).toEqual(["刘", "春", "涛", "刘"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春']);
+    expect(renderHistory).toEqual(["刘", "春", "涛", "刘", "春"]);
     await userEvent.click(changeButton);
-    expect(renderHistory).toEqual(['刘', '春', '涛', '刘', '春', '涛']);
+    expect(renderHistory).toEqual(["刘", "春", "涛", "刘", "春", "涛"]);
     cleanup();
   });
 });

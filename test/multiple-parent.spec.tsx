@@ -1,15 +1,15 @@
 // @vitest-environment jsdom
-import { inspect } from 'util';
+import { inspect } from "util";
 
-import { cleanup, render } from '@testing-library/react';
-import React from 'react';
-import { describe, expect, test } from 'vitest';
+import { cleanup, render } from "@testing-library/react";
+import React from "react";
+import { describe, expect, test } from "vitest";
 
-import { capture, manage, runInAction } from '../src';
-import { auto } from '../src/react';
+import { capture, manage, runInAction } from "../src";
+import { auto } from "../src/react";
 
-describe('multiple parent', () => {
-  test('default', () => {
+describe("multiple parent", () => {
+  test("default", () => {
     const a = { b: { c: 0 } };
     const ma = manage(a);
     const d = { b: ma.b };
@@ -54,7 +54,7 @@ describe('multiple parent', () => {
     );
   });
 
-  test('game', () => {
+  test("game", () => {
     let id = 0;
 
     class Bullet {
@@ -81,7 +81,7 @@ describe('multiple parent', () => {
 }`);
   });
 
-  test('game with React', () => {
+  test("game with React", () => {
     let id = 0;
 
     class Bullet {
@@ -99,19 +99,19 @@ describe('multiple parent', () => {
 
     const events: string[] = [];
     const BulletComponent = auto((props: { bullet: Bullet }) => {
-      events.push('BulletComponent start');
+      events.push("BulletComponent start");
       const { bullet } = props;
-      events.push('BulletComponent end');
+      events.push("BulletComponent end");
       return bullet.speed;
     });
 
     const App = auto((props: { store: Store }) => {
-      events.push('App start');
+      events.push("App start");
       const { store } = props;
       const temp = Object.values(store.bullets).map((bullet) => (
         <BulletComponent key={bullet.id} bullet={bullet} />
       ));
-      events.push('App end');
+      events.push("App end");
       return temp;
     });
 
@@ -121,19 +121,19 @@ describe('multiple parent', () => {
 
     render(<App store={store} />);
     expect(events).toEqual([
-      'App start',
-      'App end',
-      'BulletComponent start',
-      'BulletComponent end',
-      'BulletComponent start',
-      'BulletComponent end',
+      "App start",
+      "App end",
+      "BulletComponent start",
+      "BulletComponent end",
+      "BulletComponent start",
+      "BulletComponent end",
     ]);
     cleanup();
 
     // this test case proves that React is "async"
   });
 
-  test('plain React', () => {
+  test("plain React", () => {
     let id = 0;
 
     class Bullet {
@@ -151,19 +151,19 @@ describe('multiple parent', () => {
 
     const events: string[] = [];
     const BulletComponent = (props: { bullet: Bullet }) => {
-      events.push('BulletComponent start');
+      events.push("BulletComponent start");
       const { bullet } = props;
-      events.push('BulletComponent end');
+      events.push("BulletComponent end");
       return bullet.speed;
     };
 
     const App = (props: { store: Store }) => {
-      events.push('App start');
+      events.push("App start");
       const { store } = props;
       const temp = Object.values(store.bullets).map((bullet) => (
         <BulletComponent key={bullet.id} bullet={bullet} />
       ));
-      events.push('App end');
+      events.push("App end");
       return temp;
     };
 
@@ -173,12 +173,12 @@ describe('multiple parent', () => {
 
     render(<App store={store} />);
     expect(events).toEqual([
-      'App start',
-      'App end',
-      'BulletComponent start',
-      'BulletComponent end',
-      'BulletComponent start',
-      'BulletComponent end',
+      "App start",
+      "App end",
+      "BulletComponent start",
+      "BulletComponent end",
+      "BulletComponent start",
+      "BulletComponent end",
     ]);
     cleanup();
 

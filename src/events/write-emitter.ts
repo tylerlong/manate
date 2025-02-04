@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { WriteEvent, WriteLog } from "./types.ts";
 
 class WriteEmitter {

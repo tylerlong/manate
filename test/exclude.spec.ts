@@ -47,7 +47,7 @@ describe("exclude", () => {
   test("exclude in init state", () => {
     const initState = {
       b: exclude([{ x: 1 }]),
-      c: [{ y: 1 }]
+      c: [{ y: 1 }],
     };
     const ma = manage(initState);
     let r = false;
@@ -62,7 +62,7 @@ describe("exclude", () => {
 
   test("reassign would remove exclude", () => {
     const initState = {
-      b: exclude([{ x: 1 }])
+      b: exclude([{ x: 1 }]),
     };
     const ma = manage(initState);
     let r = false;

@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import React, { useRef } from 'react';
-import { describe, expect, test } from 'vitest';
+import { act, cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React, { useRef } from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
-describe('React hooks', () => {
-  test('default', () => {
+describe("React hooks", () => {
+  test("default", () => {
     let id = 0;
 
     class Bullet {
@@ -71,7 +71,7 @@ describe('React hooks', () => {
     cleanup();
   });
 
-  test('should not break useState', async () => {
+  test("should not break useState", async () => {
     class Store {
       count = 0;
     }
@@ -90,7 +90,7 @@ describe('React hooks', () => {
     });
     render(<App store={store} />);
     expect(count).toBe(1);
-    const minusButton = screen.getByText('Click');
+    const minusButton = screen.getByText("Click");
     await userEvent.click(minusButton);
     expect(count).toBe(2);
     await userEvent.click(minusButton);

@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { GetEvent, HasEvent, KeysEvent, ReadLog } from "./types.ts";
 
 class ReadEmitter {

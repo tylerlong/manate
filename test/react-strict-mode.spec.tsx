@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
-import { act, cleanup, render } from '@testing-library/react';
-import React, { StrictMode } from 'react';
-import { describe, expect, test } from 'vitest';
+import { act, cleanup, render } from "@testing-library/react";
+import React, { StrictMode } from "react";
+import { describe, expect, test } from "vitest";
 
-import { manage } from '../src';
-import { auto } from '../src/react';
+import { manage } from "../src";
+import { auto } from "../src/react";
 
-describe('React strict mode', () => {
-  test('Update children props', async () => {
+describe("React strict mode", () => {
+  test("Update children props", () => {
     let id = 0;
 
     class Bullet {

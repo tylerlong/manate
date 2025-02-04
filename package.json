@@ -7,6 +7,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "lint": "deno fmt && deno lint --fix",
     "test": "yarn vitest run",
     "prepublishOnly": "deno task test && deno task compile",
     "postpublish": "rm -rf events && rm *.js *.d.ts"
