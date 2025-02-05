@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { writeEmitter } from "../src/index.ts";
+import { writeEmitter } from "../src/index.js";
 
 describe("index", () => {
   test("event emitter on and off", () => {

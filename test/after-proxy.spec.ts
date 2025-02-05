@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { manage } from "../src/index.ts";
+import { manage } from "../src/index.js";
 
 describe("after proxy", () => {
   test("default", () => {

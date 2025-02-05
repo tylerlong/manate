@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { autoRun, manage } from "../src/index.ts";
+import { autoRun, manage } from "../src/index.js";
 
 describe("set", () => {
   test("autoRun", () => {

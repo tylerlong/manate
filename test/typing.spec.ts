@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { manage, writeEmitter } from "../src/index.ts";
+import { manage, writeEmitter } from "../src/index.js";
 
 describe("typings", () => {
   test("default 1", () => {

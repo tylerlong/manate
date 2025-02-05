@@ -1,9 +1,0 @@
-{
-  "tasks": {
-    "test": "deno run -A npm:vitest run",
-    "check": "deno check src/*.ts test/*.ts",
-    "fmt": "deno fmt src/*.ts test/*.ts",
-    "lint": "deno lint src/*.ts test/*.ts",
-    "compile": "deno --allow-env --allow-read --allow-run compile.ts"
-  }
-}

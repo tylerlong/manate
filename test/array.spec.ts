@@ -3,7 +3,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from "../src/index.ts";
+import { manage, runInAction } from "../src/index.js";
 
 describe("array", () => {
   test("managed set length", () => {

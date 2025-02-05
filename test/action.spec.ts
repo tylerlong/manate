@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { action, autoRun, manage } from "../src/index.ts";
+import { action, autoRun, manage } from "../src/index.js";
 
 describe("action", () => {
   test("default", () => {

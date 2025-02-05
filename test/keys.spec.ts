@@ -2,7 +2,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { autoRun, capture, manage } from "../src/index.ts";
+import { autoRun, capture, manage } from "../src/index.js";
 
 describe("keys", () => {
   test("default", () => {

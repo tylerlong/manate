@@ -2,7 +2,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { capture, manage, runInAction } from "../src/index.ts";
+import { capture, manage, runInAction } from "../src/index.js";
 
 describe("OOP", () => {
   test("todo list", () => {

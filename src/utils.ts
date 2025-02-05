@@ -1,8 +1,8 @@
 // deno-lint-ignore-file no-explicit-any
-import { capture } from "./events/read-emitter.ts";
-import { ReadLog, WriteLog } from "./events/types.ts";
-import writeEmitter, { ignore } from "./events/write-emitter.ts";
-import { Wrapper } from "./wrappers.ts";
+import { capture } from "./events/read-emitter.js";
+import { ReadLog, WriteLog } from "./events/types.js";
+import writeEmitter, { ignore } from "./events/write-emitter.js";
+import { Wrapper } from "./wrappers.js";
 
 const getValue = (target: object, prop: PropertyKey) => {
   if (target instanceof Map) {

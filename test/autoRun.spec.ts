@@ -2,7 +2,7 @@
 import { describe, expect, test } from "vitest";
 import waitFor from "wait-for-async";
 
-import { autoRun, debounce, manage } from "../src/index.ts";
+import { autoRun, debounce, manage } from "../src/index.js";
 
 describe("autoRun", () => {
   test("default", () => {

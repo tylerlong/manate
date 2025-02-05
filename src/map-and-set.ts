@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import readEmitter from "./events/read-emitter.ts";
-import writeEmitter from "./events/write-emitter.ts";
+import readEmitter from "./events/read-emitter.js";
+import writeEmitter from "./events/write-emitter.js";
 
 export const mapGet = <V>(target: Map<PropertyKey, V>, prop: PropertyKey) => {
   const r = Reflect.get(target, prop, target);

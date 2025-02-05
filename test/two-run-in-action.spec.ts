@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { manage, runInAction } from "../src/index.ts";
+import { manage, runInAction } from "../src/index.js";
 
 describe("two runInAction", () => {
   test("default", () => {

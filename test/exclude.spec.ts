@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { exclude, manage, writeEmitter } from "../src/index.ts";
+import { exclude, manage, writeEmitter } from "../src/index.js";
 
 describe("exclude", () => {
   test("exclude beforewards", () => {

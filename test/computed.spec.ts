@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { computed, manage } from "../src/index.ts";
+import { computed, manage } from "../src/index.js";
 
 describe("computed", () => {
   test("default", () => {

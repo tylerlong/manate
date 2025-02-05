@@ -1,8 +1,8 @@
 import { type FunctionComponent, memo, useEffect, useState } from "react";
 
-import { WriteLog } from "./events/types.ts";
-import writeEmitter from "./events/write-emitter.ts";
-import { run } from "./utils.ts";
+import { WriteLog } from "./events/types.js";
+import writeEmitter from "./events/write-emitter.js";
+import { run } from "./utils.js";
 
 export const auto = <P extends object>(Component: FunctionComponent<P>) => {
   return memo(function MyComponent(props: P) {

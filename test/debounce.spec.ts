@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import waitFor from "wait-for-async";
 
-import { debounce } from "../src/wrappers.ts";
+import { debounce } from "../src/wrappers.js";
 
 describe("debounce", () => {
   test("default", async () => {

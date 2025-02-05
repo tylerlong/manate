@@ -3,8 +3,8 @@ import { cleanup, render, screen } from "@testing-library/react";
 import React, { ReactElement } from "react";
 import { describe, expect, test } from "vitest";
 
-import { manage } from "../src/index.ts";
-import { auto } from "../src/react.ts";
+import { manage } from "../src/index.js";
+import { auto } from "../src/react.js";
 
 class Store {
   public count = 0;

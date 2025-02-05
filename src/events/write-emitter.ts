@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { WriteEvent, WriteLog } from "./types.ts";
+import { WriteEvent, WriteLog } from "./types.js";
 
 class WriteEmitter {
   private writeLogs = new Set<WriteLog>();

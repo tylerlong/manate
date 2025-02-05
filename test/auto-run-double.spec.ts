@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { autoRun, manage, writeEmitter } from "../src/index.ts";
+import { autoRun, manage, writeEmitter } from "../src/index.js";
 
 describe("autoRun double", () => {
   test("assign same value emit event", () => {

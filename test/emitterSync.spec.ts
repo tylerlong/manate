@@ -2,7 +2,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { runInAction, writeEmitter } from "../src/index.ts";
+import { runInAction, writeEmitter } from "../src/index.js";
 
 describe("emitter sync", () => {
   test("default", () => {

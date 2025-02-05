@@ -3,7 +3,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { runInAction } from "../src/index.ts";
+import { runInAction } from "../src/index.js";
 
 const wrapAllFunctions = (obj: any) => {
   let current = obj;

@@ -2,7 +2,7 @@ import { inspect } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
-import { capture, manage } from "../src/index.ts";
+import { capture, manage } from "../src/index.js";
 
 describe("map and set", () => {
   test("map", () => {

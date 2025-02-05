@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { isManaged, manage } from "../src/index.ts";
+import { isManaged, manage } from "../src/index.js";
 
 describe("plain objects", () => {
   test("default", () => {

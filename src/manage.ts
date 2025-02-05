@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
-import readEmitter from "./events/read-emitter.ts";
-import writeEmitter, { runInAction } from "./events/write-emitter.ts";
-import { mapGet, setGet } from "./map-and-set.ts";
+import readEmitter from "./events/read-emitter.js";
+import writeEmitter, { runInAction } from "./events/write-emitter.js";
+import { mapGet, setGet } from "./map-and-set.js";
 
 const proxyMap = new WeakMap<object, object>();
 export const isManaged = (target: object) => proxyMap.has(target);

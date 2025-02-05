@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "outDir": ".",
-    "declaration": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext"
-  },
-  "files": ["src/index.ts", "src/react.ts"]
-}
