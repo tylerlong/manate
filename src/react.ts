@@ -34,59 +34,27 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
 export const c2f = <P, S>(
   ClassComponent: ComponentClass<P, S>,
 ): FunctionComponent<P> => {
-  return function FunctionComponentAdapter(props: P) {
-    const [state, setState] = useState(() => {
-      const instance = new ClassComponent(props);
-      return instance.state || {};
-    });
-
-    const instanceRef = useRef<InstanceType<ComponentClass<P, S>>>(null);
-
-    // Create or update class instance
-    if (!instanceRef.current) {
-      instanceRef.current = new ClassComponent(props);
+  const functionComponent = (props: P) => {
+    const instanceRef = useRef<InstanceType<ComponentClass<P, S>>>(
+      new ClassComponent(props),
+    );
+    const [state, setState] = useState(instanceRef.current.state);
+    instanceRef.current.setState = (newState) => {
+      setState((prev) => ({ ...prev, ...newState }));
+    };
+    useEffect(() => {
       instanceRef.current.state = state;
-
-      // Override setState to update React state
-      instanceRef.current.setState = (newState) => {
-        setState((prev) => ({ ...prev, ...newState }));
-      };
-    }
-
-    // Update props and state in class instance when they change
+      // the class component is not mounted at all, so it's safe to update props directly
+      // @ts-ignore
+      instanceRef.current.props = props;
+    }, [state, props]);
     useEffect(() => {
-      instanceRef.current!.props = props;
-      instanceRef.current!.state = state;
-    }, [props, state]);
-
-    // Lifecycle handling
-    useEffect(() => {
-      if (instanceRef.current!.componentDidMount) {
-        instanceRef.current!.componentDidMount();
-      }
+      instanceRef.current.componentDidMount?.();
       return () => {
-        if (instanceRef.current!.componentWillUnmount) {
-          instanceRef.current!.componentWillUnmount();
-        }
+        instanceRef.current.componentWillUnmount?.();
       };
     }, []);
-
-    useEffect(() => {
-      if (instanceRef.current!.componentDidUpdate) {
-        instanceRef.current!.componentDidUpdate(props, state);
-      }
-    });
-
-    // Handle shouldComponentUpdate
-    const shouldUpdate = instanceRef.current.shouldComponentUpdate
-      ? instanceRef.current.shouldComponentUpdate(props, state)
-      : true;
-
-    if (!shouldUpdate) {
-      return null;
-    }
-
-    // Call render method
     return instanceRef.current.render();
   };
+  return functionComponent;
 };
