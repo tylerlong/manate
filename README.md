@@ -329,6 +329,29 @@ It is fine to have curcukar references in your state.
 
 Refer to [./test/circular.spec.ts](./test/circular.spec.ts).
 
+## React class component
+
+We don't recommend new projects to juse React class component. But if you want
+to use it, we provide a `c2f` converter:
+
+```tsx
+import { auto, c2f } from "manate/react";
+
+class MyApp extends React.Component<{ store: Store }> {
+  public render() {
+    const { store } = this.props;
+    renderHistory.push(store.count);
+    return (
+      <div>
+        <span role="counter">{store.count}</span>
+        <button onClick={() => store.increase()}>+</button>
+      </div>
+    );
+  }
+}
+const App = auto(c2f(MyApp));
+```
+
 ## Similarity to MobX
 
 Recently I find that manate is very similar to mobx:
