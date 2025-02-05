@@ -4,7 +4,7 @@ import React from "react";
 import { describe, expect, test } from "vitest";
 
 import { manage, runInAction } from "../src";
-import { auto, c2f } from "../src/react";
+import { auto } from "../src/react";
 
 class Store {
   public count = 0;
@@ -33,7 +33,7 @@ class MyApp extends React.Component<{ store: Store }> {
 
 describe("React", () => {
   test("transaction", () => {
-    const App = auto(c2f(MyApp));
+    const App = auto(MyApp);
     store.count = 0;
     renderHistory.length = 0;
     render(<App store={store} />);

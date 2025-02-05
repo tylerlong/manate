@@ -5,7 +5,7 @@ import React from "react";
 import { describe, expect, test } from "vitest";
 
 import { manage } from "../src";
-import { auto, c2f } from "../src/react";
+import { auto } from "../src/react";
 
 class Store {
   public hanzi: Hanzi;
@@ -46,7 +46,7 @@ class _App extends React.Component<{ store: Store }> {
     );
   }
 }
-const App = auto(c2f(_App));
+const App = auto(_App);
 
 const renderHistory: string[] = [];
 class _HanziComponent extends React.Component<{ hanzi: Hanzi }> {
@@ -56,7 +56,7 @@ class _HanziComponent extends React.Component<{ hanzi: Hanzi }> {
     return hanzi.hanzi;
   }
 }
-const HanziComponent = auto(c2f(_HanziComponent));
+const HanziComponent = auto(_HanziComponent);
 
 describe("React", () => {
   test("default", async () => {

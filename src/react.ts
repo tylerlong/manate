@@ -11,10 +11,17 @@ import { WriteLog } from "./events/types.js";
 import writeEmitter from "./events/write-emitter.js";
 import { run } from "./utils.js";
 
-export const auto = <P extends object>(Component: FunctionComponent<P>) => {
+export const auto = <P, S>(
+  Component: FunctionComponent<P> | ComponentClass<P, S>,
+) => {
   return memo(function MyComponent(props: P) {
     const [, reRender] = useState(0);
-    const [r, isTrigger] = run(() => Component(props));
+    if (Component.prototype?.render) { // class component has render method
+      Component = c2f(Component as ComponentClass<P, S>); // convert to function component
+    }
+    const [r, isTrigger] = run(() =>
+      (Component as FunctionComponent<P>)(props)
+    );
     useEffect(() => {
       const listener = (writeLog: WriteLog) => {
         if (isTrigger(writeLog)) {
@@ -31,29 +38,29 @@ export const auto = <P extends object>(Component: FunctionComponent<P>) => {
 };
 
 // convert class component to function component
-export const c2f = <P, S>(
+const c2f = <P, S>(
   ClassComponent: ComponentClass<P, S>,
 ): FunctionComponent<P> => {
   const functionComponent = (props: P) => {
     const instanceRef = useRef<InstanceType<ComponentClass<P, S>>>(
       new ClassComponent(props),
     );
-    const [, setState] = useState(instanceRef.current.state);
+    const [, reRender] = useState(0);
     const _setState = instanceRef.current.setState.bind(instanceRef.current);
-    instanceRef.current.setState = (newState) => {
-      _setState(newState);
-      setState((prev) => ({ ...prev, ...newState }));
+    instanceRef.current.setState = (...args) => {
+      _setState(...args);
+      reRender((n) => n + 1);
     };
 
-    // class component is not mounted, so it is safe to update props directly
-    // @ts-ignore
-    instanceRef.current.props = props;
     useEffect(() => {
       instanceRef.current.componentDidMount?.();
       return () => {
         instanceRef.current.componentWillUnmount?.();
       };
     }, []);
+
+    // @ts-ignore
+    instanceRef.current.props = props; // class component is not mounted, so it is safe to update props directly
     return instanceRef.current.render();
   };
   return functionComponent;

@@ -5,7 +5,7 @@ import React from "react";
 import { describe, expect, test } from "vitest";
 
 import { manage, writeEmitter } from "../src";
-import { auto, c2f } from "../src/react";
+import { auto } from "../src/react";
 
 class Store {
   public count = 0;
@@ -31,7 +31,7 @@ class MyApp extends React.Component<{ store: Store }> {
     );
   }
 }
-const App = auto(c2f(MyApp));
+const App = auto(MyApp);
 
 describe("React-c2f", () => {
   test("default", async () => {
