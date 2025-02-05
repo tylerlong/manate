@@ -331,47 +331,34 @@ Refer to [./test/circular.spec.ts](./test/circular.spec.ts).
 
 ## React Class Component
 
-Since React functional component is the future, this library had removed direct
-support to React class component.
+Since React function component is the future, we suggest you to use function
+component instead of class component.
 
-If for some reason you still want to use class component, you may use this `c2f`
-converter function. It converts your class component to function component:
-
-```ts
-const c2f = <P, S>(
-  ClassComponent: ComponentClass<P, S>,
-): FunctionComponent<P> => {
-  const functionComponent = (props: P) => {
-    const instanceRef = useRef<InstanceType<ComponentClass<P, S>>>(
-      new ClassComponent(props),
-    );
-    const [state, setState] = useState(instanceRef.current.state);
-    instanceRef.current.setState = (newState) => {
-      setState((prev) => ({ ...prev, ...newState }));
-    };
-    useEffect(() => {
-      instanceRef.current.state = state;
-      // the class component is not mounted at all, so it's safe to update props directly
-      // @ts-ignore
-      instanceRef.current.props = props;
-    }, [state, props]);
-    useEffect(() => {
-      instanceRef.current.componentDidMount?.();
-      return () => {
-        instanceRef.current.componentWillUnmount?.();
-      };
-    }, []);
-    return instanceRef.current.render();
-  };
-  return functionComponent;
-};
-```
-
-Usage:
+With above being said, this library supports class components out-of-box. The
+usage is identical to function components: just wrap the component with
+`auto()`:
 
 ```tsx
 import { auto } from "manate/react";
 
+const MyComponent = auto(
+  class extends React.Component<{ store: Store }> {
+    public render() {
+      const { store } = this.props;
+      return (
+        <div>
+          <span role="counter">{store.count}</span>
+          <button onClick={() => store.increase()}>+</button>
+        </div>
+      );
+    }
+  },
+);
+```
+
+You may also wrap it after class definition:
+
+```tsx
 class _MyComponent extends React.Component<{ store: Store }> {
   public render() {
     const { store } = this.props;
@@ -383,10 +370,14 @@ class _MyComponent extends React.Component<{ store: Store }> {
     );
   }
 }
-
-// MyComponent is managed by manate
-const MyComponent = auto(c2f(_MyComponent));
+const MyComponent = auto(_MyComponent);
 ```
+
+### Known limitations
+
+Only two lifecycle methods are supported: `componentDidMount` and
+`componentWillUnmount`. If you need more lifecycle methods, please consider
+migrating to React function component.
 
 ## Similarity to MobX
 
