@@ -38,16 +38,16 @@ export const c2f = <P, S>(
     const instanceRef = useRef<InstanceType<ComponentClass<P, S>>>(
       new ClassComponent(props),
     );
-    const [state, setState] = useState(instanceRef.current.state);
+    const [, setState] = useState(instanceRef.current.state);
+    const _setState = instanceRef.current.setState.bind(instanceRef.current);
     instanceRef.current.setState = (newState) => {
+      _setState(newState);
       setState((prev) => ({ ...prev, ...newState }));
     };
-    useEffect(() => {
-      instanceRef.current.state = state;
-      // the class component is not mounted at all, so it's safe to update props directly
-      // @ts-ignore
-      instanceRef.current.props = props;
-    }, [state, props]);
+
+    // class component is not mounted, so it is safe to update props directly
+    // @ts-ignore
+    instanceRef.current.props = props;
     useEffect(() => {
       instanceRef.current.componentDidMount?.();
       return () => {
