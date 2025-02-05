@@ -33,7 +33,7 @@ describe("map", () => {
       count += 1;
     });
     runner.start();
-    ma.m.set("a", 1); // save value should not trigger autoRun
+    ma.m.set("a", 1); // same value should not trigger autoRun
     expect(count).toBe(1);
   });
 
@@ -67,7 +67,7 @@ describe("map", () => {
       count += 1;
     });
     runner.start();
-    ma.m.set("a", 2);
+    ma.m.set("a", 2); // we changed the value, but `ma.m.has("a")` doesn't change
     ma.m.delete("b");
     expect(count).toBe(1);
   });
