@@ -4,7 +4,7 @@ import React, { ReactElement } from "react";
 import { describe, expect, test } from "vitest";
 
 import { manage } from "../src/index.js";
-import { auto } from "../src/react.js";
+import { auto } from "../src/react/index.js";
 
 class Store {
   public count = 0;

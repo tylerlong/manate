@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc.2",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "types": "dist/esm/index.d.ts",
@@ -15,10 +15,15 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
-    "./*": {
-      "types": "./dist/esm/*.d.ts",
-      "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js"
+    "./react": {
+      "types": "./dist/esm/react/index.d.ts",
+      "import": "./dist/esm/react/index.js",
+      "require": "./dist/cjs/react/index.js"
+    },
+    "./react/class-components": {
+      "types": "./dist/esm/react/class-components.d.ts",
+      "import": "./dist/esm/react/class-components.js",
+      "require": "./dist/cjs/react/class-components.js"
     }
   },
   "scripts": {

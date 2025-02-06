@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event";
 import React, { StrictMode } from "react";
 import { describe, expect, test } from "vitest";
 
-import { manage, writeEmitter } from "../src";
-import { auto } from "../src/react";
+import { manage, writeEmitter } from "../src/index.js";
+import { auto } from "../src/react/class-components.js";
 
 describe("React", () => {
   test("simple", async () => {

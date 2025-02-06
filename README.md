@@ -334,12 +334,40 @@ Refer to [./test/circular.spec.ts](./test/circular.spec.ts).
 Since React function component is the future, we suggest you to use function
 component instead of class component.
 
-With above being said, this library supports class components out-of-box. The
-usage is identical to function components: just wrap the component with
-`auto()`:
+With above being said, if you still wants to use React class component with this
+library, you will need to import from `"manate/react/class-components"`.
+
+There are two options available:
+
+- inheirtance
+- HOC (high order component)
+
+### inheritance
+
+If you prefer class inheritance:
 
 ```tsx
-import { auto } from "manate/react";
+import { Component } from "manate/react/class-components";
+
+class MyComponent extends Component<{ store: Store }> {
+  public render() {
+    const { store } = this.props;
+    return (
+      <div>
+        <span role="counter">{store.count}</span>
+        <button onClick={() => store.increase()}>+</button>
+      </div>
+    );
+  }
+}
+```
+
+### HOC (High Order Component)
+
+If you prefer HOC:
+
+```tsx
+import { auto } from "manate/react/class-components";
 
 const MyComponent = auto(
   class extends React.Component<{ store: Store }> {
@@ -355,29 +383,6 @@ const MyComponent = auto(
   },
 );
 ```
-
-You may also wrap it after class definition:
-
-```tsx
-class _MyComponent extends React.Component<{ store: Store }> {
-  public render() {
-    const { store } = this.props;
-    return (
-      <div>
-        <span role="counter">{store.count}</span>
-        <button onClick={() => store.increase()}>+</button>
-      </div>
-    );
-  }
-}
-const MyComponent = auto(_MyComponent);
-```
-
-### Known limitations
-
-Only two lifecycle methods are supported: `componentDidMount` and
-`componentWillUnmount`. If you need more lifecycle methods, please consider
-migrating to React function component.
 
 ## Similarity to MobX
 
