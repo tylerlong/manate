@@ -339,10 +339,10 @@ library, you will need to import from `"manate/react/class-components"`.
 
 There are two options available:
 
-- inheirtance
-- HOC (high order component)
+- Inheirtance
+- HOC (High Rrder Component)
 
-### inheritance
+### Inheritance
 
 If you prefer class inheritance:
 
