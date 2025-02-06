@@ -13,7 +13,7 @@ import writeEmitter from "../events/write-emitter.js";
 import { run } from "../utils.js";
 
 // code copied from https://github.com/tylerlong/manate/pull/8/files with minor modifications
-export class Component<P = {}, S = {}> extends ReactComponent<P, S> {
+export class Component<P, S> extends ReactComponent<P, S> {
   private isTrigger?: (writeLog: WriteLog) => boolean;
   private originalRender: () => React.ReactNode;
 
@@ -75,8 +75,8 @@ const c2f = <P, S>(
       };
     }, []);
 
-    // @ts-ignore
-    instanceRef.current.props = props; // class component is not mounted, it is safe to update props directly
+    // @ts-ignore class component is not mounted, it is safe to update props directly
+    instanceRef.current.props = props;
     return instanceRef.current.render();
   };
   return functionComponent;

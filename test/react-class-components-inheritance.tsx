@@ -116,7 +116,7 @@ describe("React", () => {
     cleanup();
   });
 
-  test("game", async () => {
+  test("game", () => {
     let id = 0;
 
     class Bullet {
@@ -181,7 +181,7 @@ describe("React", () => {
     cleanup();
   });
 
-  test("strict mode", async () => {
+  test("strict mode", () => {
     let id = 0;
 
     class Bullet {
