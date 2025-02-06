@@ -340,7 +340,7 @@ library, you will need to import from `"manate/react/class-components"`.
 There are two options available:
 
 - Inheirtance
-- HOC (High Rrder Component)
+- HOC (High Order Component)
 
 ### Inheritance
 
