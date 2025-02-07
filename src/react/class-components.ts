@@ -16,37 +16,33 @@ import { run } from "../utils.js";
 export class Component<P = undefined, S = undefined>
   extends ReactComponent<P, S> {
   private isTrigger?: (writeLog: WriteLog) => boolean;
-  private originalRender: () => React.ReactNode;
 
   constructor(props: P) {
     super(props);
-    this.originalRender = this.render;
-    this.render = this.autoRender;
+    const originalRender = this.render.bind(this);
+    this.render = () => {
+      const [element, isTrigger] = run(() => {
+        return originalRender();
+      });
+      this.isTrigger = isTrigger;
+      return element;
+    };
+    const listener = (writeLog: WriteLog) => {
+      if (this.isTrigger?.(writeLog)) {
+        this.forceUpdate();
+      }
+    };
     const originalDidMount = this.componentDidMount?.bind(this);
     this.componentDidMount = () => {
-      writeEmitter.on(this.handleWrite);
+      writeEmitter.on(listener);
       originalDidMount?.();
     };
     const originalWillUnmount = this.componentWillUnmount?.bind(this);
     this.componentWillUnmount = () => {
-      writeEmitter.off(this.handleWrite);
+      writeEmitter.off(listener);
       originalWillUnmount?.();
     };
   }
-
-  private handleWrite = (writeLog: WriteLog) => {
-    if (this.isTrigger && this.isTrigger(writeLog)) {
-      this.forceUpdate();
-    }
-  };
-
-  private autoRender = () => {
-    const [element, isTrigger] = run(() => {
-      return this.originalRender();
-    });
-    this.isTrigger = isTrigger;
-    return element;
-  };
 }
 
 export const auto = <P = undefined, S = undefined>(
