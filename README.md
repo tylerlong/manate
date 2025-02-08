@@ -325,9 +325,41 @@ app state in those built-in objects.
 
 ## Circular references
 
-It is fine to have curcukar references in your state.
+It is fine to have circular references in your state.
 
 Refer to [./test/circular.spec.ts](./test/circular.spec.ts).
+
+## Low level APIs
+
+### `capture`
+
+Run a function and return the result and read log:
+
+```ts
+const [r, readLog] = capture(fn);
+```
+
+`fn` is the function to run. `r` is the result of running the function.
+`readLog` is the read log. `readLog` contains all the read events during the
+execution of `fn`.
+
+### `debounce`
+
+Turn a function into a debounced function:
+
+```ts
+const numbers: number[] = [];
+const df = debounce(1000)((i: number) => {
+  numbers.push(i);
+});
+```
+
+It can be used together with the `autoRun` function:
+
+```ts
+const numbers: number[] = [];
+const autoRunner = autoRun(() => numbers.push(store.number), debounce(10));
+```
 
 ## React Class Component
 
