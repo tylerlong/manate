@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "2.0.0-rc.3",
+  "version": "2.0.0",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "types": "dist/esm/index.d.ts",
