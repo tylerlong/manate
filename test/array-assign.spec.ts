@@ -1,5 +1,3 @@
-import { inspect } from "node:util";
-
 import { describe, expect, test } from "vitest";
 
 import { autoRun, manage, runInAction } from "../src/index.js";
