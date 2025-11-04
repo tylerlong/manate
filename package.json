@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "types": "dist/esm/index.d.ts",
@@ -27,7 +27,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json",
+    "build": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && echo '{\"type\":\"module\"}' > dist/esm/package.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "prepublishOnly": "yarn build",
     "postpublish": "rm -rf dist",
     "lint": "deno fmt && deno lint --fix",
