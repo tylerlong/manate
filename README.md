@@ -427,3 +427,16 @@ Recently I find that manate is very similar to mobx:
 If I could realize the similarity 3 years ago, I might just use mobx instead.
 For now, since manate is well developed and I am very happy with it, I will
 continue to use and maintain manate.
+
+### MobX limitations
+
+MobX doesn't work well with subclassing
+https://mobx.js.org/subclassing.html#limitations
+
+manate doesn't have similar issues, since manate by design works with objects
+instead of classes.
+
+## Todo
+
+Strict mode: in this mode, you can only modify an object through actions.
+Changing an object directly will cause warning or error.
