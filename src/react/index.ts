@@ -4,7 +4,7 @@ import { WriteLog } from "../events/types.js";
 import writeEmitter from "../events/write-emitter.js";
 import { run } from "../utils.js";
 
-export const auto = <P = undefined>(Component: FunctionComponent<P>) => {
+export const auto = <P = {}>(Component: FunctionComponent<P>) => {
   return memo(function MyComponent(props: P) {
     const [, reRender] = useState(0);
     const [r, isTrigger] = run(() => Component(props));

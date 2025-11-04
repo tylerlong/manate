@@ -13,8 +13,7 @@ import writeEmitter from "../events/write-emitter.js";
 import { run } from "../utils.js";
 
 // code copied from https://github.com/tylerlong/manate/pull/8/files with minor modifications
-export class Component<P = undefined, S = undefined>
-  extends ReactComponent<P, S> {
+export class Component<P = {}, S = {}> extends ReactComponent<P, S> {
   private isTrigger?: (writeLog: WriteLog) => boolean;
 
   constructor(props: P) {
@@ -45,7 +44,7 @@ export class Component<P = undefined, S = undefined>
   }
 }
 
-export const auto = <P = undefined, S = undefined>(
+export const auto = <P = {}, S = {}>(
   Component: ComponentClass<P, S>,
 ) => {
   const FunctionComponent = c2f(Component);
@@ -53,7 +52,7 @@ export const auto = <P = undefined, S = undefined>(
 };
 
 // convert class component to function component
-const c2f = <P = undefined, S = undefined>(
+const c2f = <P = {}, S = {}>(
   ClassComponent: ComponentClass<P, S>,
 ): FunctionComponent<P> => {
   const functionComponent = (props: P) => {
