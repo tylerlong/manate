@@ -440,3 +440,7 @@ instead of classes.
 
 Strict mode: in this mode, you can only modify an object through actions.
 Changing an object directly will cause warning or error.
+
+Why? sometimes you want the UI to display data only, it shouldn't make change
+data. You may declare methods as private and turn on strict mode. Then UI can
+only read but not write.
