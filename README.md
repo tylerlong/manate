@@ -438,9 +438,17 @@ instead of classes.
 
 ## Todo
 
+### strict mode
+
 Strict mode: in this mode, you can only modify an object through actions.
 Changing an object directly will cause warning or error.
 
 Why? sometimes you want the UI to display data only, it shouldn't make change
 data. You may declare methods as private and turn on strict mode. Then UI can
 only read but not write.
+
+### private elements
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements
+
+Try to support this feature.
