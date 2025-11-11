@@ -420,7 +420,7 @@ const MyComponent = auto(
 
 Class arrow function changing data will not trigger events. For more details,
 please refer to
-[./test/class-array-function.spec.ts](./test/class-array-function.spec.ts).
+[./test/class-arrow-function.spec.ts](./test/class-arrow-function.spec.ts).
 
 ## Similarity to MobX
 
