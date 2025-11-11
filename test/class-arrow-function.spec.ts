@@ -17,6 +17,7 @@ describe("class arrow function", () => {
     expect(history).toEqual([4]);
     hero.takeDamage(1);
     hero.takeDamage(1);
+    autoRunner.stop();
     expect(history).toEqual([4, 3, 2]);
   });
 
@@ -34,6 +35,7 @@ describe("class arrow function", () => {
     expect(history).toEqual([4]);
     hero.takeDamage(1);
     hero.takeDamage(1);
+    autoRunner.stop();
     expect(history).toEqual([4]); // arrow function does not trigger autoRun
   });
 });
