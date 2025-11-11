@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { autoRun, manage } from "../src/index.js";
 
-describe("sanguosha", () => {
+describe("class arrow function", () => {
   test("normal function", () => {
     class Hero {
       hp = 4;
@@ -16,7 +16,8 @@ describe("sanguosha", () => {
     autoRunner.start();
     expect(history).toEqual([4]);
     hero.takeDamage(1);
-    expect(history).toEqual([4, 3]);
+    hero.takeDamage(1);
+    expect(history).toEqual([4, 3, 2]);
   });
 
   test("arrow function", () => {
@@ -31,6 +32,7 @@ describe("sanguosha", () => {
     const autoRunner = autoRun(() => history.push(hero.hp));
     autoRunner.start();
     expect(history).toEqual([4]);
+    hero.takeDamage(1);
     hero.takeDamage(1);
     expect(history).toEqual([4]); // arrow function does not trigger autoRun
   });

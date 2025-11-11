@@ -416,6 +416,12 @@ const MyComponent = auto(
 );
 ```
 
+## Known limitation
+
+Class arrow function changing data will not trigger events. For more details,
+please refer to
+[./test/class-array-function.spec.ts](./test/class-array-function.spec.ts).
+
 ## Similarity to MobX
 
 Recently I find that manate is very similar to mobx:
