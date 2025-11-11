@@ -1,6 +1,6 @@
 {
   "name": "manate",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "repository": "git@github.com:tylerlong/manate.git",
   "license": "MIT",
   "types": "dist/esm/index.d.ts",
@@ -45,8 +45,8 @@
     "react-dom": "^19.2.0",
     "shell-commands": "^0.4.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.6",
-    "wait-for-async": "^0.7.13",
+    "vitest": "^4.0.8",
+    "wait-for-async": "^0.8.0",
     "yarn-upgrade-all": "^0.7.5"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
